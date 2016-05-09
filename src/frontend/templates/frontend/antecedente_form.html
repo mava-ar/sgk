@@ -1,0 +1,52 @@
+{% extends "frontend/ficha_kinesica.html" %}
+{% load bootstrap3 static frontend_tags %}
+{% block subtitle %}
+    Ficha Kinésica
+{% endblock %}
+{% block content_ficha %}
+    <form action="" method="post" novalidate="">
+    {% csrf_token %}
+    <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
+        <li class="active"><a href="#antecedentes" data-toggle="tab">Antecedentes</a></li>
+        <li><a href="#habitos" data-toggle="tab">Hábitos</a></li>
+        <li><a href="#medicacion" data-toggle="tab">Medicación</a></li>
+        <li><a href="#complementarios" data-toggle="tab">Estudios complementarios</a></li>
+        <li><a href="#observaciones" data-toggle="tab">Observaciones</a></li>
+    </ul>
+    <div id="my-tab-content" class="tab-content">
+        <div class="tab-pane active" id="antecedentes">
+            {% bootstrap_field form.patologicos %}
+            {% bootstrap_field form.quirurgicos %}
+            {% bootstrap_field form.traumaticos %}
+            {% bootstrap_field form.heredo_familiar %}
+            <div class="panel panel-info">
+                <div class="panel-heading">Sólo en caso de género femenino</div>
+                <div class="panel-body">
+                    {% bootstrap_field form.menarca %}
+                    {% bootstrap_field form.fum %}
+                    {% bootstrap_field form.tipo_partos %}
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="habitos">
+            {% bootstrap_field form.habitos_fisiologicos %}
+            {% bootstrap_field form.habitos_patologicos %}
+        </div>
+        <div class="tab-pane" id="medicacion">
+            {% bootstrap_field form.medicaciones %}
+        </div>
+        <div class="tab-pane" id="complementarios">
+            {% bootstrap_field form.estudios_complementarios %}
+        </div>
+        <div class="tab-pane" id="observaciones">
+                {% bootstrap_field form.observaciones %}
+            </div>
+    </div>
+    {% buttons %}
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <a href="{% url 'ficha_kinesica' paciente.pk %}">
+            <input type="button" class="btn " value="Volver" />
+        </a>
+    {% endbuttons %}
+    </form>
+{% endblock %}

@@ -1,0 +1,4 @@
+{#{% load repl %}{% repl pdb %}#}
+{% for k in data %}
+    <p><strong>{{ k.title }}:</strong> {{ k.value|default_if_none:'No definido' }}</p>
+{% endfor %}

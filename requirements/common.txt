@@ -1,0 +1,18 @@
+Django==1.9.6
+pillow
+django-libsass
+libsass>=0.9.3
+-e git://github.com/rasca/django-enhanced-cbv.git#egg=django-enhanced-cbv
+
+django-bower
+django-pipeline==1.6.4
+django-bootstrap3
+django-compressor
+easy-thumbnails
+django-model-utils
+
+django-filter
+django-tables2
+django-bootstrap3
+django-datetime-widget
+pynliner

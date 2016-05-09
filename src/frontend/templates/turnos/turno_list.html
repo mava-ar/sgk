@@ -1,0 +1,52 @@
+{% extends "base_site.html" %}
+{% load bootstrap3 %}
+{% block subtitle %}
+    Inicio
+{% endblock %}
+{% block content %}
+    <h2>Listado de turnos
+{% buttons %}
+<a href="{% url 'turno_create' %}" />
+<button type="button" class="btn btn-primary pull-right">
+  {% bootstrap_icon "plus" %} Nuevo turno
+</button>
+</a>
+{% endbuttons %}
+    </h2>
+    <table class="table table-condensed table-striped">
+        <thead>
+            <tr>
+                <th>Día</th>
+                <th>Hora</th>
+                <th>Paciente</th>
+                <th>Profesional</th>
+                <th>Duración</th>
+                <th>Motivo</th>
+                <th>Asistió</th>
+                <th>Avisó</th>
+                <th>Observaciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for t in object_list %}
+                <tr>
+                    <td>{{ t.dia }}</td>
+                    <td>{{ t.hora }}</td>
+                    <td>{% if not t.paciente %}
+                            {{ t.nombre_paciente }}
+                        {% else %}
+                            {{ t.paciente }}
+                        {% endif %}
+                    </td>
+                    <td>{{ t.profesional }}</td>
+                    <td>{{ t.duracion }}</td>
+                    <td>{{ t.motivo }}</td>
+                    <td>{{ t.asistio|yesno:"Yes,No" }}</td>
+                    <td>{{ t.aviso|yesno:"Yes,No"  }}</td>
+                    <td>{{ t.observaciones }}</td>
+                    <td><a href="{% url 'turno_update' t.pk %}">Editar</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

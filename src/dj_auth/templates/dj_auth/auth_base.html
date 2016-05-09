@@ -1,0 +1,14 @@
+{% extends DJAUTH_BASE_TEMPLATE|default:'base.html' %}
+{% load i18n %}
+{% load bootstrap3 %}
+{% block body_class %}accounts{% endblock %}
+{% block main_content %}
+    <div class="col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4">
+    <div class="panel panel-success">
+        <div class="panel-body">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    </div>
+{% endblock %}

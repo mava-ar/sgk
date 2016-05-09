@@ -1,0 +1,80 @@
+{% extends "base_site.html" %}
+{% load bootstrap3 static frontend_tags %}
+{% block subtitle %}
+    Ficha Kinésica
+{% endblock %}
+{% block content %}
+
+    <div class="row">
+        <div class="col-sd-12">
+            <div class="col-sm-12">
+                <h2>Ficha kinésica de {{ paciente.persona }}</h2>
+                <p>
+                <a class="btn btn-info" href="{% url 'ficha_kinesica_update' paciente.pk %}">Antecedentes</a>
+                <a class="btn btn-info" href="{% url 'motivo_consulta' paciente.pk %}">Motivos de consulta</a>
+                <a class="btn btn-warning">Nueva sesión</a>
+                </p>
+
+            </div>
+
+
+            <div class="col-sm-3">
+            {% block left_sidebar %}
+                <div class="panel panel-default">
+                    <div class="panel-heading">Datos de la persona</div>
+                    <div class="panel-body">
+                        <div style="width:100%">
+                            <img class="img-responsive img-circle"
+                                 src="{{ paciente.persona|profile_image:"perfil" }}" />
+                        </div>
+                        <div>
+                            <a href="{% url 'paciente_update' paciente.pk %}">
+                                <span class="label label-info">Editar perfil</span>
+                            </a>
+                        </div>
+                        <div>Nombre: <strong>{{ paciente.persona }}</strong></div>
+                        <div>DNI: <strong>{{ paciente.persona.dni|default_if_none:"No definido" }}</strong></div>
+                        <div>Género: <strong>{{ paciente.persona.get_genero_display }}</strong></div>
+                        <div>Fecha de ingreso: <strong>{{ paciente.fecha_ingreso }}</strong></div>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">Añadir a la ficha</div>
+                    <div class="panel-body">
+                        <a class="btn btn-success">Añadir comentario</a>
+                        <a class="btn btn-success">Añadir imagen</a>
+                        <a class="btn btn-success">Añadir archivo</a>
+{#                        {% for item in motivos %}#}
+{#                            <a href="{% url 'ficha_kinesica' paciente.pk %}">#}
+{#                                <span class="label label-default">{{ item }}</span>#}
+{#                            </a><br />#}
+{#                        {% empty %}#}
+
+{#                        {% endfor %}#}
+                    </div>
+                </div>
+            {% endblock %}
+            </div>
+
+            <div class="col-sm-9">
+                {% block content_ficha %}
+                    <div class="panel panel-success">
+                        <div class="panel-heading">Antecedentes
+                            <a class="pull-right" href="{% url 'ficha_kinesica_update' paciente.pk %}">
+                                <i class="fa fa-edit"></i></a>
+                        </div>
+                        <div class="panel-body">
+                            {% show_info paciente.antecedente %}
+                        </div>
+                    </div>
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+{% block script_js %}
+{#    <script type="text/javascript" src="{% static 'js/panel_expansible.js' %}" ></script>#}
+{#    <script type="text/javascript">#}
+{#    </script>#}
+{% endblock %}

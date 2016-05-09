@@ -1,0 +1,50 @@
+{% extends "base_site.html" %}
+{% load bootstrap3 static frontend_tags %}
+{% block subtitle %}
+    - Pacientes
+{% endblock %}
+{% block content %}
+    <h2>Listado de pacientes
+        <a href="{% url 'paciente_create' %}" class="pull-right">
+        <button type="button" class="btn btn-primary">
+          {% bootstrap_icon "plus" %} Añadir paciente
+        </button>
+        </a>
+    </h2>
+{% buttons %}
+
+{% endbuttons %}
+    <table class="table table-condensed table-striped">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Persona</th>
+                <th>Fecha de ingreso</th>
+                <th>Cobertura</th>
+                <th>Observaciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for t in object_list %}
+                <tr>
+                    <td class="img-thumb-table">
+                        <img class="img-responsive img-circle" src="{{ t.persona|profile_image }}" />
+                    </td>
+                    <td>
+                        <a href="{% url 'paciente_update' t.pk %}">
+                            <i class="fa fa-edit"></i>
+                            {{ t.persona }}
+                        </a>
+                    </td>
+                    <td>{{ t.fecha_ingreso }}</td>
+                    <td>{% if t.cobertura %} {{ t.cobertura }} {% else %}No especificada{% endif %}</td>
+                    <td>{{ t.observaciones }}</td>
+                    <td><a href="{% url 'ficha_kinesica' t.pk %}">
+                            <i class="fa fa-list"></i>
+                            Ir a la ficha
+                        </a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+{% block nav %}
+<div class="navbar navbar-default nabvar-fix-top">
+    <div class="container">
+        <div class="navbar-header">
+            <a href="{% url 'index' %}" class="navbar-brand">SGK</a>
+            <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
+                {% bootstrap_icon "th" %}
+            </button>
+        </div>
+        <div class="navbar-collapse collapse" id="navbar-main">
+            {% if user.is_authenticated %}
+            <ul class="nav navbar-nav">
+                <li><a href="{% url 'persona_list' %}">Agenda</a></li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Gestión <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a tabindex="1" href="{% url 'turno_list' %}">Turnos</a></li>
+                        <li class="divider"></li>
+                        <li><a tabindex="2" href="{% url 'paciente_list' %}">Paciente</a></li>
+
+{#                        <li><a tabindex="4" href="../profesionales/">Profesionales</a></li>#}
+
+                    </ul>
+                </li>
+                <li>
+                    <a href="{% url 'turno_create' %}">Nuevo turno</a>
+                </li>
+                <li>
+                    <a href="{% url 'paciente_create' %}">Nuevo paciente</a>
+                </li>
+            </ul>
+            {% endif %}
+            <div class="nav navbar-nav navbar-right">
+            {% block header %}
+                <li><a href="{% url 'about' %}">Sobre SGK</a></li>
+                {% if user.is_authenticated %}
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                            Hola<strong> {{ user.username }} </strong><span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{% url 'password_change' %}">Cambiar contraseña</a></li>
+                            <li><a href="#" id="close-session">Cerrar sesión</a></li>
+                        </ul>
+                    </li>
+                {% else %}
+                    <li><a href="{% url 'login' %}">Iniciar sesión</a></li>
+                  {% endif %}
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+{% block main_content %}
+    <div class="container" id="content-main">
+    {% block content %}
+    {% endblock %}
+    </div>
+{% endblock %}

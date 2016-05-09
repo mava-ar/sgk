@@ -1,0 +1,13 @@
+{% load bootstrap3 %}
+<form method="POST" novalidate="" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    {% buttons %}
+    <button type="submit" class="btn btn-primary">
+      Guardar
+    </button>
+    <a href="{% url 'paciente_list' %}">
+        <input type="button" class="btn btn.primary" value="Volver" />
+    </a>
+    {% endbuttons %}
+</form>

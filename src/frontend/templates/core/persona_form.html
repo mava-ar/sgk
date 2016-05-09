@@ -1,0 +1,42 @@
+{% extends "base_site.html" %}
+{% load bootstrap3 %}
+{% block subtitle %}
+    {% if model.pk %}Editar {% else %}Nuevo {% endif %} persona
+{% endblock %}
+{% block content %}
+    <form method="POST" novalidate="" enctype="multipart/form-data">
+    <h2>{% if model.pk %}Editar {% else %}Nuevo {% endif %} persona
+        <div class="pull-right">
+            {% buttons %}
+                <button type="submit" class="btn btn-primary">
+                    Guardar
+                </button>
+                <a href="{% url 'persona_list' %}">
+                    <input type="button" class="btn btn.primary" value="Volver"/>
+                </a>
+            {% endbuttons %}
+        </div>
+    </h2>
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    {% buttons %}
+        <button type="submit" class="btn btn-primary">
+            Guardar
+        </button>
+        <a href="{% url 'persona_list' %}">
+            <input type="button" class="btn btn.primary" value="Volver"/>
+        </a>
+    {% endbuttons %}
+    </form>
+
+{% endblock %}
+
+{% block script_js %}
+    <script type="text/javascript">
+        (function ($) {
+            $(document).ready(function(){
+
+            });
+        })(jQuery);
+    </script>
+{% endblock %}
