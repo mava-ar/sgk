@@ -10,9 +10,10 @@
             <div class="col-sm-12">
                 <h2>Ficha kinésica de {{ paciente.persona }}</h2>
                 <p>
-                <a class="btn btn-info" href="{% url 'ficha_kinesica_update' paciente.pk %}">Antecedentes</a>
-                <a class="btn btn-info" href="{% url 'motivo_consulta' paciente.pk %}">Motivos de consulta</a>
-                <a class="btn btn-warning">Nueva sesión</a>
+                <a class="btn btn-primary" href="{% url 'ficha_kinesica' paciente.pk %}">Historia clínica</a>
+                <a class="btn btn-info" href="{% url 'ficha_kinesica_update' paciente.pk %}">Actualizar antecedentes</a>
+                <a class="btn btn-info" href="{% url 'tratamiento_list' paciente.pk %}">Tratamientos</a>
+{#                <a class="btn btn-warning">Nueva sesión</a>#}
                 </p>
 
             </div>

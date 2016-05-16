@@ -56,11 +56,11 @@
                 $("select").chosen({
                     width: '100%'
                 });
-                $(".datepicker,input[name^=fecha]").datepicker({
-                    format: 'dd/mm/yyyy',
-                    language: 'es',
-                    orientation: 'bottom'
-                });
+{#                $(".datepicker,input[name^=fecha]").datepicker({#}
+{#                    format: 'dd/mm/yyyy',#}
+{#                    language: 'es',#}
+{#                    orientation: 'bottom'#}
+{#                });#}
                 $("#close-session").click(function(e){
                     e.preventDefault();
                     showConfirm('Cerrar sesión', 'Va a cerrar la sesión. ¿Continuar?', function(){

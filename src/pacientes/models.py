@@ -20,13 +20,18 @@ class Paciente(BaseModel):
     cobertura_medica = models.ForeignKey(Cobertura, verbose_name='cobertural', null=True)
 
     def __str__(self):
-        return "{}".format(
-                self.persona.nombre)
+        return "{}".format(self.persona)
 
     class Meta:
         verbose_name = "paciente"
         verbose_name_plural = "pacientes"
 
+    def tratamiento_activo(self):
+        from tratamientos.models import Planificacion
+        try:
+            return self.motivos_de_consulta.filter(planificaciones__estado__in=Planificacion.estados_activos()).get()
+        except:
+            return None
 
 class RegistroBiometrico(BaseModel, ShowInfoMixin):
     """

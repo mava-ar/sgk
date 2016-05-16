@@ -1,8 +1,9 @@
 from django import forms
 from django.forms import inlineformset_factory
+from django.utils import timezone
 
 from dj_utils.fields import FechaField
-from .models import MotivoConsulta, Objetivo
+from .models import MotivoConsulta, Objetivo, Planificacion, Sesion
 
 
 class MotivoConsultaForm(forms.ModelForm):
@@ -14,13 +15,34 @@ class MotivoConsultaForm(forms.ModelForm):
                   'evaluacion_kinesica', 'tratamientos_previos', 'observaciones')
 
 
-class ObjetivoInlineForm(forms.ModelForm):
-    fecha_inicio = FechaField(required=False)
-    fecha_cumplido = FechaField(required=False)
+class ObjetivoForm(forms.ModelForm):
 
     class Meta:
         model = Objetivo
-        fields = ('descripcion', 'fecha_inicio', 'fecha_cumplido', 'observaciones')
+        fields = ('descripcion', 'observaciones')
 
 
-ObjetivoInlineFormset = inlineformset_factory(MotivoConsulta, Objetivo, form=ObjetivoInlineForm, extra=1)
+ObjetivoInlineFormset = inlineformset_factory(MotivoConsulta, Objetivo, form=ObjetivoForm, extra=1)
+
+
+class ObjetivoCumplidoUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Objetivo
+        fields = ('fecha_cumplido', )
+        widgets = {
+            'fecha_cumplido': forms.HiddenInput()
+        }
+
+
+class PlanificacionCreateForm(forms.ModelForm):
+    class Meta:
+        model = Planificacion
+        fields = ('cantidad_sesiones', 'frecuencia', 'comentarios', )
+
+
+class NuevaSesionForm(forms.ModelForm):
+    fecha = FechaField(label="fecha de la sesión", initial=timezone.now())
+
+    class Meta:
+        model = Sesion
+        fields = ('fecha', 'duracion', 'estado_paciente', 'actividad', 'comentarios', )

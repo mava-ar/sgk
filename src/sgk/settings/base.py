@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'compressor',
     'easy_thumbnails',
     'datetimewidget',
+    'djangoformsetjs',
 
     'frontend',
     'dj_utils',
@@ -180,7 +181,7 @@ PIPELINE = {
                 'bootstrap-sass/assets/stylesheets/_bootstrap.scss',
                 'bootstrap3-dialog/dist/css/bootstrap-dialog.css',
                 'font-awesome/css/font-awesome.min.css',
-                'bootstrap-datepicker/dist/css/bootstrap-datepicker3.css',
+                # 'bootstrap-datepicker/dist/css/bootstrap-datepicker3.css',
                 'chosen/chosen.min.css',
                 'css/pastel-stream.css',
                 'css/base.scss',
@@ -211,8 +212,8 @@ PIPELINE = {
         },
         'plugins_js': {
             'source_filenames': (
-                'bootstrap-datepicker/dist/js/bootstrap-datepicker.js',
-                'bootstrap-datepicker/dist/locales/bootstrap-datepicker.es.min.js',
+                # 'bootstrap-datepicker/dist/js/bootstrap-datepicker.js',
+                # 'bootstrap-datepicker/dist/locales/bootstrap-datepicker.es.min.js',
                 'PACE/pace.js',
                 'StickyTableHeaders/js/jquery.stickytableheaders.min.js'
             ),
@@ -245,6 +246,7 @@ BOWER_INSTALLED_APPS = (
     'pace#1.0.2',
     'StickyTableHeaders',
     'django-dynamic-formset',
+    'jquery.countdown'
 )
 
 THUMBNAIL_ALIASES = {

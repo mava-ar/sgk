@@ -110,6 +110,13 @@ textarea.form-control {
   height: 110px;
 }
 
+.bootstrap-dialog.type-default .modal-header {
+    background-color: #4f897a;
+}
+.bootstrap-dialog.type-default .bootstrap-dialog-title {
+    color: #eee;
+}
+
 /* Main classes */
 
 .img-thumb-table {

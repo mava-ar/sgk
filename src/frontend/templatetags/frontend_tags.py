@@ -1,4 +1,6 @@
+import time
 from django import template
+from django.utils import timezone
 from django.utils.safestring import mark_safe
 
 from sgk.settings.base import STATIC_URL
@@ -30,3 +32,9 @@ def show_info(data):
     return {
         'data': data.show_info
     }
+
+@register.filter(name="date_to_millis")
+def date_to_millis(d):
+    d = timezone.localtime(d)
+    for_js = int(time.mktime(d.timetuple())) * 1000
+    return for_js

@@ -1,0 +1,20 @@
+{% extends "frontend/ficha_kinesica.html" %}
+{% load bootstrap3 static frontend_tags %}
+
+{% block subtitle %}
+    Ficha Kinésica - Objetivo
+{% endblock %}
+{% block content_ficha %}
+    <h2>Editar objetivo</h2>
+    <form action="" method="post" novalidate="">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+
+    {% buttons %}
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <a href="{% url 'tratamiento_list' paciente.pk %}">
+            <input type="button" class="btn " value="Volver" />
+        </a>
+    {% endbuttons %}
+    </form>
+{% endblock %}

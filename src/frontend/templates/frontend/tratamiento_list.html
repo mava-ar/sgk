@@ -1,0 +1,57 @@
+{% extends "frontend/ficha_kinesica.html" %}
+{% load bootstrap3 static frontend_tags %}
+{% block subtitle %}
+    Motivos de consulta
+{% endblock %}
+{% block content_ficha %}
+    <p><a class="btn btn-warning" href="{% url 'tratamiento_create' paciente.pk %}">Nuevo motivo de consulta</a></p>
+    {% for motivo in object_list %}
+        <div class="panel panel-{% if forloop.first %}danger{% else %}success{% endif %}">
+            <div class="panel-heading"><h3>Motivo de consulta
+                <a class="pull-right" href="{% url 'tratamiento_update' paciente.pk motivo.pk %}">
+                    <i class="fa fa-edit"></i>
+                </a></h3>
+            </div>
+            <div class="panel-body">
+                {% show_info motivo %}
+                <div class="row">
+                    {% for trata in motivo.planificaciones.all %}
+                        <div class="col-sm-12">
+                            <h3>Tratamiento</h3>
+                            <p><span>Cantidad de sesiones: </span>{{ trata.cantidad_sesiones }}</p>
+                            <p><span>Frecuencia semanal: </span>{{ trata.frecuencia }}</p>
+                            <p><span>Estado: </span>{{ trata.get_estado_display }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                    <h3>Objetivos</h3>
+                    {% for obj in motivo.objetivos.all %}
+                        <p>
+                            <h4>
+                            <a href="{% url 'objetivo_update' paciente.pk obj.pk %}" title="Marcar como cumplido">
+                                <i class="fa fa-square-o"></i>
+                            </a>
+                            {{ obj.descripcion }}
+                            {% if obj.observaciones %}<small>{{ obj.observaciones }}</small>{% endif %}
+
+                            <a href="{% url 'objetivo_update' paciente.pk obj.pk %}">
+                                <i class="fa fa-edit"></i>
+                            </a>
+                             </h4>
+                        </p>
+                    {% endfor %}
+                    </div>
+                </div>
+                <p>
+                    <span>Sesiones tomadas: {{ motivo.sesiones_realizadas }}</span> |
+                    <span>Sesiones restantes: {{ motivo.sesiones_restantes }}</span>
+                    <a class="btn btn-warning" href="{% url 'sesion_create' paciente.pk motivo.pk %}">Nueva sesión</a>
+                </p>
+            </div>
+        </div>
+    {% empty %}
+        <p class="alert alert-warning">Aún no ha ingresado motivos de consulta para este paciente.</p>
+    {% endfor %}
+{% endblock %}

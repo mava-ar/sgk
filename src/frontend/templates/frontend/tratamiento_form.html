@@ -1,0 +1,84 @@
+{% extends "frontend/ficha_kinesica.html" %}
+{% load bootstrap3 static frontend_tags formset_tags %}
+{#{% block extra_head %}#}
+{#{{ objetivo_formset.media }}#}
+{#{% endblock %}#}
+{% block subtitle %}
+    Ficha Kinésica - Tratamiento
+{% endblock %}
+{% block content_ficha %}
+    <h2>{% if object.pk %}Editar {% else %}Nuevo {% endif %}tratamiento de {{ paciente }}</h2>
+    <form action="" method="post" novalidate="">
+    {% csrf_token %}
+    <fieldset>
+        <legend>Motivo de consulta</legend>
+        {% bootstrap_form form %}
+    </fieldset>
+    <fieldset>
+        <legend>Planificación</legend>
+        {% bootstrap_form tratamiento_form %}
+    </fieldset>
+
+    {% if objetivo_formset %}
+
+    <div class="panel panel-success">
+        <div class="panel-heading">Objetivos</div>
+        <div class="panel-body">
+            <div id="formset" data-formset-prefix="{{ formset.prefix }}">
+                {{ objetivo_formset.management_form }}
+
+                <div data-formset-body>
+                    <!-- New forms will be inserted in here -->
+                    {% for form_inline in objetivo_formset %}
+                        <div data-formset-form>
+                            {% bootstrap_form form_inline %}
+{#                            {% bootstrap_field form_inline.descripcion %}#}
+{#                            {% bootstrap_field form_inline.observaciones %}#}
+{#                            {% bootstrap_field form_inline.DELETE show_label=False %}#}
+{#                            <button type="button" data-formset-delete-button>Delete form</button>#}
+                            {% if not forloop.last %}<hr />{% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <!-- The empty form template. By wrapping this in a <script> tag, the
+                __prefix__ placeholder can easily be replaced in both attributes and
+                any scripts -->
+                <script type="form-template" data-formset-empty-form>
+                    {% escapescript %}
+                        <div data-formset-form>
+                            <hr />
+                            {% bootstrap_field objetivo_formset.empty_form.descripcion %}
+                            {% bootstrap_field objetivo_formset.empty_form.observaciones %}
+                            {% bootstrap_field objetivo_formset.empty_form.DELETE show_label=False %}
+{#                            <button type="button" data-formset-delete-button>Borrar</button>#}
+                        </div>
+                    {% endescapescript %}
+                </script>
+
+                <!-- This button will add a new form when clicked -->
+                <input type="button" value="Añadir otro objetivo" class="btn btn-warning" data-formset-add>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    {% buttons %}
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <a href="{% url 'tratamiento_list' paciente.pk %}">
+            <input type="button" class="btn " value="Volver" />
+        </a>
+    {% endbuttons %}
+    </form>
+{% endblock %}
+{% block extra_js %}
+    <script type="text/javascript" src="{% static 'js/jquery.formset.js' %}" ></script>
+    <script type="text/javascript">
+        (function($){
+            $("#formset").formset({
+                animateForms: true
+            });
+        })(jQuery);
+
+    </script>
+
+{% endblock %}

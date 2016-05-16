@@ -1,5 +1,6 @@
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
+from django.db.models import Sum
 
 from pacientes.models import Paciente
 from dj_utils.models import BaseModel
@@ -41,9 +42,23 @@ class MotivoConsulta(BaseModel, ShowInfoMixin):
             return "{}".format(self.creado_el)
 
     class Meta:
-        verbose_name = u"motivo de consulta"
-        verbose_name_plural = u"motivos de consulta"
+        verbose_name = "motivo de consulta"
+        verbose_name_plural = "motivos de consulta"
 
+    @property
+    def sesiones_realizadas(self):
+        return self.sesiones.count()
+
+    @property
+    def sesiones_restantes(self):
+        return self.planificaciones.annotate(suma=Sum('cantidad_sesiones')).values('suma').get()["suma"] - self.sesiones.count()
+
+    @property
+    def planificacion_actual(self):
+        try:
+            return self.planificaciones.filter(estado__in=Planificacion.estados_activos()).get()
+        except:
+            return None
 
 class Objetivo(BaseModel, ShowInfoMixin):
     """
@@ -59,7 +74,7 @@ class Objetivo(BaseModel, ShowInfoMixin):
     fecha_cumplido = models.DateField('fecha de éxito', null=True)
     observaciones = models.TextField('observaciones', blank=True)
 
-    field_info = ('descripcion', 'fecha_inicio', 'fecha_cumplido', 'observaciones', )
+    field_info = ('descripcion', 'observaciones', )
 
     def __unicode__(self):
         return u"{}".format(self.descripcion)
@@ -68,6 +83,10 @@ class Objetivo(BaseModel, ShowInfoMixin):
         verbose_name = "objectivo"
         verbose_name_plural = "objetivos"
 
+    @property
+    def cumplido(self):
+        return not self.fecha_cumplido is None
+
 
 class Planificacion(BaseModel):
     """
@@ -75,17 +94,24 @@ class Planificacion(BaseModel):
     que indicó sesiones de kinesiología. Contiene la información sobre el tratamiento pensado
     el motivo de consulta relacionado.
     """
+    PLANIFICADO = 1
+    EN_CURSO = 2
+    FINALIZADO = 3
+    CANCELADO = 4
+
     PLANIFICACION_ESTADO = (
-        (1, 'Planificado'),
-        (2, 'En curso'),
-        (3, 'Finalizado'),
-        (4, 'Cancelado')
+        (PLANIFICADO, 'Planificado'),
+        (EN_CURSO, 'En curso'),
+        (FINALIZADO, 'Finalizado'),
+        (CANCELADO, 'Cancelado')
     )
     motivo_consulta = models.ForeignKey(MotivoConsulta, related_name='planificaciones')
-    fecha_ingreso = models.DateField('fecha de ingreso', auto_now_add=True)
+    fecha_ingreso = models.DateField(
+        'fecha de ingreso', null=True,
+        help_text="Fecha de inicio de tratamiento, normalmente la fecha de la primer sesión.")
     fecha_alta = models.DateField('fecha de alta', null=True, blank=True,
             help_text='fecha de alta tentativa.')
-    cantidad_sesiones = models.IntegerField(u'cantidad de sesiones',
+    cantidad_sesiones = models.IntegerField('cantidad de sesiones',
             help_text='Cantidad de sesiones necesarias recetadas por el médico.', default=10)
     frecuencia = models.PositiveIntegerField(
         'frecuencia semanal', default=1, validators=[MinValueValidator(1), MaxValueValidator(7)])
@@ -101,6 +127,10 @@ class Planificacion(BaseModel):
     class Meta:
         verbose_name_plural = 'planificaciones'
         verbose_name = 'planificación'
+
+    @classmethod
+    def estados_activos(self):
+        return [self.PLANIFICADO, self.EN_CURSO, ]
 
 
 class Sesion(BaseModel):
@@ -119,6 +149,8 @@ class Sesion(BaseModel):
         help_text="Descripción de cómo se siente el paciente antes de la sesión")
     actividad = models.TextField("actividades de la sesión", blank=True, null=True)
     comentarios = models.TextField("comentarios", blank=True, null=True)
+    comienzo_el = models.DateTimeField("fecha y hora de comienzo de sesión", auto_now_add=True)
+    fin_el = models.DateTimeField("fecha y hora de fin de sesión", null=True)
 
     def __str__(self):
         return "Sesión de {} el {}".format(self.paciente, self.creado_el)

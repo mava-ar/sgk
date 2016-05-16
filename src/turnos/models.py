@@ -4,6 +4,7 @@ from dj_utils.models import BaseModel
 from core.models import Profesional
 from pacientes.models import Paciente
 from coberturas_medicas.models import Cobertura
+from tratamientos.models import Sesion
 
 
 class Turno(BaseModel):
@@ -25,6 +26,9 @@ class Turno(BaseModel):
     profesional = models.ForeignKey(Profesional, verbose_name='profesional')
     paciente = models.ForeignKey(Paciente, verbose_name='paciente', null=True)
     cobertura = models. ForeignKey(Cobertura, verbose_name='cobertura', null=True)
+
+    sesion = models.OneToOneField(Sesion, on_delete=models.SET_NULL, verbose_name="sesión realizada", null=True,
+                                  related_name='turno_dado')
 
     def __str__(self):
         nombre = ''

@@ -1,13 +1,14 @@
 from datetime import datetime, timedelta, time
 
+import json
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.db.transaction import atomic
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.utils import timezone
 from django.contrib import messages
-from django.views.generic import TemplateView, ListView, CreateView, UpdateView, DetailView
+from django.views.generic import TemplateView, ListView, CreateView, UpdateView, DeleteView
 
 from enhanced_cbv.views.edit import InlineFormSetsView, EnhancedInlineFormSet
 
@@ -15,8 +16,9 @@ from core.forms import PersonaForm, ContactoForm
 from core.models import Persona, Profesion, Profesional
 from pacientes.forms import PacienteForm, AntecedenteForm
 from pacientes.models import Paciente, Antecedente
-from tratamientos.forms import ObjetivoInlineForm, MotivoConsultaForm, ObjetivoInlineFormset
-from tratamientos.models import MotivoConsulta, Objetivo
+from tratamientos.forms import (ObjetivoForm, MotivoConsultaForm, ObjetivoInlineFormset,
+                                ObjetivoCumplidoUpdateForm, PlanificacionCreateForm, NuevaSesionForm)
+from tratamientos.models import MotivoConsulta, Objetivo, Planificacion, Sesion
 from turnos.forms import TurnoForm
 from turnos.models import Turno
 
@@ -35,7 +37,7 @@ class TurnosListView(LoginRequiredMixin, ListView):
 
         dt = datetime.combine(timezone.now(), time.min)
         dt_limit = dt + timedelta(days=14)
-        return Turno.objects.filter(dia__gte=dt).order_by('dia', 'hora')
+        return Turno.objects.exclude(sesion__fin_el__isnull=False).filter(dia__gte=dt).order_by('dia', 'hora')
 
 
 class TurnoCreateView(LoginRequiredMixin, CreateView):
@@ -324,56 +326,290 @@ class FichaKinesicaEditView(LoginRequiredMixin, FichaKinesicaMixin, InlineFormSe
         #     return reverse('ficha_kinesica', kwargs={'pk': pk})
 
 
-class MotivoConsultaIndex(LoginRequiredMixin, FichaKinesicaMixin, ListView):
-    template_name = "frontend/motivo_list.html"
+class TratamientoListView(LoginRequiredMixin, FichaKinesicaMixin, ListView):
+    template_name = "frontend/tratamiento_list.html"
     model = MotivoConsulta
 
     def get_queryset(self):
         return self.get_paciente().motivos_de_consulta.all().order_by('-creado_el')
 
 
-class MotivosConsultaAddView(LoginRequiredMixin, FichaKinesicaMixin, CreateView):
+class TratamientoAddView(LoginRequiredMixin, FichaKinesicaMixin, CreateView):
     model = MotivoConsulta
-    template_name = "frontend/motivo_form.html"
+    template_name = "frontend/tratamiento_form.html"
     form_class = MotivoConsultaForm
 
+    def get(self, request, *args, **kwargs):
+        # estados = [Planificacion.PLANIFICADO, Planificacion.EN_CURSO, ]
+        if self.paciente.motivos_de_consulta.filter(planificaciones__estado__in=[1,2]):
+            messages.add_message(
+                self.request, messages.ERROR, "Existe un tratamiento en curso en este momento. "
+                                              "Finalicelo antes de iniciar otro.")
+            return HttpResponseRedirect(
+                reverse('tratamiento_list', kwargs={'pk': self.paciente.pk}))
+        return super(TratamientoAddView, self).get(request, *args, **kwargs)
+
     def get_context_data(self, *args, **kwargs):
-        context = super(MotivosConsultaAddView, self).get_context_data(*args, **kwargs)
+        context = super(TratamientoAddView, self).get_context_data(*args, **kwargs)
         if self.request.POST:
             context['objetivo_formset'] = ObjetivoInlineFormset(self.request.POST)
+            context["tratamiento_form"] = PlanificacionCreateForm(self.request.POST)
         else:
+            context["tratamiento_form"] = PlanificacionCreateForm()
             context['objetivo_formset'] = ObjetivoInlineFormset()
         return context
 
     def post(self, request, *args, **kwargs):
-        import ipdb;ipdb.set_trace()
         self.object = None
         form_class = self.get_form_class()
         form = self.get_form(form_class)
         objectivo_formset = ObjetivoInlineFormset(self.request.POST)
-        if form.is_valid() and objectivo_formset.is_valid():
-            return self.form_valid(form, objectivo_formset)
+        tratamiento_form = PlanificacionCreateForm(self.request.POST)
+        if form.is_valid() and objectivo_formset.is_valid() and tratamiento_form.is_valid():
+            return self.form_valid(form, objectivo_formset, tratamiento_form)
         else:
-            return self.form_invalid(form, objectivo_formset)
+            return self.form_invalid(form, objectivo_formset, tratamiento_form)
 
     @atomic
-    def form_valid(self, form, objetivo_formset):
-        import ipdb;ipdb.set_trace()
+    def form_valid(self, form, objetivo_formset, tratamiento_form):
         motivo = form.save(commit=False)
         motivo.paciente = self.paciente
         motivo.save()
         objetivo_formset.instance = motivo
         objetivo_formset.save()
+        planificacion = tratamiento_form.save(commit=False)
+        planificacion.motivo_consulta = motivo
+        planificacion.save()
         return HttpResponseRedirect(self.get_success_url())
 
-    def form_invalid(self, form, objetivo_formset):
-        return super(MotivosConsultaAddView, self).form_invalid(form)
+    def form_invalid(self, form, objetivo_formset, tratamiento_form):
+        return super(TratamientoAddView, self).form_invalid(form)
 
     def get_success_url(self):
         messages.add_message(self.request, messages.SUCCESS,
-            u"Motivo de consulta añadido correctamente.")
-        return reverse('motivo_consulta', kwargs={'pk': self.paciente.pk})
+                             "Tratamiento añadido correctamente.")
+        return reverse('tratamiento_list', kwargs={'pk': self.paciente.pk})
 
+
+class TratamientoEditView(LoginRequiredMixin, FichaKinesicaMixin, UpdateView):
+    model = MotivoConsulta
+    template_name = "frontend/tratamiento_form.html"
+    form_class = MotivoConsultaForm
+
+    def get_object(self, queryset=None):
+        pk = self.kwargs.get('pk_motivo', None)
+        self.object = MotivoConsulta.objects.get(paciente_id=self.paciente.pk, id=pk)
+        return self.object
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        tratamiento_form = PlanificacionCreateForm(instance=self.object.planificaciones.last())
+        objetivo_form = ObjetivoInlineFormset(instance=self.object)
+        return self.render_to_response(self.get_context_data(
+            form=form, objetivo_formset=objetivo_form, tratamiento_form=tratamiento_form))
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        objectivo_formset = ObjetivoInlineFormset(self.request.POST, instance=self.object)
+        tratamiento_form = PlanificacionCreateForm(self.request.POST, instance=self.object.planificaciones.last())
+        if form.is_valid() and objectivo_formset.is_valid() and tratamiento_form.is_valid():
+            return self.form_valid(form, objectivo_formset, tratamiento_form)
+        else:
+            return self.form_invalid(form, objectivo_formset, tratamiento_form)
+
+    @atomic
+    def form_valid(self, form, objetivo_formset, tratamiento_form):
+        motivo = form.save()
+        # motivo.paciente = self.paciente
+        # motivo.save()
+        # objetivo_formset.instance = motivo
+        objetivo_formset.save()
+        planificacion = tratamiento_form.save()
+        # planificacion.motivo_consulta = motivo
+        # planificacion.save()
+        return HttpResponseRedirect(self.get_success_url())
+
+    def form_invalid(self, form, objetivo_formset, tratamiento_form):
+        return super(TratamientoEditView, self).form_invalid(form)
+
+    def get_success_url(self):
+        messages.add_message(self.request, messages.SUCCESS,
+                             "Tratamiento actualizado correctamente.")
+        return reverse('tratamiento_list', kwargs={'pk': self.paciente.pk})
+
+# class MotivosConsultaEditView(LoginRequiredMixin, FichaKinesicaMixin, UpdateView):
+#     model = MotivoConsulta
+#     template_name = "frontend/motivo_form.html"
+#     form_class = MotivoConsultaForm
+#
+#     def get_object(self, queryset=None):
+#         pk = self.kwargs.get('pk_motivo', None)
+#         return MotivoConsulta.objects.get(paciente_id=self.paciente.pk, id=pk)
+#
+#     def get_success_url(self):
+#         messages.add_message(self.request, messages.SUCCESS,
+#             u"Motivo de consulta modificado correctamente.")
+#         return reverse('planificacion_create', kwargs={'pk': self.paciente.pk,
+#                                                        'pk_objetivo': self.object.pk})
+        # return reverse('motivo_consulta', kwargs={'pk': self.paciente.pk})
+
+#
+class ObjetivoEditView(LoginRequiredMixin, FichaKinesicaMixin, UpdateView):
+    model = Objetivo
+    template_name = "frontend/objetivo_form.html"
+    form_class = ObjetivoForm
+
+    def get_object(self, queryset=None):
+        pk = self.kwargs.get('pk_objetivo', None)
+        self.object = Objetivo.objects.get(pk=pk)
+        return self.object
+
+    def get_success_url(self):
+        messages.add_message(self.request, messages.SUCCESS,
+                             "Objetivo modificado correctamente.")
+        return reverse('tratamiento_list', kwargs={'pk': self.paciente.pk})
+
+
+# class ObjetivoToggleCheckView(LoginRequiredMixin, UpdateView):
+#     model = Objetivo
+#     form_class = ObjetivoCumplidoUpdateForm
+#
+#     def post(self, request, *args, **kwargs):
+#         self.object = self.get_object()
+#         form = ObjetivoCumplidoUpdateForm(request.POST, instance=self.object)
+#         if form.is_valid():
+#             self.object = form.save(commit=False)
+#             self.object.fecha_cumplido = None if self.object.fecha_cumplido else timezone.now()
+#             self.object.save()
+#         return HttpResponse(json.dumps(
+#             {
+#                 'fecha_cumplido': self.object.fecha_cumplido
+#             }), content_type='application/json')
+
+
+# class PlanificacionCreateView(LoginRequiredMixin, FichaKinesicaMixin, CreateView):
+#     model = Planificacion
+#     form_class = PlanificacionCreateForm
+#     template_name = "frontend/planificacion_form.html"
+#
+#     def get_motivo(self):
+#         pk = self.kwargs.get('pk_motivo', None)
+#         return MotivoConsulta.objects.get(paciente_id=self.paciente.pk, id=pk)
+#
+#     def form_valid(self, form):
+#         import ipdb;ipdb.set_trace()
+#         planificacion = form.save(commit=False)
+#         planificacion.motivo_consulta = self.get_motivo()
+#         planificacion.save()
+#         return HttpResponseRedirect(self.get_success_url())
+#
+#     def get_success_url(self):
+#         messages.add_message(self.request, messages.SUCCESS,
+#                              "La planificación del tratamiento fue establecido con éxito.")
+#         return reverse('motivo_consulta', kwargs={'pk': self.paciente.pk})
+#
+#     def get_context_data(self, *args, **kwargs):
+#         context = super(PlanificacionCreateView, self).get_context_data(*args, **kwargs)
+#         context["motivo"] = self.get_motivo()
+#         return context
+
+
+class SesionCreateView(LoginRequiredMixin, FichaKinesicaMixin, UpdateView):
+    model = Sesion
+    form_class = NuevaSesionForm
+    template_name = "frontend/sesion_form.html"
+
+    # def dispatch(self, request, *args, **kwargs):
+    #     super(SesionCreateView, self).dispatch(request, *args, **kwargs)
+    #     # marcar el turno como asistido.
+    #
+    def check_turno(self):
+        try:
+            self.object.turno_dado
+        except Turno.DoesNotExist:
+            turno_pk = self.request.GET.get('turno', None)
+            if turno_pk:
+                turno = Turno.objects.get(pk=turno_pk)
+                turno.asistio = True
+                turno.sesion = self.object
+                turno.save()
+
+    def get_object(self, queryset=None):
+        try:
+            self.object = Sesion.objects.get(paciente=self.paciente, motivo_consulta=self.get_motivo(), fin_el__isnull=True)
+        except ObjectDoesNotExist:
+            # la sesión es nueva
+            self.object = Sesion(paciente=self.paciente, motivo_consulta=self.motivo, fecha=timezone.now())
+            self.object.save()
+        self.check_turno()
+        return self.object
+
+    def save_and_post_actions(self, sesion):
+        plan = sesion.motivo_consulta.planificacion_actual
+        if plan.estado == Planificacion.PLANIFICADO:
+            plan.estado = Planificacion.EN_CURSO
+            plan.save()
+        sesion.save()
+
+    def get_motivo(self):
+        pk = self.kwargs.get('pk_motivo', None)
+        self.motivo = MotivoConsulta.objects.get(paciente_id=self.paciente.pk, id=pk)
+        return self.motivo
+
+    def form_valid(self, form):
+        sesion = form.save(commit=False)
+        if not sesion.fecha:
+            sesion.fecha = timezone.now()
+        self.save_and_post_actions(sesion)
+        return HttpResponseRedirect(self.get_success_url())
+
+    def get_success_url(self):
+        messages.add_message(self.request, messages.SUCCESS,
+                             "La sesión fue guardada correctamente.")
+        return reverse('sesion_create',
+                       kwargs={'pk': self.paciente.pk, 'pk_motivo': self.paciente.tratamiento_activo().pk })
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(SesionCreateView, self).get_context_data(*args, **kwargs)
+        context["motivo"] = self.get_motivo()
+        return context
+
+
+class SesionSaveAndCloseView(SesionCreateView):
+    def get_success_url(self):
+        messages.add_message(self.request, messages.SUCCESS,
+                             "La sesión fue guardada y finalizada correctamente.")
+        return reverse('turno_list')
+
+    def save_and_post_actions(self, sesion):
+        sesion.fin_el = timezone.now()
+        super(SesionSaveAndCloseView, self).save_and_post_actions(sesion)
+
+
+class SesionDeleteView(LoginRequiredMixin, FichaKinesicaMixin, DeleteView):
+    model = Sesion
+
+    def get(self, request, *args, **kwargs):
+        return self.delete(request, *args, **kwargs)
+
+    def get_object(self, queryset=None):
+        pk = self.kwargs.get('pk_sesion', None)
+        self.object = Sesion.objects.get(pk=pk)
+        return self.object
+
+    def get_success_url(self):
+        messages.add_message(self.request, messages.SUCCESS,
+                             "La sesión fue eliminada correctamente.")
+        return reverse('turno_list')
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.delete()
+        return HttpResponseRedirect(self.get_success_url())
 
 
 
@@ -389,5 +625,11 @@ paciente_create = PacienteCreateView.as_view()
 paciente_update = PacienteEditView.as_view()
 ficha_kinesica = FichaKinesicaIndex.as_view()
 ficha_kinesica_update = FichaKinesicaEditView.as_view()
-motivo_consulta = MotivoConsultaIndex.as_view()
-motivo_consulta_create = MotivosConsultaAddView.as_view()
+tratamiento_list = TratamientoListView.as_view()
+tratamiento_create = TratamientoAddView.as_view()
+tratamiento_update = TratamientoEditView.as_view()
+objetivo_update = ObjetivoEditView.as_view()
+sesion_create = SesionCreateView.as_view()
+sesion_save_close = SesionSaveAndCloseView.as_view()
+sesion_delete = SesionDeleteView.as_view()
+# planificacion_create = PlanificacionCreateView.as_view()
