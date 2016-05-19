@@ -237,16 +237,16 @@ COMPRESS_PRECOMPILERS = (
 
 
 BOWER_INSTALLED_APPS = (
-    'jquery#2.1',
-    'bootstrap-sass#3.3',
-    'fontawesome#4.3',
+    'jquery#2.1.4',
+    'bootstrap-sass#3.3.6',
+    'fontawesome#4.3.0',
     'bootstrap3-dialog#1.34.9',
     'chosen#1.4.2',
-    'bootstrap-datepicker#^1.5.1',
+    'bootstrap-datepicker#1.6.1',
     'pace#1.0.2',
-    'StickyTableHeaders',
-    'django-dynamic-formset',
-    'jquery.countdown'
+    'StickyTableHeaders#0.1.19',
+    # 'django-dynamic-formset',
+    'jquery.countdown#2.1.0'
 )
 
 THUMBNAIL_ALIASES = {
