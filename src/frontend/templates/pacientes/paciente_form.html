@@ -4,51 +4,50 @@
     {% if model.pk %}Editar paciente {% else %} Nuevo paciente {% endif %}
 {% endblock %}
 {% block content %}
-  <div class="row">
-    <div class="col-lg-12">
-      <h2>{% if object.pk %}Editar paciente {% else %}Nuevo paciente{% endif %}</h2>
-      <form method="POST" novalidate="" enctype="multipart/form-data">
-        {% csrf_token %}
-      <div class="col-md-4">
-        <div class="panel panel-default">
-            <div class="panel-heading">Datos de la persona</div>
-            <div class="panel-body">
-                {% bootstrap_form persona_form %}
+    <div class="row">
+        <form method="POST" novalidate="" enctype="multipart/form-data">
+            <div class="col-lg-12">
+                <h2>{% if object.pk %}Editar paciente {{ object }}{% else %}Nuevo paciente{% endif %}
+                    <div class="pull-right">
+                        {% buttons %}
+                            <button type="submit" class="btn btn-primary">
+                                Guardar
+                            </button>
+                            <a href="{% url 'paciente_list' %}">
+                                <input type="button" class="btn" value="Volver"/>
+                            </a>
+                        {% endbuttons %}
+                    </div>
+                </h2>
             </div>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="panel panel-default">
-            <div class="panel-heading">Datos del paciente</div>
-            <div class="panel-body">
-                {% bootstrap_form form %}
+            {% csrf_token %}
+            <div class="col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Datos de la persona</div>
+                    <div class="panel-body">
+                        {% bootstrap_form persona_form %}
+                    </div>
+                </div>
             </div>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="panel panel-default">
-            <div class="panel-heading">Datos de contacto</div>
-            <div class="panel-body">
-                {% bootstrap_form contacto_form %}
+            <div class="col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Datos del paciente</div>
+                    <div class="panel-body">
+                        {% bootstrap_form form %}
+                    </div>
+                </div>
             </div>
-        </div>
-      </div>
-        {% buttons %}
-        <button type="submit" class="btn btn-primary">
-          Guardar
-        </button>
-{#        {% if object.pk %}#}
-{#            <a href="{% url 'ficha_kinesica' object.pk %}">#}
-{#                <input type="button" class="btn" value="Volver" />#}
-{#            </a>#}
-{#        {% else %}#}
-            <a href="{% url 'paciente_list' %}">
-                <input type="button" class="btn" value="Volver" />
-            </a>
-{#        {% endif %}#}
-        {% endbuttons %}
-      </form>
+            <div class="col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Datos de contacto</div>
+                    <div class="panel-body">
+                        {% bootstrap_form contacto_form %}
+                    </div>
+                </div>
+            </div>
+
+        </form>
+
     </div>
-  </div>
 
 {% endblock %}
