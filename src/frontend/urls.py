@@ -14,6 +14,7 @@ urlpatterns = [
     url(r'^pacientes/nuevo$', views.paciente_create, name='paciente_create'),
     url(r'^pacientes/editar/(?P<pk>\d+)/$', views.paciente_update, name="paciente_update"),
     url(r'^fichakinesica/(?P<pk>\d+)/$', views.ficha_kinesica, name="ficha_kinesica"),
+    url(r'^fichakinesica/(?P<pk>\d+)/historia-clinica$', views.historia_clinica_list, name="historia_clinica_list"),
     url(r'^fichakinesica/(?P<pk>\d+)/antecedentes/$', views.ficha_kinesica_update, name="ficha_kinesica_update"),
     url(r'^fichakinesica/(?P<pk>\d+)/tratamientos/$', views.tratamiento_list, name="tratamiento_list"),
     url(r'^fichakinesica/(?P<pk>\d+)/tratamientos/nuevo/$', views.tratamiento_create, name="tratamiento_create"),
@@ -31,5 +32,8 @@ urlpatterns = [
     url(r'^fichakinesica/(?P<pk>\d+)/objetivos/(?P<pk_objetivo>\d+)/$', views.objetivo_update,
         name="objetivo_update"),
 
-
+    url(r'^fichakinesica/(?P<pk>\d+)/hc_comentario/$', views.comentario_hc_create, name="comentario_hc_create"),
+    url(r'^fichakinesica/(?P<pk>\d+)/hc_comentario/(?P<pk_comentario>\d+)/$', views.comentario_hc_update, name="comentario_hc_update"),
+    url(r'^fichakinesica/(?P<pk>\d+)/hc_imagen/$', views.imagen_hc_create, name="imagen_hc_create"),
+    url(r'^fichakinesica/(?P<pk>\d+)/hc_imagen/(?P<pk_imagen>\d+)/$', views.imagen_hc_update, name="imagen_hc_update"),
 ]

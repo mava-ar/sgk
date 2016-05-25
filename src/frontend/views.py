@@ -1,21 +1,26 @@
 from datetime import datetime, timedelta, time
 
 import json
+
+from django import shortcuts
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.transaction import atomic
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, Http404
+from django.template.loader import render_to_string
 from django.utils import timezone
 from django.contrib import messages
-from django.views.generic import TemplateView, ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import TemplateView, ListView, CreateView, UpdateView, DeleteView, DetailView
 
 from enhanced_cbv.views.edit import InlineFormSetsView, EnhancedInlineFormSet
 
+from dj_utils.mixins import FichaKinesicaMixin, FichaKinesicaModalView
 from core.forms import PersonaForm, ContactoForm
 from core.models import Persona, Profesion, Profesional
 from pacientes.forms import PacienteForm, AntecedenteForm
-from pacientes.models import Paciente, Antecedente
+from pacientes.models import Paciente, Antecedente, ComentariosHistoriaClinica, ImagenesHistoriaClinica, \
+    EntradaHistoriaClinica
 from tratamientos.forms import (ObjetivoForm, MotivoConsultaForm, ObjetivoInlineFormset,
                                 ObjetivoCumplidoUpdateForm, PlanificacionCreateForm, NuevaSesionForm)
 from tratamientos.models import MotivoConsulta, Objetivo, Planificacion, Sesion
@@ -200,31 +205,6 @@ class PersonaCreateView(LoginRequiredMixin, CreateView):
     def get_success_url(self):
         messages.add_message(self.request, messages.SUCCESS, "Entrada en la agenda añadida correctamente.")
         return reverse('persona_list')
-
-
-class FichaKinesicaMixin(object):
-    """
-    mixin utilizado en todos los métodos relativos a la ficha kinesica.
-    Busca el paciente y lo incluye en el contexto.
-    """
-    def get_paciente(self):
-        pk = self.kwargs.get('pk', None)
-        if not pk:
-            return HttpResponseRedirect(reverse('paciente_list'))
-        self.paciente = Paciente.objects.get(pk=pk)
-        return self.paciente
-
-    def get_context_data(self, *args, **kwargs):
-        context = super(FichaKinesicaMixin, self).get_context_data(*args, **kwargs)
-        if not self.paciente:
-            self.get_paciente()
-        context["paciente"] = self.paciente
-        return context
-
-    def dispatch(self, request, *args, **kwargs):
-        # siempre busco el paciente
-        self.get_paciente()
-        return super(FichaKinesicaMixin, self).dispatch(request, *args, **kwargs)
 
 
 class FichaKinesicaIndex(LoginRequiredMixin, FichaKinesicaMixin, TemplateView):
@@ -604,13 +584,78 @@ class SesionDeleteView(LoginRequiredMixin, FichaKinesicaMixin, DeleteView):
     def get_success_url(self):
         messages.add_message(self.request, messages.SUCCESS,
                              "La sesión fue eliminada correctamente.")
-        return reverse('turno_list')
+        return reverse('ficha_kinesica', kwargs={'pk': self.paciente.pk })
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
         self.object.delete()
         return HttpResponseRedirect(self.get_success_url())
 
+
+class AbstractEntradaHistoriaClinicaCreate(LoginRequiredMixin, FichaKinesicaModalView, CreateView):
+
+    def form_valid(self, form):
+        entrada = form.save(commit=False)
+        entrada.profesional = self.request.user.profesional
+        entrada.paciente = self.paciente
+        entrada.save()
+        return HttpResponse(render_to_string('frontend/entrada_form_success.html',
+                                             {'object': self.paciente, 'state': 'new'}))
+
+
+class ComentarioHCViewCreate(AbstractEntradaHistoriaClinicaCreate):
+    model = ComentariosHistoriaClinica
+    fields = ('comentarios', )
+
+    def get_url_post_form(self):
+        return reverse_lazy('comentario_hc_create', kwargs={'pk': self.paciente.pk})
+
+
+class ImagenesHCViewCreate(AbstractEntradaHistoriaClinicaCreate):
+    model = ImagenesHistoriaClinica
+    fields = ('imagen', 'comentarios', )
+
+    def get_url_post_form(self):
+        return reverse_lazy('imagen_hc_create', kwargs={'pk': self.paciente.pk})
+
+
+class AbstractEntradaHistoriaClinicaUpdate(LoginRequiredMixin, FichaKinesicaModalView, UpdateView):
+
+    def form_valid(self, form):
+        form.save()
+        return HttpResponse(render_to_string('frontend/entrada_form_success.html',
+                                             {'object': self.paciente, 'state': 'update'}))
+
+
+class ComentarioHCViewUpdate(AbstractEntradaHistoriaClinicaUpdate):
+    model = ComentariosHistoriaClinica
+    fields = ('comentarios', )
+    pk_url_kwarg = 'pk_comentario'
+
+    def get_url_post_form(self):
+        return reverse_lazy('comentario_hc_update', kwargs={'pk': self.paciente.pk, 'pk_comentario': self.object.pk })
+
+
+class ImagenesHCViewUpdate(AbstractEntradaHistoriaClinicaUpdate):
+    model = ImagenesHistoriaClinica
+    fields = ('imagen', 'comentarios', )
+    pk_url_kwarg = 'pk_imagen'
+
+    def get_url_post_form(self):
+        return reverse_lazy('imagen_hc_update', kwargs={'pk': self.paciente.pk, 'pk_imagen': self.object.pk})
+
+
+class HistoriaClinicaListView(LoginRequiredMixin, DetailView):
+    model = Paciente
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.template_name = "includes/historia_clinica_entradas_list.html"
+        context = self.get_context_data(
+            object=self.object,
+            entradas=EntradaHistoriaClinica.objects.select_subclasses().filter(
+        paciente=self.object).order_by('-creado_el'))
+        return  self.render_to_response(context)
 
 
 index = IndexView.as_view()
@@ -633,3 +678,8 @@ sesion_create = SesionCreateView.as_view()
 sesion_save_close = SesionSaveAndCloseView.as_view()
 sesion_delete = SesionDeleteView.as_view()
 # planificacion_create = PlanificacionCreateView.as_view()
+comentario_hc_create = ComentarioHCViewCreate.as_view()
+comentario_hc_update = ComentarioHCViewUpdate.as_view()
+imagen_hc_create = ImagenesHCViewCreate.as_view()
+imagen_hc_update = ImagenesHCViewUpdate.as_view()
+historia_clinica_list = HistoriaClinicaListView.as_view()

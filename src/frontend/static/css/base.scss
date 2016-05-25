@@ -14,7 +14,7 @@ html {
 }
 body{
     //background: #fff url(../img/bg.png) center center / cover;
-    background-color: #eff9dc;
+    background-color: #f7fdf7;
     font-family: "OpenSans", sans-serif;
     /*font-size: 18px;*/
     width: 100%;
@@ -124,6 +124,16 @@ textarea.form-control {
 }
 .img-thumb-table img {
     height: 40px;
+}
+
+.table {
+    & > tbody {
+        & > tr {
+            & > td {
+                vertical-align: middle;
+            }
+        }
+    }
 }
 
 /* --------- COLLAPSIBLE PANELS ----------*/

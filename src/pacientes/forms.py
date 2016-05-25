@@ -24,6 +24,6 @@ class AntecedenteForm(forms.ModelForm):
     class Meta:
         model = Antecedente
         fields = ('patologicos', 'quirurgicos', 'traumaticos', 'alergicos',
-                  'heredo_familiar', 'habitos_fisiologicos', 'habitos_patologicos',
-                  'medicaciones', 'estudios_complementarios', 'menarca', 'fum',
-                  'tipo_partos', 'observaciones')
+                  'heredo_familiar', 'habitos_fisiologicos', 'actividad_fisica',
+                  'habitos_patologicos', 'medicaciones', 'estudios_complementarios',
+                  'menarca', 'fum', 'tipo_partos', 'observaciones')

@@ -6,7 +6,7 @@
 {% endblock %}
 {% block content_ficha %}
     <h2>Nuevo sesión | Inicio: {{ object.comienzo_el|date:"d/m/Y H:i:s" }}
-        <a class="btn btn-danger pull-right" src="#" id="sesion_delete"><i class="fa fa-trash"></i></a>
+        <a class="btn btn-danger pull-right" src="#" id="sesion_delete"><i class="fa fa-trash fa-2x"></i></a>
     </h2>
     <form action="" method="post" novalidate="" id="form_nueva_sesion">
     {% csrf_token %}

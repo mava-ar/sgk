@@ -31,12 +31,12 @@
                     <!-- New forms will be inserted in here -->
                     {% for form_inline in objetivo_formset %}
                         <div data-formset-form>
-                            {% bootstrap_form form_inline %}
-{#                            {% bootstrap_field form_inline.descripcion %}#}
-{#                            {% bootstrap_field form_inline.observaciones %}#}
-{#                            {% bootstrap_field form_inline.DELETE show_label=False %}#}
-{#                            <button type="button" data-formset-delete-button>Delete form</button>#}
-                            {% if not forloop.last %}<hr />{% endif %}
+                            {% bootstrap_field form_inline.descripcion %}
+                            {% bootstrap_field form_inline.observaciones %}
+                            {{ form_inline.DELETE }} ¿Quitar?
+                            {% bootstrap_field form_inline.id %}
+                            {% bootstrap_field form_inline.motivo_consulta %}
+                            <hr />
                         </div>
                     {% endfor %}
                 </div>

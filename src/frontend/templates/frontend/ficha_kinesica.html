@@ -10,8 +10,7 @@
             <div class="col-sm-12">
                 <h2>Ficha kinésica de {{ paciente.persona }}</h2>
                 <p>
-                <a class="btn btn-primary" href="{% url 'ficha_kinesica' paciente.pk %}">Historia clínica</a>
-                <a class="btn btn-info" href="{% url 'ficha_kinesica_update' paciente.pk %}">Actualizar antecedentes</a>
+                <a class="btn btn-primary" href="{% url 'ficha_kinesica' paciente.pk %}">Ficha kinésica</a>
                 <a class="btn btn-info" href="{% url 'tratamiento_list' paciente.pk %}">Tratamientos</a>
 {#                <a class="btn btn-warning">Nueva sesión</a>#}
                 </p>
@@ -42,16 +41,12 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">Añadir a la ficha</div>
                     <div class="panel-body">
-                        <a class="btn btn-success">Añadir comentario</a>
-                        <a class="btn btn-success">Añadir imagen</a>
-                        <a class="btn btn-success">Añadir archivo</a>
-{#                        {% for item in motivos %}#}
-{#                            <a href="{% url 'ficha_kinesica' paciente.pk %}">#}
-{#                                <span class="label label-default">{{ item }}</span>#}
-{#                            </a><br />#}
-{#                        {% empty %}#}
-
-{#                        {% endfor %}#}
+                        <a class="btn btn-success" data-toggle="modal" href="{% url 'comentario_hc_create' paciente.pk %}"
+                           data-target="#modal" data-tooltip >Añadir comentario</a>
+                        <a class="btn btn-success" data-toggle="modal" href="{% url 'imagen_hc_create' paciente.pk %}"
+                           data-target="#modal" data-tooltip >Añadir imagen</a>
+                        <a class="btn btn-success" data-toggle="modal" href="{% url 'imagen_hc_create' paciente.pk %}"
+                           data-target="#modal" data-tooltip >Añadir archivo</a>
                     </div>
                 </div>
             {% endblock %}
@@ -62,11 +57,14 @@
                     <div class="panel panel-success">
                         <div class="panel-heading">Antecedentes
                             <a class="pull-right" href="{% url 'ficha_kinesica_update' paciente.pk %}">
-                                <i class="fa fa-edit"></i></a>
+                                <i class="fa fa-edit fa-2x"></i></a>
                         </div>
                         <div class="panel-body">
                             {% show_info paciente.antecedente %}
                         </div>
+                    </div>
+                    <div id="historia-clinica-list">
+                    {% include "includes/historia_clinica_entradas_list.html" %}
                     </div>
                 {% endblock %}
             </div>
@@ -74,8 +72,13 @@
     </div>
 
 {% endblock %}
-{% block script_js %}
-{#    <script type="text/javascript" src="{% static 'js/panel_expansible.js' %}" ></script>#}
-{#    <script type="text/javascript">#}
-{#    </script>#}
+{% block extra_js %}
+    <script type="text/javascript">
+        (function($){
+            $('#modal').on('hidden.bs.modal', function (e) {
+                $("#historia-clinica-list").load("{% url 'historia_clinica_list' paciente.pk %}");
+            });
+        })(jQuery);
+    </script>
+
 {% endblock %}

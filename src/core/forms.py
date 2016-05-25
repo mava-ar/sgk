@@ -3,7 +3,7 @@ from django.conf import settings
 
 from datetimewidget.widgets import DateWidget
 
-from core.models import Persona, Contacto
+from core.models import Persona, Contacto, Profesion
 
 
 class PersonaForm(forms.ModelForm):
@@ -13,7 +13,7 @@ class PersonaForm(forms.ModelForm):
     class Meta:
         model = Persona
         fields = ('nombre', 'apellido', 'dni', 'fecha_nacimiento', 'genero', 'estado_civil',
-                  'domicilio', 'imagen_perfil')
+                  'domicilio', 'profesion', 'imagen_perfil', )
 
 
 class ContactoForm(forms.ModelForm):
@@ -21,3 +21,10 @@ class ContactoForm(forms.ModelForm):
     class Meta:
         model = Contacto
         fields = ('telefono', 'celular', 'email', 'horario')
+
+
+class PrefesionForm(forms.ModelForm):
+
+    class Meta:
+        model = Profesion
+        fields = ('nombre', 'observaciones', )

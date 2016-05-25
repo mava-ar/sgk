@@ -88,6 +88,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                "django.template.context_processors.media",
+                "django.template.context_processors.static",
             ],
         },
     },
@@ -133,9 +135,9 @@ LANGUAGE_CODE = 'es-ar'
 
 TIME_ZONE = 'America/Argentina/Mendoza'
 
-USE_I18N = True
+USE_I18N = False
 
-USE_L10N = True
+USE_L10N = False
 
 USE_TZ = True
 
@@ -215,7 +217,8 @@ PIPELINE = {
                 # 'bootstrap-datepicker/dist/js/bootstrap-datepicker.js',
                 # 'bootstrap-datepicker/dist/locales/bootstrap-datepicker.es.min.js',
                 'PACE/pace.js',
-                'StickyTableHeaders/js/jquery.stickytableheaders.min.js'
+                'StickyTableHeaders/js/jquery.stickytableheaders.min.js',
+                'jquery-form/jquery.form.js'
             ),
             'output_filename': 'js/plugins.js',
         },
@@ -246,7 +249,8 @@ BOWER_INSTALLED_APPS = (
     'pace#1.0.2',
     'StickyTableHeaders#0.1.19',
     # 'django-dynamic-formset',
-    'jquery.countdown#2.1.0'
+    'jquery.countdown#2.1.0',
+    'jquery-form#3.46.0',
 )
 
 THUMBNAIL_ALIASES = {

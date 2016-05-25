@@ -1,4 +1,4 @@
-from datetimewidget.widgets import DateWidget
+from datetimewidget.widgets import DateWidget, TimeWidget
 
 
 class FechaWidget(DateWidget):

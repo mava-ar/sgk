@@ -6,11 +6,11 @@
 {% block content_ficha %}
     <p><a class="btn btn-warning" href="{% url 'tratamiento_create' paciente.pk %}">Nuevo motivo de consulta</a></p>
     {% for motivo in object_list %}
-        <div class="panel panel-{% if forloop.first %}danger{% else %}success{% endif %}">
-            <div class="panel-heading"><h3>Motivo de consulta
+        <div class="panel panel-{% if forloop.first %}success{% else %}info{% endif %}">
+            <div class="panel-heading">Motivo de consulta
                 <a class="pull-right" href="{% url 'tratamiento_update' paciente.pk motivo.pk %}">
-                    <i class="fa fa-edit"></i>
-                </a></h3>
+                    <i class="fa fa-edit fa-2x"></i>
+                </a>
             </div>
             <div class="panel-body">
                 {% show_info motivo %}

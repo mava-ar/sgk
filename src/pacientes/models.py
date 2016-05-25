@@ -69,6 +69,7 @@ class Antecedente(BaseModel, ShowInfoMixin):
     alergicos = models.TextField('alérgicos', blank=True)
     heredo_familiar = models.TextField('heredo familiar', blank=True)
     habitos_fisiologicos = models.TextField('hábitos fisiológicos', blank=True)
+    actividad_fisica= models.TextField('actividad física', blank=True)
     habitos_patologicos = models.TextField('hábitos patológicos', blank=True)
     medicaciones = models.TextField('medicaciones', blank=True)
     estudios_complementarios = models.TextField('estudios complementarios', blank=True)
@@ -86,18 +87,24 @@ class Antecedente(BaseModel, ShowInfoMixin):
         verbose_name_plural = "antecedentes"
 
     field_info = ('patologicos', 'quirurgicos', 'traumaticos', 'alergicos', 'heredo_familiar',
-                  'habitos_fisiologicos', 'habitos_patologicos', 'medicaciones', 'estudios_complementarios',
-                  'menarca', 'fum', 'tipo_partos', 'observaciones')
+                  'habitos_fisiologicos', 'actividad_fisica', 'habitos_patologicos', 'medicaciones',
+                  'estudios_complementarios', 'menarca', 'fum', 'tipo_partos', 'observaciones')
 
 
 
 class EntradaHistoriaClinica(BaseModel, ShowInfoMixin):
-
     paciente = models.ForeignKey(Paciente, related_name="entradas_historiaclinica")
     profesional = models.ForeignKey(Profesional)
 
+    objects = InheritanceManager()
+
     class Meta:
-        abstract = True
+        verbose_name_plural = "Entradas de historia clínica"
+        verbose_name = "Entrada de historia clínica"
+
+    def __str__(self):
+        return "Entrada de {} por {}".format(self.paciente, self.profesional)
+
 
 
 class ComentariosHistoriaClinica(EntradaHistoriaClinica):
@@ -106,8 +113,6 @@ class ComentariosHistoriaClinica(EntradaHistoriaClinica):
     """
     comentarios = models.TextField(verbose_name="comentarios")
 
-    objects = InheritanceManager()
-
     class Meta:
         verbose_name_plural = "comentarios de historia clinica"
         verbose_name = "comentario de historia clinica"
@@ -115,20 +120,21 @@ class ComentariosHistoriaClinica(EntradaHistoriaClinica):
     def __str__(self):
         return "Comentario de {}".format(self.paciente)
 
-    field_info = ('modificado_el', 'comentarios', )
+    field_info = ('comentarios', )
 
 
-class ImagenesHistoriaClinica(ComentariosHistoriaClinica):
+class ImagenesHistoriaClinica(EntradaHistoriaClinica):
     """
     Representa una imagen ingresada en la historia clinica
     """
     imagen = models.ImageField(verbose_name="imágen", upload_to="historia_imagenes")
+    comentarios = models.TextField(verbose_name="comentarios" ,null=True, blank=True)
 
     class Meta:
         verbose_name_plural = "imágenes de historia clínica"
-        verbose_name = "imagen de histori clínica"
+        verbose_name = "imagen de historia clínica"
 
     def __str__(self):
-        return "Imágenes de {}".format(self.paciente)
+        return "Imágen de {}".format(self.paciente)
 
-    field_info = ('modificado_el', 'imagen', 'comentarios', )
+    field_info = ('imagen', 'comentarios', )
