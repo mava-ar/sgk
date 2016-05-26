@@ -11,7 +11,7 @@ from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.template.loader import render_to_string
 from django.utils import timezone
 from django.contrib import messages
-from django.views.generic import TemplateView, ListView, CreateView, UpdateView, DeleteView, DetailView
+from django.views.generic import TemplateView, ListView, CreateView, UpdateView, DeleteView, DetailView, RedirectView
 
 from enhanced_cbv.views.edit import InlineFormSetsView, EnhancedInlineFormSet
 
@@ -30,6 +30,12 @@ from turnos.models import Turno
 
 class IndexView(LoginRequiredMixin, TemplateView):
     template_name = 'frontend/index.html'
+
+    def get(self, request, **kwargs):
+        """
+        Hasta construir el dashboard, redireccionamos a turnos
+        """
+        return HttpResponseRedirect(reverse('turno_list'))
 
 
 class AboutView(LoginRequiredMixin, TemplateView):

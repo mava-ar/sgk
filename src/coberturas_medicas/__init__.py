@@ -1,0 +1,1 @@
+default_app_config = 'coberturas_medicas.apps.CoberturasMedicasConfig'
