@@ -193,6 +193,15 @@ PIPELINE = {
                 'media': 'screen,projection',
             },
         },
+        'fullcalendar': {
+            'source_filenames': (
+                'fullcalendar/dist/fullcalendar.css',
+            ),
+            'output_filename': 'css/fullcalendar.css',
+            'extra_content': {
+                'media': 'screen,projection',
+            }
+        }
     },
     'JAVASCRIPT': {
         'head_js': {
@@ -221,6 +230,14 @@ PIPELINE = {
                 'jquery-form/jquery.form.js'
             ),
             'output_filename': 'js/plugins.js',
+        },
+        'fullcalendar_js': {
+            'source_filenames': (
+                'moment/moment.js',
+                'fullcalendar/dist/fullcalendar.js',
+                'fullcalendar/dist/lang/es.js',
+            ),
+            'output_filename': 'js/fullcalendar.js',
         },
     },
     'COMPILERS': (
@@ -251,6 +268,7 @@ BOWER_INSTALLED_APPS = (
     # 'django-dynamic-formset',
     'jquery.countdown#2.1.0',
     'jquery-form#3.46.0',
+    'fullcalendar'
 )
 
 THUMBNAIL_ALIASES = {
