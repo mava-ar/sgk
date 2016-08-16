@@ -252,8 +252,8 @@ PIPELINE = {
         'pipeline.compilers.sass.SASSCompiler',
     ),
     'SASS_BINARY': 'sassc',
-    # 'CSS_COMPRESSOR': None,
-    # 'JS_COMPRESSOR': None,
+    'CSS_COMPRESSOR': None,
+    'JS_COMPRESSOR': None,
     'SASS_ARGUMENTS': PIPELINE_SASS_ARGUMENTS,
     'DISABLE_WRAPPER': True
 }
