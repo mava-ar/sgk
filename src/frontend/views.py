@@ -50,6 +50,11 @@ class TurnosListView(LoginRequiredMixin, ListView):
         dt_limit = dt + timedelta(days=14)
         return Turno.objects.exclude(sesion__fin_el__isnull=False).filter(dia__gte=dt).order_by('dia', 'hora')
 
+    def get_context_data(self, **kwargs):
+        ctx = super(TurnosListView, self).get_context_data(**kwargs)
+        ctx["form"] = TurnoForm
+        return ctx
+
 
 class TurnoCreateView(LoginRequiredMixin, CreateView):
     model = Turno
@@ -63,20 +68,18 @@ class TurnoCreateView(LoginRequiredMixin, CreateView):
             pass
         return super(TurnoCreateView, self).get_initial()
 
-    def get_success_url(self):
-        messages.add_message(self.request, messages.SUCCESS,
-                             "Turno creado correctamente.")
-        return reverse('turno_list')
+    def form_valid(self, form):
+        turno = form.save()
+        return HttpResponse('<p class="alert alert-success">Turno creado correctamente.</p>')
 
 
 class TurnoEditView(LoginRequiredMixin, UpdateView):
     model = Turno
     form_class = TurnoForm
 
-    def get_success_url(self):
-        messages.add_message(self.request, messages.SUCCESS,
-                             "Turno actualizado correctamente.")
-        return reverse('turno_list')
+    def form_valid(self, form):
+        turno = form.save()
+        return HttpResponse('<p class="alert alert-success">Turno modificado correctamente.</p>')
 
 
 class PacienteListView(LoginRequiredMixin, ListView):

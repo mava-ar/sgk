@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 from django.db import models
 
 from dj_utils.models import BaseModel
@@ -44,3 +46,15 @@ class Turno(BaseModel):
     class Meta:
         verbose_name = "turno"
         verbose_name_plural = "turnos"
+
+    @property
+    def title(self):
+        return self.paciente.persona.__str__() if self.paciente else self.nombre_paciente
+
+    @property
+    def datetime_start(self):
+        return datetime.combine(self.dia, self.hora)
+
+    @property
+    def datetime_end(self):
+        return self.datetime_start + timedelta(minutes=self.duracion)

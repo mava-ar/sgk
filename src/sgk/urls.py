@@ -18,10 +18,14 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
+
+
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^accounts/', include('dj_auth.urls')),
-    url(r'^', include('frontend.urls'))
+    url(r'^', include('frontend.urls')),
+    url(r'^api/', include('api.urls')),
 ]
 
 if settings.DEBUG:

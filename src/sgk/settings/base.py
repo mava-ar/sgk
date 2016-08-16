@@ -61,6 +61,7 @@ INSTALLED_APPS = [
     'pacientes',
     'tratamientos',
     'turnos',
+    'rest_framework',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -97,6 +98,13 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'sgk.wsgi.application'
 
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}
 
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases

@@ -8,68 +8,14 @@
     Inicio
 {% endblock %}
 {% block content %}
-    <h2>Listado de turnos
-{% buttons %}
-<a href="{% url 'turno_create' %}" />
-<button type="button" class="btn btn-primary pull-right">
-  {% bootstrap_icon "plus" %} Nuevo turno
-</button>
-</a>
-{% endbuttons %}
+    <h2>Turnos
+    <div class="pull-right">{% buttons %}
+        <a data-href="{% url 'turno_create' %}" data-popup data-title="Nuevo turno">
+        <button type="button" class="btn btn-primary">
+          {% bootstrap_icon "plus" %} Nuevo turno
+        </button></a>{% endbuttons %}
+    </div>
     </h2>
-    <table class="table table-condensed table-striped">
-        <thead>
-            <tr>
-                <th>Día</th>
-                <th>Hora</th>
-                <th>Paciente</th>
-                <th>Profesional</th>
-                <th>Duración</th>
-                <th>Motivo</th>
-{#                <th>Asistió</th>#}
-{#                <th>Avisó</th>#}
-{#                <th>Observaciones</th>#}
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for t in object_list %}
-                <tr>
-                    <td><a href="{% url 'turno_update' t.pk %}">{{ t.dia|date:"d F, Y" }}</a></td>
-                    <td><a href="{% url 'turno_update' t.pk %}">{{ t.hora|date:"H:i" }}</a></td>
-                    <td>{% if not t.paciente %}
-                            {{ t.nombre_paciente }}
-                        {% else %}
-                            {{ t.paciente }}
-                        {% endif %}
-                    </td>
-                    <td>{{ t.profesional }}</td>
-                    <td>{{ t.duracion }}</td>
-                    <td>{{ t.motivo }}</td>
-{#                    <td>{{ t.asistio|yesno:"Yes,No" }}</td>#}
-{#                    <td>{{ t.aviso|yesno:"Yes,No"  }}</td>#}
-{#                    <td>{{ t.observaciones }}</td>#}
-                    <td>
-                        {% if t.paciente %}
-                            {% if t.paciente.tratamiento_activo %}
-                                <a class="btn btn-danger"
-                                   href="{% url 'sesion_create' t.paciente.pk t.paciente.tratamiento_activo.pk %}?turno={{ t.pk }}">
-                                    <i class="fa fa-plus"></i> Sesión</a>
-                            {% endif %}
-                            <a class="btn btn-default" href="{% url 'ficha_kinesica' t.paciente.pk %}">
-                                <i class="fa fa-list"></i> Ficha
-                            </a>
-                            {% else %}
-                                <a class="btn btn-primary" href="{% url 'paciente_create' %}">
-                                    <i class="fa fa-plus"></i> Paciente
-                                </a>
-
-                        {% endif %}
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
 
     <div id='calendar'></div>
 {% endblock %}
@@ -78,13 +24,24 @@
     <script type="text/javascript">
         (function($){
             $(document).ready(function(){
+
+                $("[data-popup]").click(function(e){
+                    e.preventDefault();
+                    var dataUrl = $(this).data("href");
+                    turno_dialog = BootstrapDialog.show({
+                        message: $('<div></div>').load(dataUrl),
+                        title: $(this).data("title"),
+                        type: BootstrapDialog.TYPE_DEFAULT,
+                        size: BootstrapDialog.SIZE_WIDE
+                    });
+                });
                 $('#calendar').fullCalendar({
                     header: {
                         left:   'title',
                         center: 'month agendaWeek, agendaDay',
                         right:  'today prev,next'
                     },
-
+                    snapDuration: '00:15:00',
                     defaultView: 'agendaWeek',
                     allDaySlot: false,
                     minTime: '08:00:00',
@@ -95,21 +52,77 @@
                         dow: [ 1, 2, 3, 4, 5, 6, 7 ]
                     },
                     aspectRatio: 1.7,
+                    //selectable: true,
                     lang: 'es',
-                    events: [
-                        {
-                            title  : 'event1',
-                            start  : '2016-05-27'
-                        },
-                        {
-                            title  : 'event2',
-                            start  : '2016-05-26T08:00:00',
-                            end    : '2010-05-26T09:00:00',
-                            editable: true
-                        },
+                    events: {
+                        url: '/api/turnos-cal/',
+                        editable: true,
+                    },
+                    eventRender: function(calEvent, jsEvent, view) {
+                      jsEvent.bind('dblclick', function() {
+                         turno_dialog = BootstrapDialog.show({
+                            message: $('<div></div>').load("/turnos/editar/" + calEvent.id + "/"),
+                            title: "Modificar turno",
+                            type: BootstrapDialog.TYPE_DEFAULT,
+                            size: BootstrapDialog.SIZE_WIDE
+                        });
+                      });
+                   },
+                    eventClick: function( calEvent, jsEvent, view) {
 
-                    ]
+
+                    },
+                    //dayClick: function(date, jsEvent, view) {},
+                    eventDrop: function(event, delta, revertFunc) {
+                        showConfirm(
+                            'Modificar turno',
+                            'El turno de ' + event.title + " se moverá al " + event.start.format("LL") +
+                            " a las " + event.start.format("LT") + ". ¿Continuar?",
+                            function(){
+                                $.ajax({
+                                    type: 'PUT',
+                                    dataType: 'json',
+                                    url: "/api/turnos-cal/" + event.id + "/",
+                                    headers: {"X-HTTP-Method-Override": "PUT"},
+                                    beforeSend: function(xhr, settings) {
+                                        xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                                    },
+                                    data: {'start': event.start.toJSON(), 'end': event.end.toJSON(), 'title': event.title },
+                                    success: function() {},
+                                    error: revertFunc
+                                });
+                            },
+                            function() {
+                               revertFunc();
+                            }
+                        );
+                    },
+                    eventResize: function(event, delta, revertFunc) {
+                        showConfirm(
+                            'Modificar turno',
+                            'El turno de ' + event.title + " será desde las " +
+                            event.start.format("LT") + " a " + event.end.format("LT") + ". ¿Continuar?",
+                            function(){
+                                $.ajax({
+                                    type: 'PUT',
+                                    dataType: 'json',
+                                    url: "/api/turnos-cal/" + event.id + "/",
+                                    headers: {"X-HTTP-Method-Override": "PUT"},
+                                    beforeSend: function(xhr, settings) {
+                                        xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
+                                    },
+                                    data: {'start': event.start.toJSON(), 'end': event.end.toJSON(), 'title': event.title },
+                                    success: function() {},
+                                    error: revertFunc
+                                });
+                            },
+                            function() {
+                               revertFunc();
+                            }
+                        );
+                    }
                 });
+
             });
         })(jQuery);
     </script>

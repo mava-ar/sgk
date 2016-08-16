@@ -1,87 +1,75 @@
-{% extends "base_site.html" %}
 {% load bootstrap3 %}
-{% block subtitle %}
-    {% if model.pk %}Editar turno {% else %} Nuevo turno {% endif %}
-{% endblock %}
-{% block content %}
-    <form method="POST" novalidate="">
-    <h2>{% if object.pk %}Editar turno {% else %}Nuevo turno{% endif %}
-        <div class="pull-right">
-            {% buttons %}
-                <button type="submit" class="btn btn-primary">
-                    Guardar
-                </button>
-                <a href="{% url 'turno_list' %}">
-                    <input type="button" class="btn btn.primary" value="Volver"/>
-                </a>
-            {% endbuttons %}
-        </div>
-    </h2>
+<form method="POST" action="{% if object.id %}{% url 'turno_update' object.id %}{% else %}{% url 'turno_create' %}{% endif %}" novalidate=""
+      class="form" role="form" id="update_turno_form">
+    {% csrf_token %}
+<div id="turno_result">
     <div class="row">
-
-            <div class="col-md-6">
-                {% csrf_token %}
-                <div class="col-md-6">
-                    {% bootstrap_field form.dia %}
-                </div>
-                <div class="col-md-6">
-                    {% bootstrap_field form.hora %}
-                </div>
-                <div class="col-md-12">
-                    <label>Duración:</label>
-                    {% bootstrap_field form.duracion %}
-                    <div class="btn-group btn-group-justified" data-toggle="buttons" id="btns_duracion">
-                        <label class="btn btn-primary">
-                            <input type="radio" id="minuto30" value="30">30 minutos
-                        </label>
-                        <label class="btn btn-primary">
-                            <input type="radio" id="minuto40" value="40">40 minutos
-                        </label>
-                        <label class="btn btn-primary">
-                            <input type="radio" id="minuto45" value="45">45 minutos
-                        </label>
-                        <label class="btn btn-primary">
-                            <input type="radio" id="minuto60" value="60">60 minutos
-                        </label>
-                    </div>
-                    <span class="help-block">{{ form.duracion.help_text }}</span>
-                </div>
-                <div class="col-md-12">
-                    {% bootstrap_field form.motivo %}
-                </div>
-            </div>
-            <!--divisor  -->
-            <div class="col-md-6">
-                <div class="col-md-12">
-                    {% bootstrap_field form.nombre_paciente %}
-                </div>
-                <div class="col-md-12">
-                    {% bootstrap_field form.paciente %}
-                </div>
-                <div class="col-md-12">
-                    {% bootstrap_field form.profesional %}
-                </div>
-            </div>
-            <div class="col-md-12">
-                <div class="col-md-12">
-                    {% bootstrap_field form.observaciones %}
-                </div>
-            </div>
-
+        <div class="col-md-4">
+            {% bootstrap_field form.dia %}
+        </div>
+        <div class="col-md-4">
+            {% bootstrap_field form.hora %}
+        </div>
+        <div class="col-md-4">
+            {% bootstrap_field form.duracion %}
+        </div>
+        <div class="col-md-6">
+            {% bootstrap_field form.profesional %}
+        </div>
+        <div class="col-md-6">
+            {% bootstrap_field form.motivo %}
+        </div>
+       <div class="col-md-6">
+            {% bootstrap_field form.paciente %}
+       </div>
+       <div class="col-md-6">
+           {% bootstrap_field form.nombre_paciente %}
+       </div>
+       <div class="col-md-12">
+           {% bootstrap_field form.observaciones %}
+       </div>
     </div>
+    <div class="modal-footer" >
+        <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar"/>
+        <input type="submit" class="btn btn-primary" value="Guardar"/>
+        {% if object.id %}
+            <div class="pull-left">
+            {% if object.paciente %}
+                {% if object.paciente.tratamiento_activo %}
+                    <a class="btn btn-danger"
+                       href="{% url 'sesion_create' object.paciente.pk object.paciente.tratamiento_activo.pk %}?turno={{ object.pk }}">
+                        <i class="fa fa-plus"></i> Sesión</a>
+                {% endif %}
+                <a class="btn btn-default" href="{% url 'ficha_kinesica' object.paciente.pk %}">
+                    <i class="fa fa-list"></i> Ficha
+                </a>
+            {% else %}
+                <a class="btn btn-primary" href="{% url 'paciente_create' %}">
+                    <i class="fa fa-plus"></i> Paciente
+                </a>
+            {% endif %}
+            </div>
+        {% endif %}
+    </div>
+</div>
 </form>
 
-{% endblock %}
-
-{% block script_js %}
-    <script type="text/javascript">
-        (function ($) {
-            $(document).ready(function(){
-                $("#minuto" + $("#id_duracion").val()).parent().addClass("active");
-                $("#btns_duracion label").click(function(){
-                    $("#id_duracion").val($(this).find(">input").val());
-                });
+<script type="text/javascript">
+    (function ($) {
+        $(document).ready(function(){
+            $("select").chosen({
+                width: '100%'
             });
-        })(jQuery);
-    </script>
-{% endblock %}
+            var form_options = {
+                target: "#turno_result",
+                success: function () {
+                    $('#calendar').fullCalendar( 'refetchEvents' );
+                    setTimeout(function() {
+                        turno_dialog.close();  // turno_dialog es global en turno_list
+                    }, 800);
+                }
+            };
+            $('#update_turno_form').ajaxForm(form_options);
+        });
+    })(jQuery);
+</script>
