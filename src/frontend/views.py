@@ -50,11 +50,6 @@ class TurnosListView(LoginRequiredMixin, ListView):
         dt_limit = dt + timedelta(days=14)
         return Turno.objects.exclude(sesion__fin_el__isnull=False).filter(dia__gte=dt).order_by('dia', 'hora')
 
-    def get_context_data(self, **kwargs):
-        ctx = super(TurnosListView, self).get_context_data(**kwargs)
-        ctx["form"] = TurnoForm
-        return ctx
-
 
 class TurnoCreateView(LoginRequiredMixin, CreateView):
     model = Turno
