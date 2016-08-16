@@ -74,6 +74,7 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.locale.LocaleMiddleware',
+    'pipeline.middleware.MinifyHTMLMiddleware',
 ]
 
 ROOT_URLCONF = 'sgk.urls'
@@ -180,7 +181,7 @@ PIPELINE_SASS_ARGUMENTS = "-p 8 -I '%s' -I '%s'" % (
 )
 
 PIPELINE = {
-    'PIPELINE_ENABLED': False,
+    'PIPELINE_ENABLED': True,
     'STORAGE': STATICFILES_STORAGE,
     'STYLESHEETS': {
         'base': {
@@ -191,7 +192,6 @@ PIPELINE = {
                 'bootstrap-sass/assets/stylesheets/_bootstrap.scss',
                 'bootstrap3-dialog/dist/css/bootstrap-dialog.css',
                 'font-awesome/css/font-awesome.min.css',
-                # 'bootstrap-datepicker/dist/css/bootstrap-datepicker3.css',
                 'chosen/chosen.min.css',
                 'css/pastel-stream.css',
                 'css/base.scss',
@@ -252,8 +252,8 @@ PIPELINE = {
         'pipeline.compilers.sass.SASSCompiler',
     ),
     'SASS_BINARY': 'sassc',
-    'CSS_COMPRESSOR': None,
-    'JS_COMPRESSOR': None,
+    # 'CSS_COMPRESSOR': None,
+    # 'JS_COMPRESSOR': None,
     'SASS_ARGUMENTS': PIPELINE_SASS_ARGUMENTS,
     'DISABLE_WRAPPER': True
 }
@@ -273,10 +273,9 @@ BOWER_INSTALLED_APPS = (
     'bootstrap-datepicker#1.6.1',
     'pace#1.0.2',
     'StickyTableHeaders#0.1.19',
-    # 'django-dynamic-formset',
     'jquery.countdown#2.1.0',
     'jquery-form#3.46.0',
-    'fullcalendar'
+    'fullcalendar#2.9.1'
 )
 
 THUMBNAIL_ALIASES = {

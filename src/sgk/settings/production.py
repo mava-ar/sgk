@@ -1,6 +1,5 @@
 from .base import *  # noqa
 
-
 DEBUG = False
 
 INSTALLED_APPS += (
@@ -9,7 +8,7 @@ INSTALLED_APPS += (
 )
 
 ALLOWED_HOSTS = ['127.0.0.1', ]
-
+COMPRESS_ENABLED = True
 ADMINS = [
     ('Matias Varela', 'matu.varela@gmail.com'),
 ]
