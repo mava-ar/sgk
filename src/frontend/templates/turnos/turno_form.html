@@ -1,4 +1,5 @@
 {% load bootstrap3 %}
+{{ form.media }}
 <form method="POST" action="{% if object.id %}{% url 'turno_update' object.id %}{% else %}{% url 'turno_create' %}{% endif %}" novalidate=""
       class="form" role="form" id="update_turno_form">
     {% csrf_token %}

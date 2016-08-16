@@ -224,20 +224,12 @@ PIPELINE = {
                 'bootstrap-sass/assets/javascripts/bootstrap.js',
                 'bootstrap3-dialog/dist/js/bootstrap-dialog.js',
                 'chosen/chosen.jquery.min.js',
-                'js/main.js',
-                'js/plugins.js',
-            ),
-            'output_filename': 'js/base_js.js',
-        },
-        'plugins_js': {
-            'source_filenames': (
-                # 'bootstrap-datepicker/dist/js/bootstrap-datepicker.js',
-                # 'bootstrap-datepicker/dist/locales/bootstrap-datepicker.es.min.js',
                 'PACE/pace.js',
                 'StickyTableHeaders/js/jquery.stickytableheaders.min.js',
-                'jquery-form/jquery.form.js'
+                'jquery-form/jquery.form.js',
+                'js/kines.js',
             ),
-            'output_filename': 'js/plugins.js',
+            'output_filename': 'js/base.js',
         },
         'fullcalendar_js': {
             'source_filenames': (
@@ -262,7 +254,6 @@ PIPELINE = {
 COMPRESS_PRECOMPILERS = (
     ('text/x-scss', 'django_libsass.SassCompiler'),
 )
-
 
 BOWER_INSTALLED_APPS = (
     'jquery#2.1.4',
