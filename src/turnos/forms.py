@@ -14,16 +14,16 @@ from pacientes.models import Paciente
 
 class TurnoForm(ModelForm):
     paciente = forms.ModelChoiceField(Paciente.objects.all(), required=False)
-    dia = FechaField(label="día")
+    dia = FechaField(label="Día")
     hora = forms.TimeField(widget=TimeWidget(options={"minuteStep": 15, "maxView": 0},
                                              usel10n=True, bootstrap_version=3))
-    duracion = forms.IntegerField(label="duración", widget=forms.NumberInput(attrs={'step': 5}),
+    duracion = forms.IntegerField(label="Duración", widget=forms.NumberInput(attrs={'step': 5}),
                                   initial=60)
 
     class Meta:
         model = Turno
         fields = ('dia', 'hora', 'duracion', 'motivo', 'observaciones',
-                  'nombre_paciente', 'paciente', 'profesional', )
+                  'nombre_paciente', 'paciente', 'profesional', 'no_asistio', 'no_aviso')
 
     def __init__(self, **kwargs):
         super(TurnoForm, self).__init__(**kwargs)

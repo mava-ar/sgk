@@ -18,8 +18,8 @@ class Turno(BaseModel):
     duracion = models.PositiveSmallIntegerField('duración', default=60,
             help_text="duración en minutos de la sesión.")
     motivo = models.CharField('motivo', max_length=255, blank=True)
-    asistio = models.BooleanField('¿asistió?', default=False)
-    aviso = models.BooleanField('¿avisó?', default=False)
+    no_asistio = models.BooleanField('No asistió', default=False, help_text="Marcar en caso de NO asistencia del paciente.")
+    no_aviso = models.BooleanField('No avisó', default=False, help_text="Marcar en caso de NO asistencia sin previo no_aviso.")
     observaciones = models.TextField('observaciones',  blank=True)
     nombre_paciente = models.CharField('nombre del paciente', max_length=255, blank=True,
             help_text='Dejar en blanco si el paciente se encuentra en el sistema.')

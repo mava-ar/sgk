@@ -46,6 +46,7 @@
                     allDaySlot: false,
                     minTime: '08:00:00',
                     maxTime: '22:00:00',
+                    eventColor: '#568188',
                     businessHours: {
                         start: '08:00',
                         end: '22:00',
@@ -59,20 +60,20 @@
                         editable: true,
                     },
                     eventRender: function(calEvent, jsEvent, view) {
-                      jsEvent.bind('dblclick', function() {
-                         turno_dialog = BootstrapDialog.show({
-                            message: $('<div></div>').load("/turnos/editar/" + calEvent.id + "/"),
-                            title: "Modificar turno",
-                            type: BootstrapDialog.TYPE_DEFAULT,
-                            size: BootstrapDialog.SIZE_WIDE
+                        if(calEvent.no_asistio) {
+                            jsEvent.css({'background-color': '#EE6E73'});
+                        } else if (calEvent.start.format("X") > moment().format("X")) {
+                            jsEvent.css("background-color", "#00BCD4");
+                        }
+                        jsEvent.bind('dblclick', function() {
+                            turno_dialog = BootstrapDialog.show({
+                                message: $('<div></div>').load("/turnos/editar/" + calEvent.id + "/"),
+                                title: "Modificar turno",
+                                type: BootstrapDialog.TYPE_DEFAULT,
+                                size: BootstrapDialog.SIZE_WIDE
+                            });
                         });
-                      });
                    },
-                    eventClick: function( calEvent, jsEvent, view) {
-
-
-                    },
-                    //dayClick: function(date, jsEvent, view) {},
                     eventDrop: function(event, delta, revertFunc) {
                         showConfirm(
                             'Modificar turno',
