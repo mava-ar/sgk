@@ -91,6 +91,7 @@
     </div>
 {% endblock %}
 {% block extra_js %}
+    {{ block.super }}
     <script type="text/javascript" src="{% static 'jquery.countdown/dist/jquery.countdown.js' %}" ></script>
     <script type="text/javascript">
         function getTimeFromNow() {

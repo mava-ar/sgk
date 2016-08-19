@@ -227,6 +227,7 @@ PIPELINE = {
                 'PACE/pace.js',
                 'StickyTableHeaders/js/jquery.stickytableheaders.min.js',
                 'jquery-form/jquery.form.js',
+                'jquery.are-you-sure/jquery.are-you-sure.js',
                 'js/kines.js',
             ),
             'output_filename': 'js/base.js',
@@ -266,7 +267,8 @@ BOWER_INSTALLED_APPS = (
     'StickyTableHeaders#0.1.19',
     'jquery.countdown#2.1.0',
     'jquery-form#3.46.0',
-    'fullcalendar#2.9.1'
+    'fullcalendar#2.9.1',
+    'jquery.are-you-sure#^1.9.0',
 )
 
 THUMBNAIL_ALIASES = {
