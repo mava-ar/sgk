@@ -6,6 +6,15 @@
 {% block content_ficha %}
     <form action="" method="post" novalidate="">
     {% csrf_token %}
+    <div class="alert alert-info">
+        <p>Al presionar el botón "Guardar", confirmará los cambios realizados en todas las pestañas.</p><br />
+        {% buttons %}
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <a href="{% url 'ficha_kinesica' paciente.pk %}">
+            <input type="button" class="btn " value="Volver" />
+        </a>
+        {% endbuttons %}
+    </div>
     <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
         <li class="active"><a href="#antecedentes" data-toggle="tab">Antecedentes</a></li>
         <li><a href="#habitos" data-toggle="tab">Hábitos</a></li>
@@ -48,6 +57,6 @@
         <a href="{% url 'ficha_kinesica' paciente.pk %}">
             <input type="button" class="btn " value="Volver" />
         </a>
-    {% endbuttons %}
+        {% endbuttons %}
     </form>
 {% endblock %}

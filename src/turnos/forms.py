@@ -32,3 +32,9 @@ class TurnoForm(ModelForm):
             hoy = hoy.replace(hour=16, minute=0, second=0, microsecond=0)
             self.initial["hora"] = hoy
             self.initial["dia"] = hoy + timedelta(days=1)
+
+
+class TurnoDeleteForm(ModelForm):
+    class Meta:
+        model = Turno
+        fields = ('id', )

@@ -42,8 +42,13 @@
             </div>
 
         {% endif %}
+
     </div>
+
     <div class="modal-footer" >
+        {% if object.id %}
+            <a class="btn btn-danger" href="#" id="btn-eliminar"><i class="fa fa-trash"></i></a>
+        {% endif %}
         <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar"/>
         <input type="submit" class="btn btn-primary" value="Guardar"/>
         {% if object.id %}
@@ -67,6 +72,18 @@
     </div>
 </div>
 </form>
+{% if object.id %}
+    <div style="display: none;" id="delete-container">
+        <form action="{% url 'turno_delete' object.id %}" id="turno-delete" method="POST">
+            {% csrf_token %}
+            {{ delete_form.as_p }}
+            <p class="alert alert-danger">
+                Se eliminará este turno. ¿Desea continuar?
+             <input type="submit" value="Si, eliminar!" class="btn btn-danger"/>
+            </p>
+        </form>
+    </div>
+{% endif %}
 
 <script type="text/javascript">
     (function ($) {
@@ -74,16 +91,22 @@
             $("select").chosen({
                 width: '100%'
             });
+            $("#btn-eliminar").click(function(e){
+                e.preventDefault();
+                $("#delete-container").show('slow');
+            });
             var form_options = {
                 target: "#turno_result",
-                success: function () {
-                    $('#calendar').fullCalendar( 'refetchEvents' );
-                    setTimeout(function() {
-                        turno_dialog.close();  // turno_dialog es global en turno_list
-                    }, 800);
-                }
+                success: close_dialog
             };
             $('#update_turno_form').ajaxForm(form_options);
+            $("#turno-delete").ajaxForm(form_options);
         });
+        function close_dialog() {
+            $('#calendar').fullCalendar( 'refetchEvents' );
+            setTimeout(function() {
+                turno_dialog.close();  // turno_dialog es global en turno_list
+            }, 800);
+        }
     })(jQuery);
 </script>

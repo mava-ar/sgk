@@ -24,7 +24,7 @@ from pacientes.models import Paciente, Antecedente, ComentariosHistoriaClinica, 
 from tratamientos.forms import (ObjetivoForm, MotivoConsultaForm, ObjetivoInlineFormset,
                                 ObjetivoCumplidoUpdateForm, PlanificacionCreateForm, NuevaSesionForm)
 from tratamientos.models import MotivoConsulta, Objetivo, Planificacion, Sesion
-from turnos.forms import TurnoForm
+from turnos.forms import TurnoForm, TurnoDeleteForm
 from turnos.models import Turno
 
 
@@ -72,9 +72,27 @@ class TurnoEditView(LoginRequiredMixin, UpdateView):
     model = Turno
     form_class = TurnoForm
 
+    def get_context_data(self, **kwargs):
+        ctx = super(TurnoEditView, self).get_context_data(**kwargs)
+        ctx["delete_form"] = TurnoDeleteForm(instance=ctx["object"])
+        return ctx
+
     def form_valid(self, form):
         turno = form.save()
         return HttpResponse('<p class="alert alert-success">Turno modificado correctamente.</p>')
+
+
+class TurnoDeleteView(LoginRequiredMixin, UpdateView):
+    model = Turno
+    http_method_names = ["post", ]
+
+    def post(self, request, *args, **kwargs):
+        form = TurnoDeleteForm(request.POST, instance=self.get_object())
+        if form.is_valid():
+            form.instance.delete()
+            return HttpResponse('<p class="alert alert-success">Turno eliminado correctamente.</p>')
+        else:
+            return HttpResponse('<p class="alert alert-danger">El turno no se pudo eliminar. Intente nuevamente..</p>')
 
 
 class PacienteListView(LoginRequiredMixin, ListView):
@@ -669,6 +687,7 @@ persona_create = PersonaCreateView.as_view()
 turno_list = TurnosListView.as_view()
 turno_create = TurnoCreateView.as_view()
 turno_update = TurnoEditView.as_view()
+turno_delete = TurnoDeleteView.as_view()
 paciente_list = PacienteListView.as_view()
 paciente_create = PacienteCreateView.as_view()
 paciente_update = PacienteEditView.as_view()
