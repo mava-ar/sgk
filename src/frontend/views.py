@@ -1,8 +1,7 @@
 from datetime import datetime, timedelta, time
-
+import dateutil.parser
 import json
 
-from django import shortcuts
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse, reverse_lazy
@@ -62,6 +61,13 @@ class TurnoCreateView(LoginRequiredMixin, CreateView):
         except ObjectDoesNotExist:
             pass
         return super(TurnoCreateView, self).get_initial()
+
+    def get_context_data(self, **kwargs):
+        ctx = super(TurnoCreateView, self).get_context_data(**kwargs)
+        if self.request.GET.get("time", False):
+            ctx["form"].initial["hora"] = dateutil.parser.parse(self.request.GET.get("time"))
+            ctx["form"].initial["dia"] = dateutil.parser.parse(self.request.GET.get("time"))
+        return ctx
 
     def form_valid(self, form):
         turno = form.save()

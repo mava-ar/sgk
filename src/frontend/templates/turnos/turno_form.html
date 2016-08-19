@@ -1,9 +1,10 @@
 {% load bootstrap3 %}
 {{ form.media }}
-<form method="POST" action="{% if object.id %}{% url 'turno_update' object.id %}{% else %}{% url 'turno_create' %}{% endif %}" novalidate=""
+
+<div id="turno_result">
+    <form method="POST" action="{% if object.id %}{% url 'turno_update' object.id %}{% else %}{% url 'turno_create' %}{% endif %}" novalidate=""
       class="form" role="form" id="update_turno_form">
     {% csrf_token %}
-<div id="turno_result">
     <div class="row">
         <div class="col-md-4">
             {% bootstrap_field form.dia %}
@@ -70,7 +71,6 @@
             </div>
         {% endif %}
     </div>
-</div>
 </form>
 {% if object.id %}
     <div style="display: none;" id="delete-container">
@@ -84,7 +84,7 @@
         </form>
     </div>
 {% endif %}
-
+</div>
 <script type="text/javascript">
     (function ($) {
         $(document).ready(function(){

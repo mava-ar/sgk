@@ -23,25 +23,29 @@
 {% block js %}
     <script type="text/javascript">
         (function($){
+            function create_turno(time) {
+                if(time == undefined) time = '';
+                turno_dialog = BootstrapDialog.show({
+                    message: $('<div></div>').load('{% url 'turno_create' %}?time=' + time),
+                    title: $(this).data("title"),
+                    type: BootstrapDialog.TYPE_DEFAULT,
+                    size: BootstrapDialog.SIZE_WIDE
+                });
+            }
             $(document).ready(function(){
 
                 $("[data-popup]").click(function(e){
                     e.preventDefault();
-                    var dataUrl = $(this).data("href");
-                    turno_dialog = BootstrapDialog.show({
-                        message: $('<div></div>').load(dataUrl),
-                        title: $(this).data("title"),
-                        type: BootstrapDialog.TYPE_DEFAULT,
-                        size: BootstrapDialog.SIZE_WIDE
-                    });
+                    create_turno();
                 });
+
                 $('#calendar').fullCalendar({
                     header: {
                         left:   'title',
                         center: 'month agendaWeek, agendaDay',
                         right:  'today prev,next'
                     },
-                    snapDuration: '00:15:00',
+                    snapDuration: '00:30:00',
                     defaultView: 'agendaWeek',
                     allDaySlot: false,
                     minTime: '08:00:00',
@@ -58,6 +62,9 @@
                     events: {
                         url: '/api/turnos-cal/',
                         editable: true,
+                    },
+                    dayClick: function(date, jsEvent, view) {
+                        create_turno(date.format());
                     },
                     eventRender: function(calEvent, jsEvent, view) {
                         if(calEvent.no_asistio) {
