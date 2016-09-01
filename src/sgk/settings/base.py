@@ -38,6 +38,9 @@ LOGOUT_URL = '/'
 # Application definition
 
 INSTALLED_APPS = [
+    'material',
+    # 'material.frontend',
+    'material.admin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -186,14 +189,12 @@ PIPELINE = {
     'STYLESHEETS': {
         'base': {
             'source_filenames': (
-                'css/normalize.css',
-                'css/boilerplate_main.css'
                 'font-awesome/css/font-awesome.min.css',
-                'bootstrap-sass/assets/stylesheets/_bootstrap.scss',
-                'bootstrap3-dialog/dist/css/bootstrap-dialog.css',
-                'font-awesome/css/font-awesome.min.css',
+                'bootstrap/dist/css/bootstrap.css',
+                'bootstrap-material-design/dist/css/bootstrap-material-design.css',
+                'bootstrap-material-design/dist/css/ripples.css',
                 'chosen/chosen.min.css',
-                'css/pastel-stream.css',
+                'animate.css/animate.min.css',
                 'css/base.scss',
             ),
             'output_filename': 'css/base.css',
@@ -221,16 +222,23 @@ PIPELINE = {
         },
         'base_js': {
             'source_filenames': (
-                'bootstrap-sass/assets/javascripts/bootstrap.js',
+                'bootstrap/dist/js/bootstrap.js',
                 'bootstrap3-dialog/dist/js/bootstrap-dialog.js',
-                'chosen/chosen.jquery.min.js',
-                'PACE/pace.js',
-                'StickyTableHeaders/js/jquery.stickytableheaders.min.js',
-                'jquery-form/jquery.form.js',
-                'jquery.are-you-sure/jquery.are-you-sure.js',
+                'bootstrap-material-design/dist/js/material.js',
+                'bootstrap-material-design/dist/js/ripples.js',
                 'js/kines.js',
             ),
             'output_filename': 'js/base.js',
+        },
+        'plugins_js': {
+            'source_filenames': (
+                'chosen/chosen.jquery.min.js',
+                'PACE/pace.js',
+                'jquery-sticky/jquery.sticky.js',
+                'jquery-form/jquery.form.js',
+                'jquery.are-you-sure/jquery.are-you-sure.js',
+            ),
+            'output_filename': 'js/plugins.js'
         },
         'fullcalendar_js': {
             'source_filenames': (
@@ -240,6 +248,17 @@ PIPELINE = {
             ),
             'output_filename': 'js/fullcalendar.js',
         },
+        'letterjs': {
+            'source_filenames': (
+                'js/animations/segment.min.js',
+                'js/animations/d3-ease.v0.6.js',
+                'letteringjs/jquery.lettering.js',
+                'js/animations/letters.js',
+                'mojs/build/mo.min.js',
+                'typed.js/js/typed.js',
+            ),
+            'output_filename': 'js/letters.js'
+        }
     },
     'COMPILERS': (
         'pipeline.compilers.sass.SASSCompiler',
@@ -247,7 +266,7 @@ PIPELINE = {
     'SASS_BINARY': 'sassc',
     'CSS_COMPRESSOR': None,
     'JS_COMPRESSOR': None,
-    'SASS_ARGUMENTS': PIPELINE_SASS_ARGUMENTS,
+    #'SASS_ARGUMENTS': PIPELINE_SASS_ARGUMENTS,
     'DISABLE_WRAPPER': True
 }
 
@@ -258,17 +277,23 @@ COMPRESS_PRECOMPILERS = (
 
 BOWER_INSTALLED_APPS = (
     'jquery#2.1.4',
-    'bootstrap-sass#3.3.6',
+    'bootstrap#3.3.7',
     'fontawesome#4.3.0',
     'bootstrap3-dialog#1.34.9',
     'chosen#1.4.2',
     'bootstrap-datepicker#1.6.1',
     'pace#1.0.2',
-    'StickyTableHeaders#0.1.19',
+    'jquery-sticky#^1.0.3',
     'jquery.countdown#2.1.0',
     'jquery-form#3.46.0',
     'fullcalendar#2.9.1',
     'jquery.are-you-sure#^1.9.0',
+    'bootstrap-material-design#0.5.9',
+    'd3-ease',
+    'letteringjs',
+    'mojs',
+    'animate.css#^3.5.2',
+    'typed.js'
 )
 
 THUMBNAIL_ALIASES = {
@@ -288,10 +313,12 @@ THUMBNAIL_ALIASES = {
 # CELERY_TIMEZONE = TIME_ZONE
 
 # Default settings
-# BOOTSTRAP3 = {
-#      # Label class to use in horizontal forms
-#     'horizontal_label_class': 'col-sm-2',
-#
-#     # Field class to use in horizontal forms
-#     'horizontal_field_class': 'col-sm-10',
-# }
+BOOTSTRAP3 = {
+     # Label class to use in horizontal forms
+    'horizontal_label_class': 'col-sm-2',
+
+    # Field class to use in horizontal forms
+    'horizontal_field_class': 'col-sm-10',
+
+     'set_placeholder': False,
+}

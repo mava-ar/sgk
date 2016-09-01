@@ -10,9 +10,10 @@
             <div class="col-sm-12">
                 <h2>Ficha kinésica de {{ paciente.persona }}</h2>
                 <p>
-                <a class="btn btn-primary" href="{% url 'ficha_kinesica' paciente.pk %}">Ficha kinésica</a>
-                <a class="btn btn-info" href="{% url 'tratamiento_list' paciente.pk %}">Tratamientos</a>
+                <a class="btn btn-raised btn-danger" href="{% url 'ficha_kinesica' paciente.pk %}"><i class="material-icons">assignment</i> Ficha kinésica</a>
+                <a class="btn btn-raised btn-info" href="{% url 'tratamiento_list' paciente.pk %}">Tratamientos</a>
 {#                <a class="btn btn-warning">Nueva sesión</a>#}
+                    {% block extra_button %}{% endblock %}
                 </p>
 
             </div>
@@ -20,32 +21,28 @@
 
             <div class="col-sm-3">
             {% block left_sidebar %}
-                <div class="panel panel-default">
+                <div class="panel panel-primary sticky">
                     <div class="panel-heading">Datos de la persona</div>
                     <div class="panel-body">
+                        <a href="{% url 'paciente_update' paciente.pk %}" class="btn btn-fab btn-danger float-circle">
+                            <i class="material-icons">edit</i>
+                        </a>
                         <div style="width:100%">
                             <img class="img-responsive img-circle"
                                  src="{{ paciente.persona|profile_image:"perfil" }}" />
                         </div>
-                        <div>
-                            <a href="{% url 'paciente_update' paciente.pk %}">
-                                <span class="label label-info">Editar perfil</span>
-                            </a>
-                        </div>
+
                         <div>Nombre: <strong>{{ paciente.persona }}</strong></div>
                         <div>DNI: <strong>{{ paciente.persona.dni|default_if_none:"No definido" }}</strong></div>
                         <div>Género: <strong>{{ paciente.persona.get_genero_display }}</strong></div>
                         <div>Fecha de ingreso: <strong>{{ paciente.fecha_ingreso }}</strong></div>
                     </div>
-                </div>
-                <div class="panel panel-default">
-                    <div class="panel-heading">Añadir a la ficha</div>
-                    <div class="panel-body">
-                        <a class="btn btn-success" data-toggle="modal" href="{% url 'comentario_hc_create' paciente.pk %}"
+                    <div class="panel-footer">
+                        <a class="btn btn-raised btn-success" data-toggle="modal" href="{% url 'comentario_hc_create' paciente.pk %}"
                            data-target="#modal" data-tooltip >Añadir comentario</a>
-                        <a class="btn btn-success" data-toggle="modal" href="{% url 'imagen_hc_create' paciente.pk %}"
+                        <a class="btn btn-raised btn-success" data-toggle="modal" href="{% url 'imagen_hc_create' paciente.pk %}"
                            data-target="#modal" data-tooltip >Añadir imagen</a>
-                        <a class="btn btn-success" data-toggle="modal" href="{% url 'imagen_hc_create' paciente.pk %}"
+                        <a class="btn btn-raised btn-success" data-toggle="modal" href="{% url 'imagen_hc_create' paciente.pk %}"
                            data-target="#modal" data-tooltip >Añadir archivo</a>
                     </div>
                 </div>
@@ -54,10 +51,10 @@
 
             <div class="col-sm-9">
                 {% block content_ficha %}
-                    <div class="panel panel-success">
+                    <div class="panel panel-primary">
                         <div class="panel-heading">Antecedentes
-                            <a class="pull-right" href="{% url 'ficha_kinesica_update' paciente.pk %}">
-                                <i class="fa fa-edit fa-2x"></i></a>
+                            <a class="btn btn-fab btn-info float-circle to-right" href="{% url 'ficha_kinesica_update' paciente.pk %}">
+                                <i class="material-icons">launch</i></a>
                         </div>
                         <div class="panel-body">
                             {% show_info paciente.antecedente %}
@@ -80,6 +77,7 @@
             });
             // Enable on all forms
             $('form').areYouSure();
+            $(".sticky").sticky({topSpacing:15});
         })(jQuery);
     </script>
 

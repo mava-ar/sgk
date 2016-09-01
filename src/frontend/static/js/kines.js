@@ -76,7 +76,7 @@ var showConfirm = function(title, message, callback_yes, callback_no, btnClass) 
         draggable: true, // <-- Default value is false
         btnCancelLabel: 'Cancelar', // <-- Default value is 'Cancel',
         btnOKLabel: 'Continuar', // <-- Default value is 'OK',
-        btnOKClass: btnClass,
+        btnOKClass: btnClass+ ' btn-raised',
         callback: function (result) {
             // result will be true if button was click, while it will be false if users close the dialog directly.
             if (result) {
@@ -104,3 +104,14 @@ function get_today() {
   var d = new Date();
   return [pad(d.getDate()), pad(d.getMonth()+1), d.getFullYear()].join('/');
 }
+
+/* Hack para complir con los requisitos de bobtstrap material design - debe haber un input text dentro del form-group*/
+function appendInputToFile(){
+    $(".form-group > .bootstrap3-multi-input div").append("<input readonly='' class='form-control' type='text'> ");
+}
+
+(function($){
+    $(document).ready(function(){
+        appendInputToFile();
+    });
+})(jQuery);

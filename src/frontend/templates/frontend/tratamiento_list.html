@@ -3,13 +3,16 @@
 {% block subtitle %}
     Motivos de consulta
 {% endblock %}
+{% block extra_button %}
+    <a class="btn btn-raised btn-warning" href="{% url 'tratamiento_create' paciente.pk %}">Nuevo motivo de consulta</a>
+{% endblock %}
 {% block content_ficha %}
-    <p><a class="btn btn-warning" href="{% url 'tratamiento_create' paciente.pk %}">Nuevo motivo de consulta</a></p>
+
     {% for motivo in object_list %}
-        <div class="panel panel-{% if forloop.first %}success{% else %}info{% endif %}">
+        <div class="panel panel-{% if forloop.first %}primary{% else %}default{% endif %}">
             <div class="panel-heading">Motivo de consulta
-                <a class="pull-right" href="{% url 'tratamiento_update' paciente.pk motivo.pk %}">
-                    <i class="fa fa-edit fa-2x"></i>
+                <a class="btn btn-fab btn-info float-circle to-right" href="{% url 'tratamiento_update' paciente.pk motivo.pk %}">
+                    <i class="material-icons">launch</i>
                 </a>
             </div>
             <div class="panel-body">
@@ -45,9 +48,11 @@
                     </div>
                 </div>
                 <p>
+                    <a class="btn btn-raised btn-warning" href="{% url 'sesion_create' paciente.pk motivo.pk %}">
+                        <i class="material-icons">transfer_within_a_station</i> Nueva sesión
+                    </a>
                     <span>Sesiones tomadas: {{ motivo.sesiones_realizadas }}</span> |
                     <span>Sesiones restantes: {{ motivo.sesiones_restantes }}</span>
-                    <a class="btn btn-warning" href="{% url 'sesion_create' paciente.pk motivo.pk %}">Nueva sesión</a>
                 </p>
             </div>
         </div>

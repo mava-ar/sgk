@@ -31,26 +31,6 @@ class Contacto(BaseModel):
                 self.nombre, self.apellido)
 
 
-class Profesion(BaseModel):
-    """
-    Representa un profesión cualquiera.
-
-    La profesión del paciente es un dato importante a la hora de diagnosticar
-    un paciente.
-
-    """
-    nombre = models.CharField('nombre de la profesión', max_length=255, unique=True)
-    observaciones = models.TextField('observaciones', blank=True)
-    # Luego será completada esta clase
-
-    def __str__(self):
-        return u"{}".format(self.nombre)
-
-    class Meta:
-        verbose_name = "profesión"
-        verbose_name_plural = "profesiones"
-
-
 class Persona(BaseModel):
     """
     Una persona del sistema.
@@ -82,7 +62,7 @@ class Persona(BaseModel):
     observaciones = models.TextField('observaciones', blank=True)
     # relaciones
     info_contacto = models.OneToOneField(Contacto, verbose_name='contacto', null=True, blank=True)
-    profesion = models.ForeignKey(Profesion, verbose_name='profesión', null=True)
+    profesion = models.CharField(verbose_name='profesión', null=True, blank=True, max_length=255)
 
     def __str__(self):
         return "{} {}".format(

@@ -6,39 +6,36 @@
       class="form" role="form" id="update_turno_form">
     {% csrf_token %}
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-sm-4">
             {% bootstrap_field form.dia %}
         </div>
-        <div class="col-md-4">
+        <div class="col-sm-4">
             {% bootstrap_field form.hora %}
         </div>
-        <div class="col-md-4">
+        <div class="col-sm-4">
             {% bootstrap_field form.duracion %}
         </div>
-        <div class="col-md-6">
-            {% bootstrap_field form.profesional %}
-        </div>
-        <div class="col-md-6">
+        <div class="col-sm-6">
             {% bootstrap_field form.motivo %}
         </div>
-       <div class="col-md-6">
+       <div class="col-sm-6">
             {% bootstrap_field form.paciente %}
        </div>
-       <div class="col-md-6">
+       <div class="col-sm-6">
            {% bootstrap_field form.nombre_paciente %}
        </div>
         {% if object.id %}
-            <div class="col-md-6">
-               {% bootstrap_field form.observaciones %}
-            </div>
-            <div class="col-md-3">
+            <div class="col-sm-3">
                {% bootstrap_field form.no_asistio %}
             </div>
-            <div class="col-md-3">
+            <div class="col-sm-3">
                {% bootstrap_field form.no_aviso %}
             </div>
+            <div class="col-sm-12">
+               {% bootstrap_field form.observaciones %}
+            </div>
         {% else %}
-            <div class="col-md-12">
+            <div class="col-sm-6">
                {% bootstrap_field form.observaciones %}
             </div>
 
@@ -46,30 +43,34 @@
 
     </div>
 
-    <div class="modal-footer" >
-        {% if object.id %}
-            <a class="btn btn-danger" href="#" id="btn-eliminar"><i class="fa fa-trash"></i></a>
-        {% endif %}
-        <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar"/>
-        <input type="submit" class="btn btn-primary" value="Guardar"/>
+    <div class="row">
+    <div class="col-sm-12">
+        <div class="pull-right">
+            {% if object.id %}
+                <a class="btn btn-raised btn-danger" href="#" id="btn-eliminar"><i class="fa fa-trash"></i></a>
+            {% endif %}
+            <input type="button" class="btn btn-raised btn-default" data-dismiss="modal" value="Cancelar"/>
+            <input type="submit" class="btn btn-raised btn-primary" value="Guardar"/>
+        </div>
         {% if object.id %}
             <div class="pull-left">
             {% if object.paciente %}
                 {% if object.paciente.tratamiento_activo %}
-                    <a class="btn btn-danger"
+                    <a class="btn btn-raised btn-warning"
                        href="{% url 'sesion_create' object.paciente.pk object.paciente.tratamiento_activo.pk %}?turno={{ object.pk }}">
-                        <i class="fa fa-plus"></i> Sesión</a>
+                        <i class="material-icons">transfer_within_a_station</i> Sesión</a>
                 {% endif %}
-                <a class="btn btn-default" href="{% url 'ficha_kinesica' object.paciente.pk %}">
-                    <i class="fa fa-list"></i> Ficha
+                <a class="btn btn-raised btn-info" href="{% url 'ficha_kinesica' object.paciente.pk %}">
+                    <i class="material-icons">assignment</i> Ficha
                 </a>
             {% else %}
-                <a class="btn btn-primary" href="{% url 'paciente_create' %}">
+                <a class="btn btn-raised btn-primary" href="{% url 'paciente_create' %}">
                     <i class="fa fa-plus"></i> Paciente
                 </a>
             {% endif %}
             </div>
         {% endif %}
+    </div>
     </div>
 </form>
 {% if object.id %}
@@ -79,7 +80,7 @@
             {{ delete_form.as_p }}
             <p class="alert alert-danger">
                 Se eliminará este turno. ¿Desea continuar?
-             <input type="submit" value="Si, eliminar!" class="btn btn-danger"/>
+             <input type="submit" value="Si, eliminar!" class="btn btn-raised btn-danger"/>
             </p>
         </form>
     </div>
@@ -88,9 +89,8 @@
 <script type="text/javascript">
     (function ($) {
         $(document).ready(function(){
-            $("select").chosen({
-                width: '100%'
-            });
+            $.material.init();
+
             $("#btn-eliminar").click(function(e){
                 e.preventDefault();
                 $("#delete-container").show('slow');
@@ -102,11 +102,14 @@
             $('#update_turno_form').ajaxForm(form_options);
             $("#turno-delete").ajaxForm(form_options);
         });
-        function close_dialog() {
-            $('#calendar').fullCalendar( 'refetchEvents' );
-            setTimeout(function() {
-                turno_dialog.close();  // turno_dialog es global en turno_list
-            }, 800);
+        function close_dialog(ev) {
+            // determino si fue todod bien por como empieza el string (horrible!!)
+            if(ev.startsWith('<p class=')) {
+                $('#calendar').fullCalendar('refetchEvents');
+                setTimeout(function () {
+                    turno_dialog.close();  // turno_dialog es global en turno_list
+                }, 800);
+            }
         }
     })(jQuery);
 </script>

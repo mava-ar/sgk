@@ -6,7 +6,9 @@
         <meta http-equiv="x-ua-compatible" content="ie=edge">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-
+        <!-- Material Design fonts -->
+        <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700">
+        <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/icon?family=Material+Icons">
         <link rel="apple-touch-icon" href="{% static 'apple-touch-icon.png' %}">
         <!-- Place favicon.ico in the root directory -->
         {% compress css %}
@@ -31,7 +33,7 @@
 
         <title>{% block title %}Sistema de gestión kinesiológico{% endblock %} {% block subtitle %}{% endblock %}</title>
     </head>
-    <body class="{% block body_class %}{% endblock %}">
+    <body class="{% block body_class %}{% endblock %}" data-bg="{% block bg %}{% endblock %}">
         <!--[if lt IE 8]>
             <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
@@ -45,51 +47,12 @@
             {% block footer %}{% endblock %}
         </div>
 
-
         {% compress js %}
             {% javascript 'base_js' %}
-        {% endcompress %}
-
-        {% compress js %}
-        <script type="text/javascript">
-        (function($) {
-            $(document).ready(function(){
-                $("select").chosen({
-                    width: '100%'
-                });
-{#                $(".datepicker,input[name^=fecha]").datepicker({#}
-{#                    format: 'dd/mm/yyyy',#}
-{#                    language: 'es',#}
-{#                    orientation: 'bottom'#}
-{#                });#}
-                $("#close-session").click(function(e){
-                    e.preventDefault();
-                    showConfirm('Cerrar sesión', 'Va a cerrar la sesión. ¿Continuar?', function(){
-                        window.location = '{% url 'logout' %}';
-                    });
-                });
-
-                $('#modal').on('show.bs.modal', function (event) {
-                    var modal = $(this);
-                    var urlAttr = $(event.relatedTarget).attr('href');
-                    console.log(urlAttr);
-                    $.ajax({
-                        url: urlAttr,
-                        context: document.body
-                    }).done(function(response) {
-                        modal.html(response);
-                    });
-                });
-            });
-        })(jQuery);
-
-        </script>
         {% endcompress %}
         {% compress js %}
             {% block js %}{% endblock %}
             {% block extra_js %}{% endblock %}
         {% endcompress %}
-
-
     </body>
 </html>

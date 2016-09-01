@@ -5,55 +5,59 @@
     Ficha Kinésica - Nuevo Sesión
 {% endblock %}
 {% block content_ficha %}
-    <h2>Nuevo sesión | Inicio: {{ object.comienzo_el|date:"d/m/Y H:i:s" }}
-        <a class="btn btn-danger pull-right" src="#" id="sesion_delete"><i class="fa fa-trash fa-2x"></i></a>
-    </h2>
-    <form action="" method="post" novalidate="" id="form_nueva_sesion">
-    {% csrf_token %}
-    <div class="row">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <h2>Nuevo sesión | Inicio: {{ object.comienzo_el|date:"d/m/Y H:i:s" }}
+                <a class="btn btn-danger btn-fab float-circle to-right" src="#" id="sesion_delete"><i class="material-icons">delete</i></a>
+            </h2>
+            <form action="" method="post" novalidate="" id="form_nueva_sesion">
+            {% csrf_token %}
+            <div class="row">
 
-        <div class="col-sm-4" id="countdown">
+                <div class="col-sm-4" id="countdown" style="text-align: center">
 
-            <h1 id="clock"></h1>
+                    <h1 id="clock"></h1>
 
-            <div class="btn-group" data-toggle="buttons">
+                    <div class="btn-group" data-toggle="buttons">
 
-                <label class="btn btn-primary" id="btn-reset">
-                    <input type="radio" name="options" id="option2" autocomplete="off">
-                    <i class="glyphicon glyphicon-repeat"></i>
-                </label>
+                        <label class="btn btn-raised btn-warning" id="btn-reset">
+                            <input type="radio" name="options" id="option2" autocomplete="off">
+                            <i class="material-icons">restore</i>
+                        </label>
 
-                <label class="btn btn-default" id="btn-pause">
-                    <input type="radio" name="options" id="option2" autocomplete="off">
-                    <i class="glyphicon glyphicon-pause"></i>
-                </label>
+                        <label class="btn btn-raised btn-default" id="btn-pause">
+                            <input type="radio" name="options" id="option2" autocomplete="off">
+                            <i class="material-icons">pause</i>
+                        </label>
 
-                <label class="btn btn-default active" id="btn-resume">
-                    <input type="radio" name="options" id="option2" autocomplete="off" checked>
-                    <i class="glyphicon glyphicon-play"></i>
-                </label>
+                        <label class="btn btn-raised btn-success active" id="btn-resume">
+                            <input type="radio" name="options" id="option2" autocomplete="off" checked>
+                            <i class="material-icons">play_arrow</i>
+                        </label>
+                    </div>
+
+
+                </div>
+                <div class="col-sm-4">{% bootstrap_field form.fecha %}</div>
+                <div class="col-sm-4">{% bootstrap_field form.duracion %}</div>
+                <div class="col-sm-12">
+                {% bootstrap_field form.estado_paciente %}
+                {% bootstrap_field form.actividad %}
+                {% bootstrap_field form.comentarios %}
+                </div>
             </div>
 
-
-        </div>
-        <div class="col-sm-4">{% bootstrap_field form.fecha %}</div>
-        <div class="col-sm-4">{% bootstrap_field form.duracion %}</div>
-        <div class="col-sm-12">
-        {% bootstrap_field form.estado_paciente %}
-        {% bootstrap_field form.actividad %}
-        {% bootstrap_field form.comentarios %}
+            {% buttons %}
+                <button type="submit" class="btn btn-raised btn-primary">Guardar</button>
+                <a href="{% url 'tratamiento_list' paciente.pk %}">
+                    <input type="button" class="btn btn-raised" value="Volver" />
+                </a>
+                <input id="sesion_save_close" type="button" class="btn btn-danger btn-raised pull-right" value="Guardar y terminar la sesión " />
+            {% endbuttons %}
+            </form>
         </div>
     </div>
 
-    {% buttons %}
-        <button type="submit" class="btn btn-primary">Guardar</button>
-        <a href="{% url 'tratamiento_list' paciente.pk %}">
-            <input type="button" class="btn " value="Volver" />
-        </a>
-        <input id="sesion_save_close" type="button" class="btn btn-danger pull-right" value="Guardar y terminar la sesión " />
-    {% endbuttons %}
-    </form>
-    <hr />
     <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
         <li class="active"><a href="#antecedentes" data-toggle="tab">Antecedentes</a></li>
         <li><a href="#motivo_consulta" data-toggle="tab">Motivo de consulta</a></li>
@@ -98,6 +102,7 @@
             return new Date({{ object.comienzo_el|date_to_millis }} + ($("#id_duracion").val() * 60 * 1000));
         }
         (function($){
+            $(".tab-pane .panel-body").css({'height': $("#my-tab-content").height()});
             var $clock = $('#clock');
 
             $clock.countdown(getTimeFromNow(), {elapse: true}).on('update.countdown', function(event) {

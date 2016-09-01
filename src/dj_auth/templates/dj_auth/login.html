@@ -1,16 +1,16 @@
 {% extends "dj_auth/auth_base.html" %}
-{% load i18n %}
-{% load bootstrap3 %}
+{% load i18n bootstrap3 %}
+
 {% block content %}
     <form method="POST" action="">
         {% csrf_token %}
-        {% bootstrap_form form %}
+        {% bootstrap_form form form_group_class="form-group form-group-lg label-floating" %}
         {% buttons %}
-            <button type="submit" class="btn btn-primary">
+            <button type="submit" class="btn btn-raised btn-primary">
                 {% bootstrap_icon "ok" %} {% trans 'Iniciar sesión' %}
             </button>
         {% endbuttons %}
-        <p>{% trans '¿Olvido su clave?' %} <a class="recovery label label-default" href="{% url "password_reset" %}">
+        <p>{% trans '¿Olvido su clave?' %} <a class="recovery " href="{% url "password_reset" %}">
             {% trans 'Restablecer contraseña' %}</a>
         </p>
 

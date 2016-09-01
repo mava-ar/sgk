@@ -18,7 +18,7 @@
         </div>
     </h2>
     {% csrf_token %}
-    {% bootstrap_form form %}
+    {% bootstrap_form form form_group_class="form-group label-floating" %}
     {% buttons %}
         <button type="submit" class="btn btn-primary">
             Guardar
@@ -31,7 +31,8 @@
 
 {% endblock %}
 
-{% block script_js %}
+{% block extra_js %}
+    {{ block.super }}
     <script type="text/javascript">
         (function ($) {
             $(document).ready(function(){

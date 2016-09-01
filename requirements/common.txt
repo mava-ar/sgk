@@ -20,3 +20,4 @@ raven
 
 djangorestframework==3.3.3
 python-dateutil==2.5.3
+django-material

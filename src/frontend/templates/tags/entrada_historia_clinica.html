@@ -2,8 +2,8 @@
 <div class="panel panel-{{ panel_class }}">
     <div class="panel-heading">
         Entrada por {{ entry.profesional }} el {{ entry.creado_el|date:"d/m/Y H:i" }}
-        <a class="pull-right" href="{% get_edit_url_entry entry %}" data-toggle="modal" data-target="#modal"  data-tooltip>
-            <i class="fa fa-edit fa-2x"></i>
+        <a class="btn btn-fab btn-info float-circle to-right" href="{% get_edit_url_entry entry %}" data-toggle="modal" data-target="#modal"  data-tooltip>
+            <i class="material-icons">launch</i>
         </a>
     </div>
     <div class="panel-body">

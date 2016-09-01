@@ -8,19 +8,16 @@
     Inicio
 {% endblock %}
 {% block content %}
-    <h2>Turnos
-    <div class="pull-right">{% buttons %}
-        <a data-href="{% url 'turno_create' %}" data-popup data-title="Nuevo turno">
-        <button type="button" class="btn btn-primary">
-          {% bootstrap_icon "plus" %} Nuevo turno
-        </button></a>{% endbuttons %}
-    </div>
-    </h2>
+    <h1>Turnos</h1>
 
+    <a data-href="{% url 'turno_create' %}" data-popup data-title="Nuevo turno" class="btn btn-primary btn-fab float-action">
+        <i class="material-icons">add</i>
+    </a>
     <div id='calendar'></div>
 {% endblock %}
 
 {% block js %}
+    {{ block.super }}
     <script type="text/javascript">
         (function($){
             function create_turno(time) {
@@ -31,6 +28,11 @@
                     type: BootstrapDialog.TYPE_DEFAULT,
                     size: BootstrapDialog.SIZE_WIDE
                 });
+            }
+            //function to calculate window height
+            function get_calendar_height() {
+                  var h = $(window).height() - 110;
+                  return h;
             }
             $(document).ready(function(){
 
@@ -50,14 +52,14 @@
                     allDaySlot: false,
                     minTime: '08:00:00',
                     maxTime: '22:00:00',
-                    eventColor: '#568188',
+                    eventColor: '#009688',
                     businessHours: {
                         start: '08:00',
                         end: '22:00',
                         dow: [ 1, 2, 3, 4, 5, 6, 7 ]
                     },
-                    aspectRatio: 1.7,
-                    //selectable: true,
+                    //aspectRatio: 1.8,
+                    height: get_calendar_height,
                     lang: 'es',
                     events: {
                         url: '/api/turnos-cal/',
@@ -68,11 +70,11 @@
                     },
                     eventRender: function(calEvent, jsEvent, view) {
                         if(calEvent.no_asistio) {
-                            jsEvent.css({'background-color': '#EE6E73'});
+                            jsEvent.css({'background-color': '#F44336'});
                         } else if (calEvent.start.format("X") > moment().format("X")) {
-                            jsEvent.css("background-color", "#00BCD4");
+                            jsEvent.css("background-color", "#03A9F4");
                         }
-                        jsEvent.bind('dblclick', function() {
+                        jsEvent.bind('click', function() {
                             turno_dialog = BootstrapDialog.show({
                                 message: $('<div></div>').load("/turnos/editar/" + calEvent.id + "/"),
                                 title: "Modificar turno",
