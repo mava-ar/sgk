@@ -11,18 +11,20 @@
             <div class="modal-body">
                 {% csrf_token %}
                 {% bootstrap_form form %}
-                <div class="modal-footer">
-                    <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancelar"/>
-                    <input type="submit" class="btn btn-primary" value="Guardar"/>
-                </div>
+                <div class="row"><div class="col-sm-12">
+                    <input type="submit" class="btn btn-raised btn-primary pull-right" value="Guardar"/>
+                    <input type="button" class="btn btn-raised btn-default pull-right" data-dismiss="modal" value="Cancelar"/>
+                </div></div>
             </div>
         </form>
         <script>
             (function($){
+                appendInputToFile();
                 var form_options = {
                     target: '#modal', success: function () {}
                     };
                     $('#entrada_update_form').ajaxForm(form_options);
+                $.material.init();
             })(jQuery);
 
         </script>

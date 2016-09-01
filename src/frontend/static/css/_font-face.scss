@@ -8,13 +8,3 @@
         src: url($filepath + ".eot?#iefix") format('embedded-opentype'), url($filepath + ".woff") format('woff'), url($filepath + ".ttf")  format('truetype');
     }
 }
-
-@include font-face('OpenSans', 'OpenSans/opensans-regular-webfont');
-@include font-face('OpenSans', 'OpenSans/opensans-semibold-webfont', normal, 600);
-@include font-face('OpenSans', 'OpenSans/opensans-bold-webfont', normal, 700);
-@include font-face('OpenSans', 'OpenSans/opensans-extrabold-webfont', normal, 900);
-@include font-face('OpenSans', 'OpenSans/opensans-lightitalic-webfont', italic, 400);
-@include font-face('OpenSans', 'OpenSans/opensans-italic-webfont', italic, 500);
-@include font-face('OpenSans', 'OpenSans/opensans-semibolditalic-webfont', italic, 600);
-@include font-face('OpenSans', 'OpenSans/opensans-bolditalic-webfont', italic, 700);
-@include font-face('OpenSans', 'OpenSans/open-sans.extrabold-italic-webfont', italic, 900);

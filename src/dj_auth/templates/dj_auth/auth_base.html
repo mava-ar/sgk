@@ -1,14 +1,29 @@
 {% extends DJAUTH_BASE_TEMPLATE|default:'base.html' %}
-{% load i18n %}
+{% load i18n pipeline %}
 {% load bootstrap3 %}
+{% block extra_head %}
+    <link href="https://fonts.googleapis.com/css?family=Baloo+Tamma" rel="stylesheet">
+{% endblock %}
+
 {% block body_class %}accounts{% endblock %}
+
 {% block main_content %}
+    <h1 id="title" class="animated bounceInDown">Kines</h1>
     <div class="col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4">
     <div class="panel panel-success">
         <div class="panel-body">
             {% block content %}{% endblock %}
         </div>
     </div>
-
     </div>
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript">
+        (function($) {
+            $(document).ready(function () {
+                $.material.init();
+            });
+        })(jQuery);
+    </script>
 {% endblock %}

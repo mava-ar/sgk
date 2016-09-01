@@ -3,12 +3,12 @@ from django.conf import settings
 
 from datetimewidget.widgets import DateWidget
 
-from core.models import Persona, Contacto, Profesion
+from dj_utils.fields import FechaField
+from core.models import Persona, Contacto
 
 
 class PersonaForm(forms.ModelForm):
-    fecha_nacimiento = forms.DateField(widget=DateWidget(
-        usel10n=True, bootstrap_version=3), initial="01/01/1980", input_formats=settings.DATE_INPUT_FORMATS)
+    fecha_nacimiento = FechaField(initial="01/01/1980")
 
     class Meta:
         model = Persona
@@ -21,10 +21,3 @@ class ContactoForm(forms.ModelForm):
     class Meta:
         model = Contacto
         fields = ('telefono', 'celular', 'email', 'horario')
-
-
-class PrefesionForm(forms.ModelForm):
-
-    class Meta:
-        model = Profesion
-        fields = ('nombre', 'observaciones', )

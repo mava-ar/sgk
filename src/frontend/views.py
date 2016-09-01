@@ -16,7 +16,7 @@ from enhanced_cbv.views.edit import InlineFormSetsView, EnhancedInlineFormSet
 
 from dj_utils.mixins import FichaKinesicaMixin, FichaKinesicaModalView
 from core.forms import PersonaForm, ContactoForm
-from core.models import Persona, Profesion, Profesional
+from core.models import Persona, Profesional
 from pacientes.forms import PacienteForm, AntecedenteForm
 from pacientes.models import Paciente, Antecedente, ComentariosHistoriaClinica, ImagenesHistoriaClinica, \
     EntradaHistoriaClinica
@@ -41,26 +41,20 @@ class AboutView(LoginRequiredMixin, TemplateView):
     template_name = "frontend/about.html"
 
 
-class TurnosListView(LoginRequiredMixin, ListView):
-
-    def get_queryset(self):
-
-        dt = datetime.combine(timezone.now(), time.min)
-        dt_limit = dt + timedelta(days=14)
-        return Turno.objects.exclude(sesion__fin_el__isnull=False).filter(dia__gte=dt).order_by('dia', 'hora')
+class TurnosListView(LoginRequiredMixin, TemplateView):
+    template_name = "turnos/turno_list.html"
 
 
 class TurnoCreateView(LoginRequiredMixin, CreateView):
     model = Turno
     form_class = TurnoForm
 
-    def get_initial(self):
+    def dispatch(self, *args, **kwargs):
         try:
-            profesional = Profesional.objects.get(usuario=self.request.user)
-            self.initial.update({'profesional': profesional})
+            self.request.user.profesional
         except ObjectDoesNotExist:
-            pass
-        return super(TurnoCreateView, self).get_initial()
+            return HttpResponse('<p class="alert alert-warning">Su usuario no es un profesional. No puede crear turnos.</p>')
+        return super(TurnoCreateView, self).dispatch(*args, **kwargs)
 
     def get_context_data(self, **kwargs):
         ctx = super(TurnoCreateView, self).get_context_data(**kwargs)
@@ -70,7 +64,9 @@ class TurnoCreateView(LoginRequiredMixin, CreateView):
         return ctx
 
     def form_valid(self, form):
-        turno = form.save()
+        turno = form.save(commit=False)
+        turno.profesional = Profesional.objects.get(usuario=self.request.user)
+        turno.save()
         return HttpResponse('<p class="alert alert-success">Turno creado correctamente.</p>')
 
 
@@ -84,7 +80,7 @@ class TurnoEditView(LoginRequiredMixin, UpdateView):
         return ctx
 
     def form_valid(self, form):
-        turno = form.save()
+        form.save()
         return HttpResponse('<p class="alert alert-success">Turno modificado correctamente.</p>')
 
 
@@ -245,7 +241,7 @@ class FichaKinesicaIndex(LoginRequiredMixin, FichaKinesicaMixin, TemplateView):
             self.paciente.antecedente = Antecedente()
             self.paciente.antecedente.save()
             return self.paciente.antecedente
-        
+
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         return super(FichaKinesicaIndex, self).get(request, *args, **kwargs)

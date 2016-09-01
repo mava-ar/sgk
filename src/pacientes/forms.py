@@ -1,16 +1,13 @@
 from django import forms
-from django.conf import settings
 
-from datetimewidget.widgets import DateWidget
-
+from dj_utils.fields import FechaField
 from coberturas_medicas.models import Cobertura
 from pacientes.models import Antecedente, Paciente
 
 
 class PacienteForm(forms.ModelForm):
-    cobertura = forms.ModelChoiceField(Cobertura.objects.all(), required=False)
-    fecha_ingreso = forms.DateField(widget=DateWidget(usel10n=True, bootstrap_version=3),
-                                    input_formats=settings.DATE_INPUT_FORMATS)
+    cobertura = forms.ModelChoiceField(Cobertura.objects.all(), required=False, empty_label='')
+    fecha_ingreso = FechaField()
 
     class Meta:
         model = Paciente

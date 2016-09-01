@@ -5,16 +5,19 @@
     Ficha Kinésica - Objetivo
 {% endblock %}
 {% block content_ficha %}
-    <h2>Editar objetivo</h2>
-    <form action="" method="post" novalidate="">
-    {% csrf_token %}
-    {% bootstrap_form form %}
+    <div class="panel panel-default"><div class="panel-body">
+        <h2>Editar objetivo</h2>
+        <form action="" method="post" novalidate="">
+        {% csrf_token %}
+        {% bootstrap_form form %}
 
-    {% buttons %}
-        <button type="submit" class="btn btn-primary">Guardar</button>
-        <a href="{% url 'tratamiento_list' paciente.pk %}">
-            <input type="button" class="btn " value="Volver" />
-        </a>
-    {% endbuttons %}
-    </form>
+        {% buttons %}
+            <button type="submit" class="btn btn-raised btn-primary">Guardar</button>
+            <a href="{% url 'tratamiento_list' paciente.pk %}">
+                <input type="button" class="btn btn-raised" value="Volver" />
+            </a>
+        {% endbuttons %}
+        </form>
+    </div></div>
+
 {% endblock %}

@@ -5,7 +5,7 @@ from django.conf import settings
 from django.forms.models import ModelForm, BaseInlineFormSet
 from django.utils import timezone
 
-from datetimewidget.widgets import DateWidget, TimeWidget
+from datetimewidget.widgets import TimeWidget
 
 from dj_utils.fields import FechaField
 from .models import Turno
@@ -23,15 +23,15 @@ class TurnoForm(ModelForm):
     class Meta:
         model = Turno
         fields = ('dia', 'hora', 'duracion', 'motivo', 'observaciones',
-                  'nombre_paciente', 'paciente', 'profesional', 'no_asistio', 'no_aviso')
+                  'nombre_paciente', 'paciente', 'no_asistio', 'no_aviso')
 
     def __init__(self, **kwargs):
         super(TurnoForm, self).__init__(**kwargs)
         if not self.instance.id:
-            hoy = timezone.now()
+            hoy = timezone.now() + timedelta(days=1)
             hoy = hoy.replace(hour=16, minute=0, second=0, microsecond=0)
             self.initial["hora"] = hoy
-            self.initial["dia"] = hoy + timedelta(days=1)
+            self.initial["dia"] = hoy
 
 
 class TurnoDeleteForm(ModelForm):
