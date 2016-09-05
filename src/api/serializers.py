@@ -25,21 +25,3 @@ class TurnoCalendarSerializer(serializers.ModelSerializer):
         instance.hora = start.time()
         instance.save()
         return instance
-
-
-class TurnoSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Turno
-        fields = ('dia', 'hora', 'duracion', 'motivo', 'nombre_paciente', 'paciente')
-
-
-class UserSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = User
-        fields = ('url', 'username', 'email', 'groups')
-
-
-class GroupSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = Group
-        fields = ('url', 'name')

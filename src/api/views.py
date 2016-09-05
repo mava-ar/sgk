@@ -1,45 +1,39 @@
-from django.contrib.auth.models import User, Group
-from rest_framework import viewsets, generics
+from rest_framework import viewsets
+from rest_framework.authentication import SessionAuthentication
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
 
 from turnos.models import Turno
-from .serializers import UserSerializer, GroupSerializer, TurnoSerializer, TurnoCalendarSerializer
+
+from core.models import Profesional
+from .serializers import TurnoCalendarSerializer
 
 
-class UserViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows users to be viewed or edited.
-    """
-    queryset = User.objects.all().order_by('-date_joined')
-    serializer_class = UserSerializer
+class AuthView(APIView):
+    authentication_classes = (SessionAuthentication, )
+    permission_classes = (IsAuthenticated,)
 
 
-class GroupViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows groups to be viewed or edited.
-    """
-    queryset = Group.objects.all()
-    serializer_class = GroupSerializer
-
-
-class TurnoViewSet(viewsets.ModelViewSet):
-    queryset = Turno.objects.all()
-    serializer_class = TurnoSerializer
-
-
-# class TurnoCalendarList(generics.ListCreateAPIView):
-#     queryset = Turno.objects.all()
-#     serializer_class = TurnoCalendarSerializer
-#
-#
-# class TurnoCalendarDetail(generics.RetrieveUpdateDestroyAPIView):
-#     queryset = Turno.objects.all()
-#     serializer_class = TurnoCalendarSerializer
-
-
-class TurnoCalendarSet(viewsets.ModelViewSet):
+class TurnoCalendarSet(viewsets.ModelViewSet, AuthView):
     """
     This viewset automatically provides `list` and `detail` actions.
     """
     queryset = Turno.objects.all()
     serializer_class = TurnoCalendarSerializer
     http_method_names = ['get', 'put', ]
+
+    def get_queryset(self):
+
+        qs = super(TurnoCalendarSet, self).get_queryset()
+        # si el usuario tiene un profesional asociado, sólo mostrar sus turnos
+        try:
+            qs = qs.filter(profesional=self.request.user.profesional)
+        except Profesional.DoesNotExist:
+            pass
+        start = self.request.GET.get("start", "")
+        end = self.request.GET.get("end", "")
+        if start:
+            qs = qs.filter(dia__gte=start)
+        if end:
+            qs = qs.filter(dia__lte=end)
+        return qs
