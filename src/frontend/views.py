@@ -154,7 +154,7 @@ class PacienteCreateView(LoginRequiredMixin, CreateView):
     def get_success_url(self):
         messages.add_message(self.request, messages.SUCCESS,
                 u"Paciente creado correctamente.")
-        return reverse('paciente_list')
+        return reverse('ficha_kinesica', kwargs={'pk': self.object.pk})
 
 
 class PacienteEditView(LoginRequiredMixin, UpdateView):
@@ -211,7 +211,7 @@ class PacienteEditView(LoginRequiredMixin, UpdateView):
     def get_success_url(self):
         messages.add_message(self.request, messages.SUCCESS,
                 u"Paciente editado correctamente.")
-        return reverse('paciente_list')
+        return reverse('ficha_kinesica', kwargs={'pk': self.object.pk})
 
 
 class PersonaListView(LoginRequiredMixin, ListView):
@@ -587,7 +587,7 @@ class SesionSaveAndCloseView(SesionCreateView):
     def get_success_url(self):
         messages.add_message(self.request, messages.SUCCESS,
                              "La sesión fue guardada y finalizada correctamente.")
-        return reverse('turno_list')
+        return reverse('tratamiento_list', kwargs={'pk': self.paciente.pk})
 
     def save_and_post_actions(self, sesion):
         sesion.fin_el = timezone.now()

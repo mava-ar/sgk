@@ -46,6 +46,10 @@ class MotivoConsulta(BaseModel, ShowInfoMixin):
         verbose_name_plural = "motivos de consulta"
 
     @property
+    def historial_sesiones(self):
+        return self.sesiones.order_by("-comienzo_el")
+
+    @property
     def sesiones_realizadas(self):
         return self.sesiones.count()
 
@@ -59,6 +63,7 @@ class MotivoConsulta(BaseModel, ShowInfoMixin):
             return self.planificaciones.filter(estado__in=Planificacion.estados_activos()).get()
         except:
             return None
+
 
 class Objetivo(BaseModel, ShowInfoMixin):
     """

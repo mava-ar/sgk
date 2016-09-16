@@ -49,11 +49,32 @@
                 </div>
                 <p>
                     <a class="btn btn-raised btn-warning" href="{% url 'sesion_create' paciente.pk motivo.pk %}">
-                        <i class="material-icons">transfer_within_a_station</i> Nueva sesión
+                        <i class="material-icons">transfer_within_a_station</i> Entrar en sesión
                     </a>
                     <span>Sesiones tomadas: {{ motivo.sesiones_realizadas }}</span> |
                     <span>Sesiones restantes: {{ motivo.sesiones_restantes }}</span>
                 </p>
+                {% if motivo.historial_sesiones %}
+                    <h3>Sesiones previas</h3>
+                <table class="table">
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Estado paciente</th>
+                        <th>Actividad</th>
+                        <th>Comentarios</th>
+                        <th>Duración</th>
+                    </tr>
+                    {% for sesion in motivo.historial_sesiones %}
+                        <tr>
+                            <td>{{ sesion.fecha }}</td>
+                            <td>{{ sesion.estado_paciente }}</td>
+                            <td>{{ sesion.actividad }}</td>
+                            <td>{{ sesion.comentarios }}</td>
+                            <td>({{ sesion.duracion }} min) {{ sesion.comienzo_el|date:"d/m/y h:i:s"}} - {{ sesion.fin_el|date:"h:i:s" }}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
+                {% endif %}
             </div>
         </div>
     {% empty %}

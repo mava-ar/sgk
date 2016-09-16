@@ -58,7 +58,7 @@
                 {% if object.paciente.tratamiento_activo %}
                     <a class="btn btn-raised btn-warning"
                        href="{% url 'sesion_create' object.paciente.pk object.paciente.tratamiento_activo.pk %}?turno={{ object.pk }}">
-                        <i class="material-icons">transfer_within_a_station</i> Sesión</a>
+                        <i class="material-icons">transfer_within_a_station</i> Entrar en sesión</a>
                 {% endif %}
                 <a class="btn btn-raised btn-info" href="{% url 'ficha_kinesica' object.paciente.pk %}">
                     <i class="material-icons">assignment</i> Ficha
