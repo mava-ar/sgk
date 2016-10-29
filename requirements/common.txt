@@ -19,5 +19,7 @@ pynliner==0.7.1
 raven
 
 djangorestframework==3.3.3
+djangorestframework-jwt==1.8.0
 python-dateutil==2.5.3
 django-material
+django-cors-headers

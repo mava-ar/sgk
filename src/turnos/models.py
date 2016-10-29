@@ -11,7 +11,7 @@ from tratamientos.models import Sesion
 
 class Turno(BaseModel):
     """
-    Reservación de un turno para una sesión en el consultorio.
+    Reserva de un turno para una sesión en el consultorio.
     """
     dia = models.DateField('día')
     hora = models.TimeField('hora')

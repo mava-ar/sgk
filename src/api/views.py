@@ -10,7 +10,6 @@ from .serializers import TurnoCalendarSerializer
 
 
 class AuthView(APIView):
-    authentication_classes = (SessionAuthentication, )
     permission_classes = (IsAuthenticated,)
 
 

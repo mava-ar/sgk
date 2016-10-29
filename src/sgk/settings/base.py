@@ -15,6 +15,8 @@ from sys import path
 
 ########## PATH CONFIGURATION
 # Absolute filesystem path to the Django project directory:
+import datetime
+
 DJANGO_ROOT = dirname(dirname(abspath(__file__)))
 
 # Absolute filesystem path to the top-level project folder:
@@ -55,6 +57,7 @@ INSTALLED_APPS = [
     'easy_thumbnails',
     'datetimewidget',
     'djangoformsetjs',
+    'corsheaders',
 
     'frontend',
     'dj_utils',
@@ -70,6 +73,7 @@ INSTALLED_APPS = [
 MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -110,8 +114,12 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.SessionAuthentication',
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
     )
 }
+JWT_EXPIRATION_DELTA = datetime.timedelta(minutes=60)
+JWT_ALLOW_REFRESH = True
+
 
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
@@ -325,3 +333,5 @@ BOOTSTRAP3 = {
 
      'set_placeholder': False,
 }
+
+CORS_ORIGIN_ALLOW_ALL = True

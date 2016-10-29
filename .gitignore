@@ -171,3 +171,7 @@ fabric.properties
 # *.iml
 # modules.xml
 
+fabfile.py
+docker-compose.yml
+collected_static
+bkp-dbs
