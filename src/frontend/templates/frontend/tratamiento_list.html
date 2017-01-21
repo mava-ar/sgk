@@ -47,12 +47,12 @@
                     {% endfor %}
                     </div>
                 </div>
-                <p>
+                <p class="session-info">
                     <a class="btn btn-raised btn-warning" href="{% url 'sesion_create' paciente.pk motivo.pk %}">
                         <i class="material-icons">transfer_within_a_station</i> Entrar en sesión
                     </a>
-                    <span>Sesiones tomadas: {{ motivo.sesiones_realizadas }}</span> |
-                    <span>Sesiones restantes: {{ motivo.sesiones_restantes }}</span>
+                    <span><i class="material-icons green icon-with-text md-36">check_circle</i> Sesiones tomadas: <strong>{{ motivo.sesiones_realizadas }}</strong></span>
+                    <span><i class="material-icons red icon-with-text md-36">schedule</i> Sesiones restantes: <strong>{{ motivo.sesiones_restantes }}</strong></span>
                 </p>
                 {% if motivo.historial_sesiones %}
                     <h3>Sesiones previas</h3>

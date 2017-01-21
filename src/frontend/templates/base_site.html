@@ -4,7 +4,7 @@
 <div class="navbar navbar-default">
     <div class="container-fluid">
         <div class="navbar-header">
-            <a href="{% url 'index' %}" class="navbar-brand">SGK</a>
+            <a href="{% url 'index' %}" class="navbar-brand">K I N E S</a>
             <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
                 {% bootstrap_icon "th" %}
             </button>
@@ -98,6 +98,9 @@
                 }).done(function(response) {
                     modal.html(response);
                 });
+            });
+            $("a.no-action").click(function(e) {
+                e.preventDefault();
             });
         });
     })(jQuery);

@@ -16,13 +16,17 @@ INSTALLED_APPS += (
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': "zweb",
-        'USER': "zweb",
-        'PASSWORD': "zweb",
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': "docker",
+        'USER': "docker",
+        'PASSWORD': "docker",
         "HOST": "127.0.0.1",
-        "POST": "3306"
+        "POST": "5432"
     }
 }
 
 COMPRESS_ENABLED = True
+
+MIDDLEWARE_CLASSES += [
+    'debug_toolbar.middleware.DebugToolbarMiddleware'
+]

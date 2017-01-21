@@ -1,3 +1,6 @@
+from datetime import date
+
+
 from django.contrib.auth.models import User
 from django.db import models
 
@@ -72,6 +75,11 @@ class Persona(BaseModel):
         verbose_name = "persona"
         verbose_name_plural = "personas"
 
+    @property
+    def edad(self):
+        today = date.today()
+        return today.year - self.fecha_nacimiento.year - (
+            (today.month, today.day) < (self.fecha_nacimiento.month, self.fecha_nacimiento.day))
 
 class Profesional(BaseModel):
     """

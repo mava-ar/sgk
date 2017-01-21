@@ -1,0 +1,32 @@
+{% load frontend_tags static %}
+<script type="text/javascript" src="{% static 'jquery.countdown/dist/jquery.countdown.js' %}" ></script>
+<footer class="navbar-default navbar-fixed-bottom">
+    <div class="container-fluid">
+        <p class="active-sessions">SESIONES ACTIVAS: </p>
+        {% for sesion in sesiones_activas %}
+            <div class="btn-group">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                    <img class="circle" src="{{ sesion.persona|profile_image }}" alt="icon">
+                    {{ sesion.paciente_nombre }} <span class="caret caret-up"></span>
+                </button>
+                <ul class="dropdown-menu drop-up" role="menu">
+                    <li><span id="clock_{{ sesion.paciente_pk }}" class="clock"></span></li>
+                    <li><a href="#" class="no-action">Comenzó: {{ sesion.comienzo_el|date:'h:i:s' }} hs</a></li>
+                    <li><a href="#" class="no-action">Edad: {{ sesion.persona.edad }}</a></li>
+                    <li class="divider"></li>
+                    <li><a href="{% url 'sesion_create' sesion.paciente_pk sesion.motivo_pk %}">Ir a sesión</a></li>
+                </ul>
+            </div>
+            <script type="text/javascript">
+                var $clock = $('#clock_{{ sesion.paciente_pk }}');
+                $clock.countdown(
+                        new Date({{ sesion.comienzo_el|date_to_millis }} + ({{ sesion.duracion }} * 60 * 1000)),
+                        {elapse: true}
+                ).on('update.countdown', function(event) {
+                    var $this = $(this);
+                    $(this).html(event.strftime('%H:%M:%S'));
+                });
+            </script>
+        {% endfor %}
+    </div>
+</footer>

@@ -81,7 +81,7 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.locale.LocaleMiddleware',
-    'pipeline.middleware.MinifyHTMLMiddleware',
+    'pipeline.middleware.MinifyHTMLMiddleware'
 ]
 
 ROOT_URLCONF = 'sgk.urls'
@@ -99,6 +99,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 "django.template.context_processors.media",
                 "django.template.context_processors.static",
+                "tratamientos.context_processors.sesiones_activas"
             ],
         },
     },

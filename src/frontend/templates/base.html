@@ -42,10 +42,15 @@
 
         {% block main_content %}{% endblock %}
         <div class="modal fade" id="modal"></div>
+        {% block floating_footer %}
+            {% if sesiones_activas %}
+                {% include 'includes/sesiones_activas.html' %}
+            {% endif %}
+        {% endblock %}
+        {% block footer %}
+            {% include 'includes/footer.html' %}
+        {% endblock %}
 
-        <div id="footer">
-            {% block footer %}{% endblock %}
-        </div>
 
         {% compress js %}
             {% javascript 'base_js' %}

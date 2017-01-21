@@ -15,28 +15,9 @@
             <div class="row">
 
                 <div class="col-sm-4" id="countdown" style="text-align: center">
-
-                    <h1 id="clock"></h1>
-
-                    <div class="btn-group" data-toggle="buttons">
-
-                        <label class="btn btn-raised btn-warning" id="btn-reset">
-                            <input type="radio" name="options" id="option2" autocomplete="off">
-                            <i class="material-icons">restore</i>
-                        </label>
-
-                        <label class="btn btn-raised btn-default" id="btn-pause">
-                            <input type="radio" name="options" id="option2" autocomplete="off">
-                            <i class="material-icons">pause</i>
-                        </label>
-
-                        <label class="btn btn-raised btn-success active" id="btn-resume">
-                            <input type="radio" name="options" id="option2" autocomplete="off" checked>
-                            <i class="material-icons">play_arrow</i>
-                        </label>
+                    <div class="form-group">
+                        <h1 id="clock"></h1>
                     </div>
-
-
                 </div>
                 <div class="col-sm-4">{% bootstrap_field form.fecha %}</div>
                 <div class="col-sm-4">{% bootstrap_field form.duracion %}</div>
@@ -110,16 +91,8 @@
                 $(this).html(event.strftime('%H:%M:%S'));
             });
 
-            $('#btn-reset').click(function() {
+            $("#id_duracion").change(function(){
                 $clock.countdown(getTimeFromNow());
-            });
-
-            $('#btn-pause').click(function() {
-                $clock.countdown('pause');
-            });
-
-            $('#btn-resume').click(function() {
-                $clock.countdown('resume');
             });
 
             $("#sesion_save_close").click(function(e){

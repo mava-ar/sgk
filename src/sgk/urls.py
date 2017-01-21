@@ -17,6 +17,7 @@ from django.conf import settings
 from django.conf.urls import url, include
 from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.views.static import serve
 
 from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token, verify_jwt_token
 
@@ -35,6 +36,5 @@ if settings.DEBUG:
     urlpatterns += staticfiles_urlpatterns()
     urlpatterns += [
         url(r'^%s/(?P<path>.*)$' % settings.MEDIA_URL.strip('/'),
-            'django.views.static.serve',
-            {'document_root': settings.MEDIA_ROOT, }),
+            serve, {'document_root': settings.MEDIA_ROOT, }),
     ]
