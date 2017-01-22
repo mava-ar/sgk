@@ -11,15 +11,21 @@ from django.template.loader import render_to_string
 from django.utils import timezone
 from django.contrib import messages
 from django.views.generic import TemplateView, ListView, CreateView, UpdateView, DeleteView, DetailView, RedirectView
+from django_filters.views import FilterView
+from django_tables2 import SingleTableMixin
 
 from enhanced_cbv.views.edit import InlineFormSetsView, EnhancedInlineFormSet
 
-from dj_utils.mixins import FichaKinesicaMixin, FichaKinesicaModalView
+from core.filters import PersonaListFilter
+from core.tables import PersonaTable
+from dj_utils.mixins import FichaKinesicaMixin, FichaKinesicaModalView, TableFilterListView
 from core.forms import PersonaForm, ContactoForm
 from core.models import Persona, Profesional
+from pacientes.filters import PacienteListFilter
 from pacientes.forms import PacienteForm, AntecedenteForm
 from pacientes.models import Paciente, Antecedente, ComentariosHistoriaClinica, ImagenesHistoriaClinica, \
     EntradaHistoriaClinica
+from pacientes.tables import PacienteTable
 from tratamientos.forms import (ObjetivoForm, MotivoConsultaForm, ObjetivoInlineFormset,
                                 ObjetivoCumplidoUpdateForm, PlanificacionCreateForm, NuevaSesionForm)
 from tratamientos.models import MotivoConsulta, Objetivo, Planificacion, Sesion
@@ -97,10 +103,10 @@ class TurnoDeleteView(LoginRequiredMixin, UpdateView):
             return HttpResponse('<p class="alert alert-danger">El turno no se pudo eliminar. Intente nuevamente..</p>')
 
 
-class PacienteListView(LoginRequiredMixin, ListView):
-
-    def get_queryset(self):
-        return Paciente.objects.all()
+class PacienteListView(TableFilterListView):
+    table_class = PacienteTable
+    filterset_class = PacienteListFilter
+    template_name = 'pacientes/paciente_list.html'
 
 
 class PacienteCreateView(LoginRequiredMixin, CreateView):
@@ -214,11 +220,10 @@ class PacienteEditView(LoginRequiredMixin, UpdateView):
         return reverse('ficha_kinesica', kwargs={'pk': self.object.pk})
 
 
-class PersonaListView(LoginRequiredMixin, ListView):
+class PersonaListView(TableFilterListView):
     template_name = "core/persona_list.html"
-
-    def get_queryset(self):
-        return Persona.objects.all()
+    table_class = PersonaTable
+    filterset_class = PersonaListFilter
 
 
 class PersonaCreateView(LoginRequiredMixin, CreateView):
@@ -228,6 +233,15 @@ class PersonaCreateView(LoginRequiredMixin, CreateView):
 
     def get_success_url(self):
         messages.add_message(self.request, messages.SUCCESS, "Entrada en la agenda añadida correctamente.")
+        return reverse('persona_list')
+
+
+class PersonaUpdateView(LoginRequiredMixin, UpdateView):
+    model = Persona
+    form_class = PersonaForm
+
+    def get_success_url(self):
+        messages.add_message(self.request, messages.SUCCESS, "Entrada en la agenda modificada correctamente.")
         return reverse('persona_list')
 
 
@@ -679,13 +693,14 @@ class HistoriaClinicaListView(LoginRequiredMixin, DetailView):
             object=self.object,
             entradas=EntradaHistoriaClinica.objects.select_subclasses().filter(
         paciente=self.object).order_by('-creado_el'))
-        return  self.render_to_response(context)
+        return self.render_to_response(context)
 
 
 index = IndexView.as_view()
 about = AboutView.as_view()
 persona_list = PersonaListView.as_view()
 persona_create = PersonaCreateView.as_view()
+persona_update = PersonaUpdateView.as_view()
 turno_list = TurnosListView.as_view()
 turno_create = TurnoCreateView.as_view()
 turno_update = TurnoEditView.as_view()

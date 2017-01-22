@@ -7,6 +7,7 @@ urlpatterns = [
     url(r'^sobre/$', views.about, name='about'),
     url(r'^personas/$', views.persona_list, name='persona_list'),
     url(r'^personas/nueva$', views.persona_create, name='persona_create'),
+    url(r'^personas/editar/(?P<pk>\d+)/$', views.persona_update, name="persona_update"),
     url(r'^turnos/$', views.turno_list, name='turno_list'),
     url(r'^turnos/nuevo$', views.turno_create, name='turno_create'),
     url(r'^turnos/editar/(?P<pk>\d+)/$', views.turno_update, name="turno_update"),

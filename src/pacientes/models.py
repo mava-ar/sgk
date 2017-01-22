@@ -17,7 +17,7 @@ class Paciente(BaseModel):
     fecha_ingreso = models.DateField('fecha de ingreso')
     observaciones = models.TextField('observaciones', blank=True)
     # relaciones
-    cobertura_medica = models.ForeignKey(Cobertura, verbose_name='cobertural', null=True)
+    cobertura_medica = models.ForeignKey(Cobertura, verbose_name='cobertura', null=True)
 
     def __str__(self):
         return "{}".format(self.persona)
@@ -32,6 +32,7 @@ class Paciente(BaseModel):
             return self.motivos_de_consulta.filter(planificaciones__estado__in=Planificacion.estados_activos()).get()
         except:
             return None
+
 
 class RegistroBiometrico(BaseModel, ShowInfoMixin):
     """
@@ -91,7 +92,6 @@ class Antecedente(BaseModel, ShowInfoMixin):
                   'estudios_complementarios', 'menarca', 'fum', 'tipo_partos', 'observaciones')
 
 
-
 class EntradaHistoriaClinica(BaseModel, ShowInfoMixin):
     paciente = models.ForeignKey(Paciente, related_name="entradas_historiaclinica")
     profesional = models.ForeignKey(Profesional)
@@ -104,7 +104,6 @@ class EntradaHistoriaClinica(BaseModel, ShowInfoMixin):
 
     def __str__(self):
         return "Entrada de {} por {}".format(self.paciente, self.profesional)
-
 
 
 class ComentariosHistoriaClinica(EntradaHistoriaClinica):

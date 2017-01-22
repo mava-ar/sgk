@@ -1,5 +1,5 @@
 {% extends "base_site.html" %}
-{% load bootstrap3 static frontend_tags %}
+{% load django_tables2 crispy_forms_tags %}
 {% block subtitle %}
     - Pacientes
 {% endblock %}
@@ -11,38 +11,8 @@
         </button>
         </a>
     </h2>
-{% buttons %}
-
-{% endbuttons %}
-    <table class="table table-condensed table-striped">
-        <thead>
-            <tr>
-                <th></th>
-                <th>Persona</th>
-                <th>Fecha de ingreso</th>
-                <th>Cobertura</th>
-                <th>Observaciones</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for t in object_list %}
-                <tr>
-                    <td class="img-thumb-table">
-                        <img class="img-responsive img-circle" src="{{ t.persona|profile_image }}" />
-                    </td>
-                    <td><strong>{{ t.persona }}</strong></td>
-                    <td>{{ t.fecha_ingreso }}</td>
-                    <td>{% if t.cobertura %} {{ t.cobertura }} {% else %}No especificada{% endif %}</td>
-                    <td>{{ t.observaciones }}</td>
-                    <td><div class="btn-group-sm">
-                        <a href="{% url 'paciente_update' t.pk %}" title="{{ t.persona }}" class="btn btn-fab btn-primary"><i class="material-icons">edit</i></a>
-                        <a href="{% url 'ficha_kinesica' t.pk %}" title="Ir a la ficha" class="btn btn-fab btn-info"><i class="material-icons">assignment</i></a>
-                    </div>
-
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="col-sm-9">
+    {% crispy filter.form %}
+    </div>
+    {% render_table table %}
 {% endblock %}

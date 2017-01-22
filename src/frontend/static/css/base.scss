@@ -12,7 +12,8 @@ body {
 }
 
 #content-main {
-    min-height: calc(100% - 127px);
+    min-height: calc(100% - 110px);
+    overflow: hidden;
 }
 
 #content-main + footer.navbar-fixed-bottom {
@@ -23,9 +24,9 @@ body {
 .float-action {
     position: fixed !important;
     float: right;
-    bottom: 10vh;
+    bottom: 8vh;
     right: 2vw;
-    z-index: 30;
+    z-index: 30000;
 }
 
 .float-circle {
@@ -55,6 +56,10 @@ body {
         display: block;
         margin: 15px;
     }
+}
+.table-container {
+    overflow: auto;
+    clear: both;
 }
 
 /* LOGIN */

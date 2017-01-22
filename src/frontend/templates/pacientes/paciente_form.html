@@ -1,22 +1,12 @@
 {% extends "base_site.html" %}
 {% load bootstrap3 %}
 {% block subtitle %}
-    {% if model.pk %}Editar paciente {% else %} Nuevo paciente {% endif %}
+    {% if object.pk %}Editar {% else %}Nuevo {% endif %}paciente
 {% endblock %}
 {% block content %}
-
+    <h2>{% if object.pk %}Editar paciente {{ object }}{% else %}Nuevo paciente{% endif %}</h2>
     <form method="POST" novalidate="" enctype="multipart/form-data">
-        <div class="row">
-            <div class="col-xs-6">
-                <h2>{% if object.pk %}Editar paciente {{ object }}{% else %}Nuevo paciente{% endif %}</h2>
-            </div>
-            <div class="col-xs-6">
-                <div class="pull-right">
-                    <button type="submit" class="btn btn-primary btn-raised">Guardar</button>
-                    <a href="{% url 'paciente_list' %}"><input type="button" class="btn btn-raised" value="Volver"/></a>
-                </div>
-            </div>
-        </div>
+
         <div class="row">
             {% csrf_token %}
             <div class="col-md-4 col-sm-6">
@@ -43,7 +33,18 @@
                     </div>
                 </div>
             </div>
+            <div class="col-md-4 col-sm-6">
+            {% buttons %}
+            <button type="submit" class="btn btn-primary btn-raised">
+                Guardar
+            </button>
+            <a href="{% url 'paciente_list' %}">
+                <input type="button" class="btn btn-danger btn-raised" value="Volver"/>
+            </a>
+            {% endbuttons %}
+            </div>
         </div>
+
     </form>
 
 {% endblock %}

@@ -175,3 +175,4 @@ fabfile.py
 docker-compose.yml
 collected_static
 bkp-dbs
+.secret

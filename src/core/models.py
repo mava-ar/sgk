@@ -1,6 +1,7 @@
 from datetime import date
 
-
+from django.core.files.storage import get_storage_class
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
 
@@ -32,6 +33,17 @@ class Contacto(BaseModel):
     def __str__(self):
         return u"{} {}".format(
                 self.nombre, self.apellido)
+
+    def get_basic_info(self):
+        info = []
+        if self.telefono:
+            info.append('Tel: {}'.format(self.telefono))
+        if self.celular:
+            info.append('Cel: {}'.format(self.celular))
+        if self.email:
+            info.append('Email: {}'.format(self.email))
+        return info
+
 
 
 class Persona(BaseModel):
@@ -80,6 +92,28 @@ class Persona(BaseModel):
         today = date.today()
         return today.year - self.fecha_nacimiento.year - (
             (today.month, today.day) < (self.fecha_nacimiento.month, self.fecha_nacimiento.day))
+
+    @property
+    def avatar(self):
+        return self._avatar("50x50")
+
+    @property
+    def avatar_lg(self):
+        return self._avatar("250x250")
+
+    def _avatar(self, size):
+        if self.imagen_perfil:
+            img = self.imagen_perfil["avatar"].url
+        else:
+            static_storage = get_storage_class(settings.STATICFILES_STORAGE)()
+            if self.genero == 'F':
+                img = static_storage.url("img/icons/{}/mujer.png".format(size))
+            elif self.genero == 'M':
+                img = static_storage.url("img/icons/{}/hombre.png".format(size))
+            else:
+                img = static_storage.url("img/icons/{}/desconocido.png".format(size))
+        return img
+
 
 class Profesional(BaseModel):
     """

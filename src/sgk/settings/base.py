@@ -58,6 +58,9 @@ INSTALLED_APPS = [
     'datetimewidget',
     'djangoformsetjs',
     'corsheaders',
+    'django_tables2',
+    'django_filters',
+    'crispy_forms',
 
     'frontend',
     'dj_utils',
@@ -121,7 +124,7 @@ REST_FRAMEWORK = {
 JWT_EXPIRATION_DELTA = datetime.timedelta(minutes=60)
 JWT_ALLOW_REFRESH = True
 
-
+CRISPY_TEMPLATE_PACK = 'bootstrap3'
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 

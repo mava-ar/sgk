@@ -1,5 +1,8 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
+from django_filters.views import FilterView
+from django_tables2 import SingleTableMixin
 
 
 class ShowInfoMixin(object):
@@ -58,7 +61,7 @@ class ModelViewMixin(object):
     """
     Utilizar este mixin en las vistas que serán utilizadas con bootstrap modal.
     Exige definir un url_post_form para insertar en el template de manera de
-    que el form cuento con un action válido.
+    que el form cuente con un action válido.
     """
     template_name = "frontend/entrada_form.html"
 
@@ -77,3 +80,10 @@ class ModelViewMixin(object):
 
 class FichaKinesicaModalView(FichaKinesicaMixin, ModelViewMixin):
     pass
+
+
+class TableFilterListView(LoginRequiredMixin, SingleTableMixin, FilterView):
+    """
+    Una vista que requiere autenticación, y espera que se defina la tabla y
+    el filtrado de la misma
+    """
