@@ -138,6 +138,7 @@ class PacienteCreateView(LoginRequiredMixin, CreateView):
         else:
             return self.form_invalid(form, persona_form, contacto_form)
 
+    @atomic
     def form_valid(self, form, persona_form, contacto_form):
         persona = persona_form.save(commit=False)
         contacto = contacto_form.save(commit=False)
@@ -190,6 +191,7 @@ class PacienteEditView(LoginRequiredMixin, UpdateView):
         else:
             return self.form_invalid(form, persona_form, contacto_form)
 
+    @atomic
     def form_valid(self, form, persona_form, contacto_form):
         persona = persona_form.save(commit=False)
         contacto = contacto_form.save(commit=False)

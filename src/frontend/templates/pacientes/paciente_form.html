@@ -58,9 +58,18 @@
                     $("#id_cobertura_medica").closest(".form-group").show();
                 }
             };
+            var show_nueva_cobertura = function() {
+                if($("#id_cobertura_medica").is(':visible') && $("#id_cobertura_medica").val() == '-1'){
+                    $("#id_nueva_cobertura").closest(".form-group").show()
+                } else {
+                    $("#id_nueva_cobertura").closest(".form-group").hide()
+                }
+            };
             $(document).ready(function(){
                 cobertura_change();
+                show_nueva_cobertura();
                 $("#id_particular").change(cobertura_change);
+                $("#id_cobertura_medica").change(show_nueva_cobertura);
             });
         })(jQuery);
 

@@ -30,7 +30,9 @@ class Cobertura(BaseModel):
     objects = CoberturaManager()
 
     def __str__(self):
-        return "{}".format(self.nombre if not self.codigo else self.codigo)
+        if self.codigo:
+            return "{} ({})".format(self.nombre, self.codigo)
+        return self.nombre
 
     class Meta:
         verbose_name = "cobertura médica"
