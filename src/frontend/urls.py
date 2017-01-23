@@ -38,4 +38,6 @@ urlpatterns = [
     url(r'^fichakinesica/(?P<pk>\d+)/hc_comentario/(?P<pk_comentario>\d+)/$', views.comentario_hc_update, name="comentario_hc_update"),
     url(r'^fichakinesica/(?P<pk>\d+)/hc_imagen/$', views.imagen_hc_create, name="imagen_hc_create"),
     url(r'^fichakinesica/(?P<pk>\d+)/hc_imagen/(?P<pk_imagen>\d+)/$', views.imagen_hc_update, name="imagen_hc_update"),
+
+    url(r'^coberturas/', include('coberturas_medicas.urls'))
 ]

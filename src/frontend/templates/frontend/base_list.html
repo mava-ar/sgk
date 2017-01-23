@@ -1,0 +1,18 @@
+{% extends "base_site.html" %}
+{% load django_tables2 crispy_forms_tags %}
+{% block subtitle %}
+    :: {{ title }}
+{% endblock %}
+{% block content %}
+    <h2>{{ title }}
+        <a href="{{ create_link }}" class="pull-right">
+        <button type="button" class="btn btn-fab btn-danger float-action">
+          <i class="material-icons">add</i>
+        </button>
+        </a>
+    </h2>
+    <div class="col-sm-9">
+        {% crispy filter.form %}
+    </div>
+    {% render_table table %}
+{% endblock %}

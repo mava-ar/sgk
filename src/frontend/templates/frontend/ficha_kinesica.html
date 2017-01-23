@@ -34,7 +34,7 @@
 
                         <div>Nombre: <strong>{{ paciente.persona }}</strong></div>
                         <div>Edad: <strong>{{ paciente.persona.edad }}</strong></div>
-                        <div>DNI: <strong>{{ paciente.persona.dni|default_if_none:"No definido" }}</strong></div>
+                        <div>Cobertura: <strong>{{ paciente.cobertura_medica|default_if_none:"No definido" }}</strong></div>
                         <div>Género: <strong>{{ paciente.persona.get_genero_display }}</strong></div>
                         <div>Fecha de ingreso: <strong>{{ paciente.fecha_ingreso }}</strong></div>
                     </div>

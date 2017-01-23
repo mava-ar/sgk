@@ -87,3 +87,11 @@ class TableFilterListView(LoginRequiredMixin, SingleTableMixin, FilterView):
     Una vista que requiere autenticación, y espera que se defina la tabla y
     el filtrado de la misma
     """
+    template_name = 'frontend/base_list.html'
+
+    add_to_context = {}
+
+    def get_context_data(self, **kwargs):
+        ctx = super(TableFilterListView, self).get_context_data(**kwargs)
+        ctx.update(self.add_to_context)
+        return ctx

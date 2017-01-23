@@ -33,18 +33,38 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-4 col-sm-6">
-            {% buttons %}
+
+        </div>
+        {% buttons %}
             <button type="submit" class="btn btn-primary btn-raised">
                 Guardar
             </button>
             <a href="{% url 'paciente_list' %}">
                 <input type="button" class="btn btn-danger btn-raised" value="Volver"/>
             </a>
-            {% endbuttons %}
-            </div>
-        </div>
-
+        {% endbuttons %}
     </form>
 
 {% endblock %}
+{% block extra_js %}
+    {{ block.super }}
+    <script type="text/javascript">
+
+        (function($){
+            var cobertura_change = function () {
+                if ($("#id_particular").is(':checked')) {
+                    $("#id_cobertura_medica").closest(".form-group").hide();
+                } else {
+                    $("#id_cobertura_medica").closest(".form-group").show();
+                }
+            };
+            $(document).ready(function(){
+                cobertura_change();
+                $("#id_particular").change(cobertura_change);
+            });
+        })(jQuery);
+
+    </script>
+
+{% endblock %}
+

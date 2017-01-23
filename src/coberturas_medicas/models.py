@@ -1,6 +1,8 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
 
+from coberturas_medicas.managers import CoberturaManager
 from dj_utils.models import BaseModel
 
 
@@ -17,18 +19,28 @@ class Cobertura(BaseModel):
     email = models.EmailField('email', blank=True)
 
     activo = models.BooleanField(verbose_name='activo', default=True)
-
+    cobertura_propia = models.BooleanField(verbose_name='cobertura propia', default=False,
+                                           help_text='No es una cobertura, sino el pago del servicio por el particular')
     paga_por_sesion = models.BooleanField(
         verbose_name="paga por sesión", default=False,
         help_text="Seleccionar para indicar que la cobertura paga cada sesión individualmente.")
+
     # contacto = models.ManyToOneRel(Contacto, verbose_name=u'Contacto', null=True, related_name='obrasocial')
 
+    objects = CoberturaManager()
+
     def __str__(self):
-        return "{}".format(self.nombre)
+        return "{}".format(self.nombre if not self.codigo else self.codigo)
 
     class Meta:
         verbose_name = "cobertura médica"
         verbose_name_plural = "coberturas médicas"
+
+    def clean(self):
+        if self.cobertura_propia:
+            others = self.objects.filter(cobertura_propia=True)
+            if (self.pk and others.exclude(pk=self.pk).exists()) or (self.pk is None and others.exists()):
+                raise ValidationError('Sólo es posible una sóla cobertura particular.')
 
 
 class RegistroValorPrestacion(BaseModel):
