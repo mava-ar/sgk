@@ -43,10 +43,6 @@ class IndexView(LoginRequiredMixin, TemplateView):
         return HttpResponseRedirect(reverse('turno_list'))
 
 
-class AboutView(LoginRequiredMixin, TemplateView):
-    template_name = "frontend/about.html"
-
-
 class TurnosListView(LoginRequiredMixin, TemplateView):
     template_name = "turnos/turno_list.html"
 
@@ -699,7 +695,6 @@ class HistoriaClinicaListView(LoginRequiredMixin, DetailView):
 
 
 index = IndexView.as_view()
-about = AboutView.as_view()
 persona_list = PersonaListView.as_view()
 persona_create = PersonaCreateView.as_view()
 persona_update = PersonaUpdateView.as_view()

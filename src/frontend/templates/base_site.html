@@ -39,7 +39,6 @@
             {% endif %}
             <div class="nav navbar-nav navbar-right">
             {% block header %}
-                <li><a href="{% url 'about' %}">Sobre SGK</a></li>
                 {% if user.is_authenticated %}
                     <li class="dropdown">
                         <a class="dropdown-toggle" data-toggle="dropdown" href="#">

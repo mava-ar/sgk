@@ -4,7 +4,6 @@ from frontend import views
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
-    url(r'^sobre/$', views.about, name='about'),
     url(r'^personas/$', views.persona_list, name='persona_list'),
     url(r'^personas/nueva$', views.persona_create, name='persona_create'),
     url(r'^personas/editar/(?P<pk>\d+)/$', views.persona_update, name="persona_update"),
