@@ -22,6 +22,7 @@ class Contacto(BaseModel):
     apellido = models.CharField('npellido', max_length=255, blank=True)
     telefono = models.CharField('teléfono', max_length=255, blank=True)
     celular = models.CharField('celular', max_length=255, blank=True)
+    notificar_sms = models.BooleanField('notificar por SMS', default=True)
     email = models.EmailField('e-mail', blank=True)
     horario = models.CharField('horario de contacto', max_length=255, blank=True)
     observaciones = models.TextField('observaciones', blank=True)

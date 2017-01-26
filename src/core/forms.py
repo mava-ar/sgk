@@ -20,4 +20,4 @@ class ContactoForm(forms.ModelForm):
 
     class Meta:
         model = Contacto
-        fields = ('telefono', 'celular', 'email', 'horario')
+        fields = ('telefono', 'celular', 'notificar_sms', 'email', 'horario')
