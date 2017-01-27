@@ -13,7 +13,7 @@ install:
   - pip install -r requirements/dev.txt
   - cd src
   - cp sgk/settings/local{_example,}.py
-  - python manage.py migrate
+  - python manage.py migrate --settings=sgk.settings.test
  
 # database creation
 #before_script:
