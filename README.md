@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/mava-ar/sgk.svg?branch=master)](https://travis-ci.org/mava-ar/sgk)
+
 SGK - Sistema de gestión kinesiológico
 ======================================
 
