@@ -30,3 +30,7 @@ COMPRESS_ENABLED = True
 MIDDLEWARE_CLASSES += [
     'debug_toolbar.middleware.DebugToolbarMiddleware'
 ]
+
+# smsc service
+SMSC_ALIAS = ''
+SMSC_APIKEY = ''

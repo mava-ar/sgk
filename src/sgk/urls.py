@@ -36,5 +36,6 @@ if settings.DEBUG:
     urlpatterns += staticfiles_urlpatterns()
     urlpatterns += [
         url(r'^%s/(?P<path>.*)$' % settings.MEDIA_URL.strip('/'),
-            serve, {'document_root': settings.MEDIA_ROOT, }),
+            serve,
+            {'document_root': settings.MEDIA_ROOT, }),
     ]

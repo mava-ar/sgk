@@ -6,7 +6,7 @@ DEBUG_PROPAGATE_EXCEPTIONS = DEBUG
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': '../zweb.db',
+        'NAME': 'sgk.db',
         'USER': '',
         'PASSWORD': '',
         'HOST': '',

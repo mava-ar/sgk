@@ -13,3 +13,7 @@ DATABASES = {
 }
 
 ALLOWED_HOSTS = ['127.0.0.1', ]
+
+# smsc service
+SMSC_ALIAS = ''
+SMSC_APIKEY = ''

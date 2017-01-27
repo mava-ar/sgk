@@ -21,11 +21,14 @@ class Contacto(BaseModel):
     nombre = models.CharField('nombre', max_length=255, blank=True)
     apellido = models.CharField('npellido', max_length=255, blank=True)
     telefono = models.CharField('teléfono', max_length=255, blank=True)
-    celular = models.CharField('celular', max_length=255, blank=True)
-    notificar_sms = models.BooleanField('notificar por SMS', default=True)
+    celular = models.CharField('celular', max_length=255, blank=True, help_text="Sin guiones ni espacios.")
+
     email = models.EmailField('e-mail', blank=True)
     horario = models.CharField('horario de contacto', max_length=255, blank=True)
     observaciones = models.TextField('observaciones', blank=True)
+
+    # notificaciones
+    notificar_sms = models.BooleanField('notificar por SMS', default=True)
 
     class Meta:
         verbose_name = u"contacto"
@@ -44,7 +47,6 @@ class Contacto(BaseModel):
         if self.email:
             info.append('Email: {}'.format(self.email))
         return info
-
 
 
 class Persona(BaseModel):
@@ -122,13 +124,15 @@ class Profesional(BaseModel):
     el cual puede tomar turnos y pacientes.
 
     """
+    titulo = models.CharField("título", max_length=64, blank=True, help_text="Ej: Lic.")
     persona = models.OneToOneField(Persona, verbose_name='persona')
     usuario = models.OneToOneField(User, verbose_name='usuario', null=True)
     observaciones = models.TextField('observaciones', blank=True)
 
     def __str__(self):
-        return "{}".format(
-                self.persona.nombre)
+        if self.titulo:
+            return "{} {}".format(self.titulo, self.persona.nombre)
+        return "{}".format(self.persona.nombre)
 
     class Meta:
         verbose_name = "profesional"
