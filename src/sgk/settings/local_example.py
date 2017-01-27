@@ -9,6 +9,7 @@ DEBUG = True
 INSTALLED_APPS += (
     'django_extensions',
     'debug_toolbar',
+    'template_repl',
 )
 
 # Database
@@ -26,6 +27,13 @@ DATABASES = {
 }
 
 COMPRESS_ENABLED = True
+PIPELINE.update({'PIPELINE_ENABLED': False})
+
+DEBUG_TOOLBAR_CONFIG = {
+    'JQUERY_URL': 'http://127.0.0.1:8000/static/jquery/dist/jquery.js',
+}
+
+DJAUTH_BASE_TEMPLATE = 'base.html'
 
 MIDDLEWARE_CLASSES += [
     'debug_toolbar.middleware.DebugToolbarMiddleware'

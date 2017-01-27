@@ -10,9 +10,10 @@ env:
 
 # command to install dependencies
 install:
-  - "pip install -r requirements/common.txt"
-  - "cd src"
-  - "python manage.py migrate"
+  - pip install -r requirements/dev.txt
+  - cd src
+  - cp sgk/settings/local{_example,}.py
+  - python manage.py migrate
  
 # database creation
 #before_script:
@@ -21,4 +22,5 @@ install:
 #  - psql -c 'CREATE EXTENSION postgis_topology;' -U postgres -d preciosa
 
 # command to run tests
-script: ls && python manage.py test
+script:
+  - python manage.py test --settings=sgk.settings.test
