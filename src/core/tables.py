@@ -26,5 +26,5 @@ class PersonaTable(DefaultTable):
 
     class Meta(DefaultTable.Meta):
         model = Persona
-        fields = ('avatar', 'nombre',  'apellido', 'fecha_nacimiento', 'edad', 'genero',
+        fields = ('avatar', 'nombre', 'apellido', 'fecha_nacimiento', 'edad', 'genero',
                   'estado_civil', 'DNI', 'domicilio', 'profesion', 'contacto', 'observaciones', 'acciones')

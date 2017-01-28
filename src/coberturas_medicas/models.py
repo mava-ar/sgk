@@ -35,6 +35,7 @@ class Cobertura(BaseModel):
         return self.nombre
 
     class Meta:
+        ordering = ('nombre', )
         verbose_name = "cobertura médica"
         verbose_name_plural = "coberturas médicas"
 

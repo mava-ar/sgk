@@ -87,6 +87,7 @@ class Persona(BaseModel):
                 self.nombre, self.apellido)
 
     class Meta:
+        ordering = ('nombre', 'apellido', )
         verbose_name = "persona"
         verbose_name_plural = "personas"
 

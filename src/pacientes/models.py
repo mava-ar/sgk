@@ -23,6 +23,7 @@ class Paciente(BaseModel):
         return "{}".format(self.persona)
 
     class Meta:
+        ordering = ('persona', )
         verbose_name = "paciente"
         verbose_name_plural = "pacientes"
 
