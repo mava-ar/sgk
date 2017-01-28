@@ -76,7 +76,11 @@ textarea.form-control {
 .form-group {
     margin: 15px 0 0 0;
 }
-
+.form-inline {
+    .form-group{
+        margin-right: 15px;
+    }
+}
 /* Main classes */
 .main-footer {
     background-color: #92cf94;
