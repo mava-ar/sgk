@@ -10,14 +10,12 @@
             <div class="col-sm-12">
                 <h2>Ficha kinésica de {{ paciente.persona }}</h2>
                 <p>
-                <a class="btn btn-raised btn-danger" href="{% url 'ficha_kinesica' paciente.pk %}"><i class="material-icons">assignment</i> Ficha kinésica</a>
+                <a class="btn btn-raised btn-danger" href="{% url 'ficha_kinesica' paciente.pk %}">
+                    <i class="material-icons">assignment</i> Ficha kinésica</a>
                 <a class="btn btn-raised btn-info" href="{% url 'tratamiento_list' paciente.pk %}">Tratamientos</a>
-{#                <a class="btn btn-warning">Nueva sesión</a>#}
                     {% block extra_button %}{% endblock %}
                 </p>
-
             </div>
-
 
             <div class="col-sm-3">
             {% block left_sidebar %}
@@ -31,7 +29,6 @@
                             <img class="img-responsive img-circle"
                                  src="{{ paciente.persona|profile_image:"perfil" }}" />
                         </div>
-
                         <div>Nombre: <strong>{{ paciente.persona }}</strong></div>
                         <div>Edad: <strong>{{ paciente.persona.edad }}</strong></div>
                         <div>Cobertura: <strong>{{ paciente.cobertura_medica|default_if_none:"No definido" }}</strong></div>
@@ -40,11 +37,11 @@
                     </div>
                     <div class="panel-footer">
                         <a class="btn btn-raised btn-success" data-toggle="modal" href="{% url 'comentario_hc_create' paciente.pk %}"
-                           data-target="#modal" data-tooltip >Añadir comentario</a>
+                           data-target="#modal" data-tooltip ><i class="material-icons">add</i> comentario</a>
                         <a class="btn btn-raised btn-success" data-toggle="modal" href="{% url 'imagen_hc_create' paciente.pk %}"
-                           data-target="#modal" data-tooltip >Añadir imagen</a>
+                           data-target="#modal" data-tooltip ><i class="material-icons">add</i> imagen</a>
                         <a class="btn btn-raised btn-success" data-toggle="modal" href="{% url 'imagen_hc_create' paciente.pk %}"
-                           data-target="#modal" data-tooltip >Añadir archivo</a>
+                           data-target="#modal" data-tooltip ><i class="material-icons">add</i> archivo</a>
                     </div>
                 </div>
             {% endblock %}
@@ -78,7 +75,7 @@
             });
             // Enable on all forms
             $('form').areYouSure();
-            $(".sticky").sticky({topSpacing:15,bottomSpacing:130});
+            $(".sticky").sticky({topSpacing:15,bottomSpacing:80});
         })(jQuery);
     </script>
 

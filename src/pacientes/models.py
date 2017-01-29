@@ -28,10 +28,10 @@ class Paciente(BaseModel):
         verbose_name_plural = "pacientes"
 
     def tratamiento_activo(self):
-        from tratamientos.models import Planificacion
+        from tratamientos.models import Planificacion, MotivoConsulta
         try:
             return self.motivos_de_consulta.filter(planificaciones__estado__in=Planificacion.estados_activos()).get()
-        except:
+        except MotivoConsulta.DoesNotExist:
             return None
 
 

@@ -90,7 +90,7 @@ class Objetivo(BaseModel, ShowInfoMixin):
 
     @property
     def cumplido(self):
-        return not self.fecha_cumplido is None
+        return self.fecha_cumplido is not None
 
 
 class Planificacion(BaseModel):

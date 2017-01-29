@@ -31,19 +31,9 @@
                     <div class="col-sm-12">
                     <h3>Objetivos</h3>
                     {% for obj in motivo.objetivos.all %}
-                        <p>
-                            <h4>
-                            <a href="{% url 'objetivo_update' paciente.pk obj.pk %}" title="Marcar como cumplido">
-                                <i class="fa fa-square-o"></i>
-                            </a>
-                            {{ obj.descripcion }}
-                            {% if obj.observaciones %}<small>{{ obj.observaciones }}</small>{% endif %}
-
-                            <a href="{% url 'objetivo_update' paciente.pk obj.pk %}">
-                                <i class="fa fa-edit"></i>
-                            </a>
-                             </h4>
-                        </p>
+                        <div id="objetivo_{{ paciente.pk }}_{{ obj.pk }}">
+                            {% include "tratamientos/includes/objectivo_inline.html" with objetivo=obj paciente=paciente %}
+                        </div>
                     {% endfor %}
                     </div>
                 </div>

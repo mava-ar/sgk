@@ -16,22 +16,38 @@ class MotivoConsultaForm(forms.ModelForm):
 
 
 class ObjetivoForm(forms.ModelForm):
+    cumplido = forms.BooleanField(label='Objetivo cumplido', required=False)
 
     class Meta:
         model = Objetivo
-        fields = ('descripcion', 'observaciones')
+        fields = ('descripcion', 'observaciones', 'cumplido')
+
+    def __init__(self, **kwargs):
+        super(ObjetivoForm, self).__init__(**kwargs)
+        if self.instance:
+            self.initial["cumplido"] = self.instance.fecha_cumplido is not None
+
+    def save(self, commit=True):
+        if "cumplido" in self.cleaned_data and self.cleaned_data["cumplido"]:
+            fecha_cumplido = timezone.now()
+            del self.cleaned_data["cumplido"]
+        else:
+            fecha_cumplido = None
+        instance = super(ObjetivoForm, self).save(commit=False)
+        instance.fecha_cumplido = fecha_cumplido
+        if commit:
+            instance.save()
+        return instance
 
 
-ObjetivoInlineFormset = inlineformset_factory(MotivoConsulta, Objetivo, form=ObjetivoForm, extra=1)
+ObjetivoInlineFormset = inlineformset_factory(MotivoConsulta, Objetivo, form=ObjetivoForm, extra=1, can_delete=True)
 
 
 class ObjetivoCumplidoUpdateForm(forms.ModelForm):
+
     class Meta:
         model = Objetivo
-        fields = ('fecha_cumplido', )
-        widgets = {
-            'fecha_cumplido': forms.HiddenInput()
-        }
+        fields = ('id', )
 
 
 class PlanificacionCreateForm(forms.ModelForm):

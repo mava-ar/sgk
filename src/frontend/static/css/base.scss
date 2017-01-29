@@ -75,6 +75,14 @@ textarea.form-control {
 
 .form-group {
     margin: 15px 0 0 0;
+    .help-block {
+        position: relative;
+        width: 100%;
+        margin-bottom: -5px;
+    }
+    & > .help-block {
+       margin-bottom: -15px;
+    }
 }
 .form-inline {
     .form-group{

@@ -1,0 +1,41 @@
+<div>
+    <h4>
+    {% if objetivo.cumplido %}
+        <a href="#" id="toggle_{{ paciente.pk }}_{{ objetivo.pk }}" title="Marcar como NO cumplido">
+            {% spaceless %}<i class="fa fa-check"></i>{% endspaceless %}</a>
+    {% else %}
+        <a href="#" id="toggle_{{ paciente.pk }}_{{ objetivo.pk }}" title="Marcar como cumplido">
+            {% spaceless %}<i class="fa fa-square-o"></i>{% endspaceless %}</a>
+    {% endif %}
+    {{ objetivo.descripcion }}
+    {% if objetivo.observaciones %}<small>{{ objetivo.observaciones }}</small>{% endif %}
+
+    <a href="{% url 'objetivo_update' paciente.pk objetivo.pk %}">
+        <i class="fa fa-edit"></i>
+    </a>
+    </h4>
+</div>
+<script>
+    (function($){
+        var send_toggle_cumplido = function() {
+            $.ajax('{% url 'objetivo_cumplido_toggle' paciente.pk objetivo.pk %}', {
+                data: JSON.stringify({'id': '{{ objetivo.pk }}'}),
+                method: 'POST',
+                success: function(data) {
+                    console.log(data);
+                    $("#objetivo_{{ paciente.pk }}_{{ objetivo.pk }}").html(data.html);
+                    console.log(data.status);
+                }
+            });
+        };
+        $("#toggle_{{ paciente.pk }}_{{ objetivo.pk }}").one('click', function(e){
+            e.preventDefault();
+            showConfirm(
+                        'Objectivos',
+                        '¿Desea marcar <strong>{{ objetivo.descripcion  }}</strong> como {% if objetivo.cumplido %}NO {% endif %}cumplido?',
+                        send_toggle_cumplido, function(){}, 'btn-success'
+                );
+
+        });
+    })(jQuery);
+</script>

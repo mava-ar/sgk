@@ -1,8 +1,6 @@
 {% extends "frontend/ficha_kinesica.html" %}
 {% load bootstrap3 static frontend_tags formset_tags %}
-{#{% block extra_head %}#}
-{#{{ objetivo_formset.media }}#}
-{#{% endblock %}#}
+
 {% block subtitle %}
     Ficha Kinésica - Tratamiento
 {% endblock %}
@@ -26,19 +24,22 @@
             <div class="panel panel-success">
                 <div class="panel-heading">Objetivos</div>
                 <div class="panel-body">
+
                     <div id="formset" data-formset-prefix="{{ formset.prefix }}">
                         {{ objetivo_formset.management_form }}
 
-                        <div data-formset-body>
+                        <div data-formset-body class="row">
                             <!-- New forms will be inserted in here -->
                             {% for form_inline in objetivo_formset %}
-                                <div data-formset-form>
+                                <div data-formset-form class="col-md-6 col-lg-4">
+                                <div class="panel panel-default"><div class="panel-body">
                                     {% bootstrap_field form_inline.descripcion %}
                                     {% bootstrap_field form_inline.observaciones %}
-                                    {{ form_inline.DELETE }} ¿Quitar?
+                                    {% bootstrap_field form_inline.cumplido %}
+                                    {% bootstrap_field form_inline.DELETE %}
                                     {% bootstrap_field form_inline.id %}
                                     {% bootstrap_field form_inline.motivo_consulta %}
-                                    <hr />
+                                </div></div>
                                 </div>
                             {% endfor %}
                         </div>
@@ -46,14 +47,17 @@
                         <!-- The empty form template. By wrapping this in a <script> tag, the
                         __prefix__ placeholder can easily be replaced in both attributes and
                         any scripts -->
+
                         <script type="form-template" data-formset-empty-form>
                             {% escapescript %}
-                                <div data-formset-form>
-                                    <hr />
+                                <div data-formset-form class="col-md-6 col-lg-4">
+                                <div class="panel panel-default"><div class="panel-body">
                                     {% bootstrap_field objetivo_formset.empty_form.descripcion %}
                                     {% bootstrap_field objetivo_formset.empty_form.observaciones %}
-                                    {% bootstrap_field objetivo_formset.empty_form.DELETE show_label=False %}
-        {#                            <button type="button" data-formset-delete-button>Borrar</button>#}
+                                    {% bootstrap_field objetivo_formset.empty_form.cumplido %}
+                                    {% bootstrap_field objetivo_formset.empty_form.DELETE %}
+                                    {% bootstrap_field objetivo_formset.empty_form.motivo_consulta %}
+                                </div></div>
                                 </div>
                             {% endescapescript %}
                         </script>
@@ -79,8 +83,12 @@
     <script type="text/javascript" src="{% static 'js/jquery.formset.js' %}" ></script>
     <script type="text/javascript">
         (function($){
-            $("#formset").formset({
-                animateForms: true
+            $(document).ready(function() {
+                $("#formset").formset({
+                    animateForms: true,
+                }).on('formAdded', function(event) {
+                    $.material.init();
+                });
             });
         })(jQuery);
 
