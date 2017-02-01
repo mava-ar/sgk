@@ -11,7 +11,7 @@ from .smsc import SmscApi
 logger = get_task_logger(__name__)
 
 
-@periodic_task(run_every=(crontab(minute='30', hour='07')), name="send_sms_notifications", ignore_result=True)
+@periodic_task(run_every=(crontab(minute='30', hour='08')), name="send_sms_notifications", ignore_result=True)
 def send_sms_notifications():
     hoy = timezone.now()
     sms_api = SmscApi()
