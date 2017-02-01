@@ -16,7 +16,8 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
 from dj_utils.mixins import FichaKinesicaMixin
 from tratamientos.forms import (ObjetivoForm, MotivoConsultaForm, ObjetivoInlineFormset,
-                                PlanificacionCreateForm, NuevaSesionForm, ObjetivoCumplidoUpdateForm)
+                                PlanificacionCreateForm, NuevaSesionForm, ObjetivoCumplidoUpdateForm,
+                                SesionUpdateForm)
 from tratamientos.models import MotivoConsulta, Objetivo, Planificacion, Sesion
 from turnos.models import Turno
 
@@ -262,12 +263,28 @@ class SesionDeleteView(LoginRequiredMixin, FichaKinesicaMixin, DeleteView):
     def get_success_url(self):
         messages.add_message(self.request, messages.SUCCESS,
                              "La sesión fue eliminada correctamente.")
-        return reverse('ficha_kinesica', kwargs={'pk': self.paciente.pk })
+        return reverse('tratamiento_list', kwargs={'pk': self.paciente.pk })
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
         self.object.delete()
         return HttpResponseRedirect(self.get_success_url())
+
+
+class SesionUpdateView(LoginRequiredMixin, FichaKinesicaMixin, UpdateView):
+    model = Sesion
+    form_class = SesionUpdateForm
+    template_name = "frontend/sesion_update_form.html"
+
+    def get_object(self, queryset=None):
+        pk = self.kwargs.get('pk_sesion', None)
+        self.object = Sesion.objects.get(pk=pk)
+        return self.object
+
+    def get_success_url(self):
+        messages.add_message(self.request, messages.SUCCESS,
+                             "La sesión fue actualizada correctamente.")
+        return reverse('tratamiento_list', kwargs={'pk': self.paciente.pk })
 
 
 tratamiento_list = TratamientoListView.as_view()
@@ -278,4 +295,4 @@ objetivo_cumplido_toggle = ObjetivoToggleCheckView.as_view()
 sesion_create = SesionCreateView.as_view()
 sesion_save_close = SesionSaveAndCloseView.as_view()
 sesion_delete = SesionDeleteView.as_view()
-# planificacion_create = PlanificacionCreateView.as_view()
+sesion_update = SesionUpdateView.as_view()

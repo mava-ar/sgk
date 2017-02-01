@@ -1,0 +1,51 @@
+{% extends "frontend/ficha_kinesica.html" %}
+{% load bootstrap3 static frontend_tags %}
+
+{% block subtitle %}
+    Ficha Kinésica - Sesión {{ object }}
+{% endblock %}
+{% block content_ficha %}
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <h2>Sesión de {{ paciente }}<h2>
+                <h3>Dia: <strong>{{ object.comienzo_el|date:"d/m/Y" }}</strong> 
+                    | Hora: <strong>{{ object.comienzo_el|date:"H:i" }}</strong> - <strong>{{ object.fin_el|date:"H:i" }}</strong></h3>
+            <form action="" method="post" novalidate="">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-sm-12">
+                {% bootstrap_field form.estado_paciente %}
+                {% bootstrap_field form.actividad %}
+                {% bootstrap_field form.comentarios %}
+                </div>
+            </div>
+
+            {% buttons %}
+                <button type="submit" class="btn btn-raised btn-primary">Guardar</button>
+                <a href="{% url 'tratamiento_list' paciente.pk %}">
+                    <input type="button" class="btn btn-raised" value="Volver" />
+                </a>
+                <input id="sesion_delete" type="button" class="btn btn-danger btn-raised pull-right" value="Eliminar sesión " />
+            {% endbuttons %}
+            </form>
+        </div>
+    </div>
+
+{% endblock %}
+{% block extra_js %}
+    {{ block.super }}
+    <script type="text/javascript">
+        (function($){
+            $("#sesion_delete").click(function(e){
+                e.preventDefault();
+                showConfirm(
+                        'Eliminar sesión',
+                        'Esta a punto de eliminar la sesión de {{ paciente.persona }}. ¿Continuar?',
+                        function(){
+                            window.location = "{% url 'sesion_delete' paciente.pk object.pk %}";
+                        }, function(){}, 'btn-danger'
+                );
+            });
+        })(jQuery);
+    </script>
+{% endblock %}

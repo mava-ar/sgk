@@ -14,6 +14,8 @@ urlpatterns = [
     # sesiones
     url(r'^(?P<pk>\d+)/sesiones/(?P<pk_sesion>\d+)/eliminar/$', views.sesion_delete,
         name="sesion_delete"),
+    url(r'^(?P<pk>\d+)/sesiones/(?P<pk_sesion>\d+)/editar/$', views.sesion_update,
+        name="sesion_update"),
     # url(r'^fichakinesica/(?P<pk>\d+)/tratamientos/(?P<pk_motivo>\d+)/planificacion/$', views.planificacion_create,
     #     name="planificacion_create"),
     url(r'^(?P<pk>\d+)/objetivos/(?P<pk_objetivo>\d+)/$', views.objetivo_update,

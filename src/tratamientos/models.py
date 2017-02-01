@@ -47,7 +47,7 @@ class MotivoConsulta(BaseModel, ShowInfoMixin):
 
     @property
     def historial_sesiones(self):
-        return self.sesiones.order_by("-comienzo_el")
+        return self.sesiones.filter(fin_el__isnull=False).order_by("-comienzo_el")
 
     @property
     def sesiones_realizadas(self):

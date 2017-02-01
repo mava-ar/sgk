@@ -62,3 +62,11 @@ class NuevaSesionForm(forms.ModelForm):
     class Meta:
         model = Sesion
         fields = ('fecha', 'duracion', 'estado_paciente', 'actividad', 'comentarios', )
+
+
+class SesionUpdateForm(forms.ModelForm):
+
+    class Meta:
+        model = Sesion
+        fields = ('estado_paciente', 'actividad', 'comentarios', )
+
