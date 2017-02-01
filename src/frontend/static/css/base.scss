@@ -70,6 +70,12 @@ body {
         padding: 0 3px;
     }
 }
+
+.modal {
+    .modal-lg.zoom-images {
+        width: 95% !important;
+    }
+}
 /* LOGIN */
 
 /* Override bootstrap */

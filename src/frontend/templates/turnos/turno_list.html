@@ -9,10 +9,11 @@
 {% endblock %}
 {% block content %}
     <h1>Turnos</h1>
-
+    {% if user.profesional %}
     <a data-href="{% url 'turno_create' %}" data-popup data-title="Nuevo turno" class="btn btn-primary btn-fab float-action">
         <i class="material-icons">add</i>
     </a>
+    {% endif %}
     <div id='calendar'></div>
 {% endblock %}
 

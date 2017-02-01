@@ -2,6 +2,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.db.models import Sum
 
+from core.models import Profesional
 from pacientes.models import Paciente
 from dj_utils.models import BaseModel
 from dj_utils.mixins import ShowInfoMixin
@@ -146,6 +147,7 @@ class Sesion(BaseModel):
     y la duración.
     """
     paciente = models.ForeignKey(Paciente, related_name='sesiones_paciente')
+    profesional = models.ForeignKey(Profesional, related_name="sesiones")
     motivo_consulta = models.ForeignKey(MotivoConsulta, related_name='sesiones', null=True)
     fecha = models.DateField("fecha")
     duracion = models.PositiveSmallIntegerField("duración de la sesión", default=60,

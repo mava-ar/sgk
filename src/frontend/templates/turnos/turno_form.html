@@ -60,7 +60,7 @@
                     <a class="btn btn-raised btn-success"
                        href="{% url 'sesion_update' object.paciente.pk object.sesion_id %}">
                         <i class="material-icons">description</i> Ver sesión</a>
-                    {% else %}
+                    {% elif object.profesional == user.profesional %}
                     <a class="btn btn-raised btn-warning"
                        href="{% url 'sesion_create' object.paciente.pk object.paciente.tratamiento_activo.pk %}?turno={{ object.pk }}">
                         <i class="material-icons">transfer_within_a_station</i> Entrar en sesión</a>

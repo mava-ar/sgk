@@ -2,28 +2,10 @@ import time
 from django import template
 from django.core.urlresolvers import reverse
 from django.utils import timezone
-from django.utils.safestring import mark_safe
-
-from sgk.settings.base import STATIC_URL
 
 from pacientes.models import ComentariosHistoriaClinica, ImagenesHistoriaClinica
 
 register = template.Library()
-
-
-@register.filter(name="profile_image")
-def profile_image(persona, config='avatar'):
-    size = "50x50" if config == 'avatar' else "250x250"
-    if persona.imagen_perfil:
-        img = persona.imagen_perfil[config].url
-    else:
-        if persona.genero == 'F':
-            img = STATIC_URL + "img/icons/{}/mujer.png".format(size)
-        elif persona.genero == 'M':
-            img = STATIC_URL + "img/icons/{}/hombre.png".format(size)
-        else:
-            img = STATIC_URL + "img/icons/{}/desconocido.png".format(size)
-    return img
 
 
 @register.filter(name="split")
@@ -38,10 +20,11 @@ def show_info(data):
     }
 
 
-@register.inclusion_tag("tags/entrada_historia_clinica.html")
-def show_entry(data, panel_class='info'):
+@register.inclusion_tag("tags/entrada_historia_clinica.html", takes_context=True)
+def show_entry(context, data, panel_class='info'):
     return {
-        'entry': data,
+        'user': context.request.user,
+        'entrada': data,
         'data': data.show_info,
         'panel_class': panel_class
     }

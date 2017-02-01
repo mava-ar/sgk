@@ -58,21 +58,25 @@ class TurnoCreateView(LoginRequiredMixin, CreateView):
             ctx["form"].initial["dia"] = dateutil.parser.parse(self.request.GET.get("time"))
         return ctx
 
+    def then_save(self, turno):
+        try:
+            self.request.user.profesional
+            if turno.paciente.tratamiento_activo() and all(
+                (turno.sesion is None, turno.no_asistio, turno.no_aviso)):
+                return render(self.request, 'turnos/sesion_perdida.html', {
+                    'turno': turno, 'form': SesionPerdidaForm()})
+        except ObjectDoesNotExist:
+            pass
+        return render(self.request, 'mensajes/turno_saved.html')
+
     def form_valid(self, form):
         turno = form.save(commit=False)
-        turno.profesional = Profesional.objects.get(usuario=self.request.user)
+        turno.profesional = self.request.user.profesional
         turno.save()
-        if turno.paciente.tratamiento_activo() and all(
-                (turno.sesion is None, turno.no_asistio, turno.no_aviso)):
-            return render(self.request, 'turnos/sesion_perdida.html', {
-                'turno': turno, 'form': SesionPerdidaForm()})
-        else:
-            return render(self.request, 'mensajes/turno_saved.html')
+        return self.then_save(turno)
 
 
 class TurnoEditView(TurnoCreateView, UpdateView):
-    # model = Turno
-    # form_class = TurnoForm
 
     def dispatch(self, *args, **kwargs):
         return super(UpdateView, self).dispatch(*args, **kwargs)
@@ -82,13 +86,10 @@ class TurnoEditView(TurnoCreateView, UpdateView):
         ctx["delete_form"] = TurnoDeleteForm(instance=ctx["object"])
         return ctx
 
-    # def form_valid(self, form):
-    #     turno = form.save()
-    #     if not turno.sesion and all((turno.no_asistio, turno.no_aviso)):
-    #         return render(self.request, 'turnos/sesion_perdida.html', {
-    #             'turno': turno, 'form': SesionPerdidaForm(turno.paciente)})
-    #     else:
-    #         return render(self.request, 'mensajes/turno_saved.html')
+    def form_valid(self, form):
+        turno = form.save(commit=False)
+        turno.save()
+        return self.then_save(turno)
 
 
 class TurnoDeleteView(LoginRequiredMixin, UpdateView):

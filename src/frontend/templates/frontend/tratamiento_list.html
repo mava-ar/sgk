@@ -40,9 +40,15 @@
                     </div>
                 </div>
                 <p class="session-info">
+                    {% if user.profesional %}
                     <a class="btn btn-raised btn-warning" href="{% url 'sesion_create' paciente.pk motivo.pk %}">
                         <i class="material-icons">transfer_within_a_station</i> Entrar en sesión
                     </a>
+                    {% else %}
+                        <a class="btn btn-raised btn-danger" href="javascript:void()">
+                        <i class="material-icons">warning</i> Sólo un profesional puede iniciar una sesión
+                    </a>
+                    {% endif %}
                     <span><i class="material-icons green icon-with-text md-36">check_circle</i> Sesiones tomadas: <strong>{{ motivo.sesiones_realizadas }}</strong></span>
                     <span><i class="material-icons red icon-with-text md-36">schedule</i> Sesiones restantes: <strong>{{ motivo.sesiones_restantes }}</strong></span>
                 </p>
@@ -64,7 +70,9 @@
                             <td>{{ sesion.actividad|default_if_none:'' }}</td>
                             <td>{{ sesion.comentarios|default_if_none:'' }}</td>
                             <td>({{ sesion.duracion }} min) {{ sesion.comienzo_el|date:"d/m/y h:i:s"}} - {{ sesion.fin_el|date:"h:i:s" }}</td>
-                            <td><a href="{% url 'sesion_update' paciente.pk sesion.pk %}"><i class="material-icons">edit</i></a></td>
+                            <td>{% if sesion.profesional == user.profesional %}
+                                <a href="{% url 'sesion_update' paciente.pk sesion.pk %}"><i class="material-icons">edit</i></a>{% endif %}
+                            </td>
                         </tr>
                     {% endfor %}
                 </table>

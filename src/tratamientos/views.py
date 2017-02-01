@@ -6,9 +6,8 @@ from django.core.urlresolvers import reverse
 from django.db.transaction import atomic
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
-from django.template import RequestContext
 from django.template.loader import render_to_string
-from django.utils import html, timezone
+from django.utils import timezone
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
@@ -167,8 +166,7 @@ class ObjetivoToggleCheckView(LoginRequiredMixin, FichaKinesicaMixin, UpdateView
             self.object.fecha_cumplido = timezone.now() if self.object.fecha_cumplido is None else None
             self.object.save()
             status = 'success'
-        context = RequestContext(request)
-        context.update({'objetivo': self.object, 'paciente': self.get_paciente()})
+        context = {'objetivo': self.object, 'paciente': self.get_paciente(), 'request': request}
         return HttpResponse(json.dumps(
             {
                 'html': render_to_string('tratamientos/includes/objectivo_inline.html', context),
@@ -203,10 +201,13 @@ class SesionCreateView(LoginRequiredMixin, FichaKinesicaMixin, UpdateView):
 
     def get_object(self, queryset=None):
         try:
-            self.object = Sesion.objects.get(paciente=self.paciente, motivo_consulta=self.get_motivo(), fin_el__isnull=True)
+            self.object = Sesion.objects.get(
+                paciente=self.paciente, profesional=self.request.user.profesional,
+                motivo_consulta=self.get_motivo(), fin_el__isnull=True)
         except ObjectDoesNotExist:
             # la sesión es nueva
-            self.object = Sesion(paciente=self.paciente, motivo_consulta=self.motivo, fecha=timezone.now())
+            self.object = Sesion(paciente=self.paciente, profesional=self.request.user.profesional,
+                                 motivo_consulta=self.motivo, fecha=timezone.now())
             self.object.save()
         self.check_turno()
         return self.object
@@ -250,6 +251,7 @@ class SesionSaveAndCloseView(SesionCreateView):
 
     def save_and_post_actions(self, sesion):
         sesion.fin_el = timezone.now()
+        # si con esta sesión, termina el tratamiento, cambiar su estado
         super(SesionSaveAndCloseView, self).save_and_post_actions(sesion)
 
 
@@ -260,14 +262,14 @@ class SesionDeleteView(LoginRequiredMixin, FichaKinesicaMixin, DeleteView):
         return self.delete(request, *args, **kwargs)
 
     def get_object(self, queryset=None):
-        pk = self.kwargs.get('pk_sesion', None)
-        self.object = Sesion.objects.get(pk=pk)
+        self.object = get_object_or_404(Sesion, pk=self.kwargs.get('pk_sesion'),
+                                        profesional=self.request.user.profesional)
         return self.object
 
     def get_success_url(self):
         messages.add_message(self.request, messages.SUCCESS,
                              "La sesión fue eliminada correctamente.")
-        return reverse('tratamiento_list', kwargs={'pk': self.paciente.pk })
+        return reverse('tratamiento_list', kwargs={'pk': self.paciente.pk})
 
     def delete(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -281,9 +283,16 @@ class SesionUpdateView(LoginRequiredMixin, FichaKinesicaMixin, UpdateView):
     template_name = "frontend/sesion_update_form.html"
 
     def get_object(self, queryset=None):
-        pk = self.kwargs.get('pk_sesion', None)
-        self.object = Sesion.objects.get(pk=pk)
+        self.object = get_object_or_404(Sesion, pk=self.kwargs.get('pk_sesion'))
         return self.object
+
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if self.object.profesional != request.user.profesional:
+            messages.add_message(self.request, messages.ERROR,
+                                 "La sesión solo pueder ser modificada por {}".format(self.object.profesional))
+            return HttpResponseRedirect(reverse('tratamiento_list', kwargs={'pk': self.paciente.pk}))
+        return super(SesionUpdateView, self).post(request, *args, **kwargs)
 
     def get_success_url(self):
         messages.add_message(self.request, messages.SUCCESS,
@@ -300,6 +309,7 @@ class SesionPerdidaCreateView(LoginRequiredMixin, FichaKinesicaMixin, CreateView
         self.object = Sesion(paciente=self.paciente)
         form = SesionPerdidaForm(data=request.POST, instance=self.object)
         self.object = form.save(commit=False)
+        self.object.profesional = self.request.user.profesional
         self.object.motivo_consulta = self.object.paciente.tratamiento_activo()
         self.object.fecha = timezone.now().today()
         self.object.fin_el = timezone.now()

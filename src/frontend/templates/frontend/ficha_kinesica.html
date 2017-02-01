@@ -27,7 +27,7 @@
                         </a>
                         <div style="width:100%">
                             <img class="img-responsive img-circle"
-                                 src="{{ paciente.persona|profile_image:"perfil" }}" />
+                                 src="{{ paciente.persona.avatar_lg }}" />
                         </div>
                         <div>Nombre: <strong>{{ paciente.persona }}</strong></div>
                         <div>Edad: <strong>{{ paciente.persona.edad }}</strong></div>
@@ -35,6 +35,7 @@
                         <div>Género: <strong>{{ paciente.persona.get_genero_display }}</strong></div>
                         <div>Fecha de ingreso: <strong>{{ paciente.fecha_ingreso }}</strong></div>
                     </div>
+                    {% if user.profesional %}
                     <div class="panel-footer">
                         <a class="btn btn-raised btn-success" data-toggle="modal" href="{% url 'comentario_hc_create' paciente.pk %}"
                            data-target="#modal" data-tooltip ><i class="material-icons">add</i> comentario</a>
@@ -43,6 +44,7 @@
                         <a class="btn btn-raised btn-success" data-toggle="modal" href="{% url 'imagen_hc_create' paciente.pk %}"
                            data-target="#modal" data-tooltip ><i class="material-icons">add</i> archivo</a>
                     </div>
+                    {% endif %}
                 </div>
             {% endblock %}
             </div>

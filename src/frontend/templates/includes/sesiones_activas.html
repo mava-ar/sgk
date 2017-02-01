@@ -6,7 +6,7 @@
         {% for sesion in sesiones_activas %}
             <div class="btn-group">
                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                    <img class="circle" src="{{ sesion.persona|profile_image }}" alt="icon">
+                    <img class="circle" src="{{ sesion.persona.avatar }}" alt="icon">
                     {{ sesion.paciente_nombre }} <span class="caret caret-up"></span>
                 </button>
                 <ul class="dropdown-menu drop-up" role="menu">

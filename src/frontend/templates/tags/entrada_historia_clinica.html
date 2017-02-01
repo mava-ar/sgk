@@ -1,20 +1,25 @@
-{% load frontend_tags static %}
+{% load frontend_tags static thumbnail %}
 <div class="panel panel-{{ panel_class }}">
     <div class="panel-heading">
-        Entrada por {{ entry.profesional }} el {{ entry.creado_el|date:"d/m/Y H:i" }}
-        <a class="btn btn-fab btn-info float-circle to-right" href="{% get_edit_url_entry entry %}" data-toggle="modal" data-target="#modal"  data-tooltip>
+        Entrada por {{ entrada.profesional }} el {{ entrada.creado_el|date:"d/m/Y H:i" }}
+        {% if entrada.profesional == user.profesional %}
+        <a class="btn btn-fab btn-info float-circle to-right" href="{% get_edit_url_entry entrada %}" data-toggle="modal" data-target="#modal"  data-tooltip >
             <i class="material-icons">launch</i>
         </a>
+        {% endif %}
     </div>
     <div class="panel-body">
-    {% are_same_date entry.creado_el entry.modificado_el as show_update %}
+    {% are_same_date entrada.creado_el entrada.modificado_el as show_update %}
         <p>{% if show_update %}
-            <i>Entrada actualizada el {{ entry.modificado_el|date:"d/m/Y H:i" }}</i>
+            <i>Entrada actualizada el {{ entrada.modificado_el|date:"d/m/Y H:i" }}</i>
         {% endif %}</p>
         {% for k in data %}
             <div>
                 {% if k.typo == "ImageField" %}
-                    <img src="{{ k.value.url }}" class="img-responsive" />
+                    {% thumbnail k.value 640x480 upscale as thumb %}
+                    <img src="{{ thumb.url }}" width="{{ thumb.width }}" height="{{ thumb.height }}" class="img-responsive" />
+                    <a class="btn btn-raised btn-info" href="{{ k.value.url }}" data-toggle="modal" data-target="#modal"  data-tooltip data-action="image">
+                        <i class="material-icons">crop_original</i> Ver original</a>
                 {% else %}
                     {% if k.value %}
                         <strong>{{ k.title }}:</strong> {{ k.value }}

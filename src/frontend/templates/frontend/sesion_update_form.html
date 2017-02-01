@@ -7,10 +7,10 @@
 {% block content_ficha %}
     <div class="panel panel-default">
         <div class="panel-body">
-            <h2>Sesión de {{ paciente }}<h2>
-                <h3>Dia: <strong>{{ object.comienzo_el|date:"d/m/Y" }}</strong> 
+            <h2>Sesión de {{ paciente }}</h2>
+                <h3>Dia: <strong>{{ object.comienzo_el|date:"d/m/Y" }}</strong>
                     | Hora: <strong>{{ object.comienzo_el|date:"H:i" }}</strong> - <strong>{{ object.fin_el|date:"H:i" }}</strong></h3>
-            <form action="" method="post" novalidate="">
+            <form action="" method="post" novalidate="" id="sesion_update_form">
             {% csrf_token %}
             <div class="row">
                 <div class="col-sm-12">
@@ -21,11 +21,15 @@
             </div>
 
             {% buttons %}
+                {% if object.profesional == user.profesional %}
                 <button type="submit" class="btn btn-raised btn-primary">Guardar</button>
+                {% endif %}
                 <a href="{% url 'tratamiento_list' paciente.pk %}">
                     <input type="button" class="btn btn-raised" value="Volver" />
                 </a>
+                {% if object.profesional == user.profesional %}
                 <input id="sesion_delete" type="button" class="btn btn-danger btn-raised pull-right" value="Eliminar sesión " />
+                {% endif %}
             {% endbuttons %}
             </form>
         </div>
@@ -36,6 +40,7 @@
     {{ block.super }}
     <script type="text/javascript">
         (function($){
+            {% if object.profesional == user.profesional %}
             $("#sesion_delete").click(function(e){
                 e.preventDefault();
                 showConfirm(
@@ -46,6 +51,9 @@
                         }, function(){}, 'btn-danger'
                 );
             });
+            {% else %}
+            $("#sesion_update_form").on('submit', function(){ return false; })
+            {% endif %}
         })(jQuery);
     </script>
 {% endblock %}
