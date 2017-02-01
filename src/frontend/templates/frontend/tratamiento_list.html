@@ -34,6 +34,8 @@
                         <div id="objetivo_{{ paciente.pk }}_{{ obj.pk }}">
                             {% include "tratamientos/includes/objectivo_inline.html" with objetivo=obj paciente=paciente %}
                         </div>
+                    {% empty %}
+                    <p class="alert alert-info">No se han definido objetivos.</p>
                     {% endfor %}
                     </div>
                 </div>

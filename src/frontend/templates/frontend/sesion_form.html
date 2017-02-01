@@ -64,11 +64,11 @@
             <div class="panel panel-success">
                 <div class="panel-body">
                     {% for obj in motivo.objetivos.all %}
-                        <div>
-                        <h4>{% if obj.cumplido %}<i class="fa fa-check"></i> {% endif %}{{ obj.descripcion }}
-                            <small>{{ obj.observaciones }}</small>
-                        </h4>
+                        <div id="objetivo_{{ paciente.pk }}_{{ obj.pk }}">
+                            {% include "tratamientos/includes/objectivo_inline.html" with objetivo=obj paciente=paciente %}
                         </div>
+                    {% empty %}
+                        <p class="alert alert-info">No se establecieron objetivos.</p>
                     {% endfor %}
                 </div>
             </div>

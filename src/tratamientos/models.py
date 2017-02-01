@@ -75,7 +75,7 @@ class Objetivo(BaseModel, ShowInfoMixin):
     motivo_consulta = models.ForeignKey(MotivoConsulta,
             verbose_name='motivo de consulta', related_name='objetivos')
     descripcion = models.CharField('descripción', max_length=255)
-    fecha_inicio = models.DateField('fecha de inicio', null=True)
+    fecha_inicio = models.DateField('fecha de inicio', null=True, auto_now_add=True)
     fecha_cumplido = models.DateField('fecha de éxito', null=True)
     observaciones = models.TextField('observaciones', blank=True)
 
@@ -85,6 +85,7 @@ class Objetivo(BaseModel, ShowInfoMixin):
         return u"{}".format(self.descripcion)
 
     class Meta:
+        ordering = ('fecha_inicio', )
         verbose_name = "objectivo"
         verbose_name_plural = "objetivos"
 

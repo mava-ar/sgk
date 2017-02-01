@@ -1,18 +1,16 @@
-<div>
+<div class="objetivo-content">
+    {% if objetivo.cumplido %}<p class="fechas">Cumplido el: {{ objetivo.fecha_cumplido|date:"d/m/Y" }}</p>{% endif %}
     <h4>
     {% if objetivo.cumplido %}
         <a href="#" id="toggle_{{ paciente.pk }}_{{ objetivo.pk }}" title="Marcar como NO cumplido">
-            {% spaceless %}<i class="fa fa-check"></i>{% endspaceless %}</a>
+            {% spaceless %}<i class="material-icons md-36">radio_button_checked</i></i>{% endspaceless %}</a>
     {% else %}
         <a href="#" id="toggle_{{ paciente.pk }}_{{ objetivo.pk }}" title="Marcar como cumplido">
-            {% spaceless %}<i class="fa fa-square-o"></i>{% endspaceless %}</a>
+            {% spaceless %}<i class="material-icons md-36">radio_button_unchecked</i>{% endspaceless %}</a>
     {% endif %}
+    <a href="{% url 'objetivo_update' paciente.pk objetivo.pk %}"><i class="material-icons md-36" title="Editar objetivo">edit</i></a>
     {{ objetivo.descripcion }}
     {% if objetivo.observaciones %}<small>{{ objetivo.observaciones }}</small>{% endif %}
-
-    <a href="{% url 'objetivo_update' paciente.pk objetivo.pk %}">
-        <i class="fa fa-edit"></i>
-    </a>
     </h4>
 </div>
 <script>
@@ -22,9 +20,7 @@
                 data: JSON.stringify({'id': '{{ objetivo.pk }}'}),
                 method: 'POST',
                 success: function(data) {
-                    console.log(data);
                     $("#objetivo_{{ paciente.pk }}_{{ objetivo.pk }}").html(data.html);
-                    console.log(data.status);
                 }
             });
         };
