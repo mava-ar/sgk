@@ -73,7 +73,10 @@ body {
 
 .modal {
     .modal-lg.zoom-images {
-        width: 95% !important;
+        width: 85% !important;
+        img {
+            margin: auto;
+        }
     }
 }
 /* LOGIN */
