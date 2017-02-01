@@ -9,8 +9,12 @@ import django.db.models.deletion
 def asociar_sesiones_con_profesional(apps, schema_editor):
     Profesional = apps.get_model('core', 'Profesional')
     Sesion = apps.get_model('tratamientos', 'Sesion')
-    a_pro = Profesional.objects.get(pk=1)
-    Sesion.objects.update(profesional=a_pro)
+    try:
+        a_pro = Profesional.objects.get(pk=1)
+        Sesion.objects.update(profesional=a_pro)
+    except Profesional.DoesNotExist:
+        # si no hay profesional, es una migraciones inicial
+        Sesion.objects.all().delete()
 
 
 class Migration(migrations.Migration):

@@ -105,9 +105,15 @@ class Persona(BaseModel):
     def avatar_lg(self):
         return self._avatar("250x250")
 
-    def _avatar(self, size):
+    def _avatar(self, size, alias):
+        """
+        Al modificar esto, revisar los settings THUMBNAIL_ALIASES
+        :param size:
+        :return:
+        """
         if self.imagen_perfil:
-            img = self.imagen_perfil["avatar"].url
+            alias = "avatar" if size == "50x50" else "perfil"
+            img = self.imagen_perfil[alias].url
         else:
             static_storage = get_storage_class(settings.STATICFILES_STORAGE)()
             if self.genero == 'F':
