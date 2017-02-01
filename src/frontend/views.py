@@ -8,6 +8,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.template.loader import render_to_string
 from django.utils import timezone
 from django.views.generic import TemplateView, CreateView, UpdateView, DetailView
+from django.shortcuts import render
 from enhanced_cbv.views.edit import InlineFormSetsView
 
 from core.filters import PersonaListFilter
@@ -22,6 +23,7 @@ from pacientes.models import Paciente, Antecedente, ComentariosHistoriaClinica, 
 from pacientes.tables import PacienteTable
 from turnos.forms import TurnoForm, TurnoDeleteForm
 from turnos.models import Turno
+from tratamientos.forms import SesionPerdidaForm
 
 
 class IndexView(LoginRequiredMixin, TemplateView):
@@ -46,7 +48,7 @@ class TurnoCreateView(LoginRequiredMixin, CreateView):
         try:
             self.request.user.profesional
         except ObjectDoesNotExist:
-            return HttpResponse('<p class="alert alert-warning">Su usuario no es un profesional. No puede crear turnos.</p>')
+            return render(self.request, 'mensajes/turno_no_profesional.html')
         return super(TurnoCreateView, self).dispatch(*args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -60,21 +62,33 @@ class TurnoCreateView(LoginRequiredMixin, CreateView):
         turno = form.save(commit=False)
         turno.profesional = Profesional.objects.get(usuario=self.request.user)
         turno.save()
-        return HttpResponse('<p class="alert alert-success">Turno creado correctamente.</p>')
+        if turno.paciente.tratamiento_activo() and all(
+                (turno.sesion is None, turno.no_asistio, turno.no_aviso)):
+            return render(self.request, 'turnos/sesion_perdida.html', {
+                'turno': turno, 'form': SesionPerdidaForm()})
+        else:
+            return render(self.request, 'mensajes/turno_saved.html')
 
 
-class TurnoEditView(LoginRequiredMixin, UpdateView):
-    model = Turno
-    form_class = TurnoForm
+class TurnoEditView(TurnoCreateView, UpdateView):
+    # model = Turno
+    # form_class = TurnoForm
+
+    def dispatch(self, *args, **kwargs):
+        return super(UpdateView, self).dispatch(*args, **kwargs)
 
     def get_context_data(self, **kwargs):
         ctx = super(TurnoEditView, self).get_context_data(**kwargs)
         ctx["delete_form"] = TurnoDeleteForm(instance=ctx["object"])
         return ctx
 
-    def form_valid(self, form):
-        form.save()
-        return HttpResponse('<p class="alert alert-success">Turno modificado correctamente.</p>')
+    # def form_valid(self, form):
+    #     turno = form.save()
+    #     if not turno.sesion and all((turno.no_asistio, turno.no_aviso)):
+    #         return render(self.request, 'turnos/sesion_perdida.html', {
+    #             'turno': turno, 'form': SesionPerdidaForm(turno.paciente)})
+    #     else:
+    #         return render(self.request, 'mensajes/turno_saved.html')
 
 
 class TurnoDeleteView(LoginRequiredMixin, UpdateView):
@@ -85,9 +99,7 @@ class TurnoDeleteView(LoginRequiredMixin, UpdateView):
         form = TurnoDeleteForm(request.POST, instance=self.get_object())
         if form.is_valid():
             form.instance.delete()
-            return HttpResponse('<p class="alert alert-success">Turno eliminado correctamente.</p>')
-        else:
-            return HttpResponse('<p class="alert alert-danger">El turno no se pudo eliminar. Intente nuevamente..</p>')
+        return render(self.request, 'mensajes/turno_delete.html', {'success': form.is_valid()})
 
 
 class PacienteListView(TableFilterListView):

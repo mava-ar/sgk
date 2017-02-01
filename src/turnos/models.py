@@ -36,12 +36,11 @@ class Turno(BaseModel):
         nombre = ''
         if self.nombre_paciente:
             nombre = self.nombre_paciente
-        # elif self.paciente and self.paciente.persona:
-        #     nombre = self.paciente.persona.nombre
+        elif self.paciente:
+            nombre = str(self.paciente)
         else:
             nombre = "NN"
-        return "{} - {} {} ({})".format(nombre, self.dia, self.hora,
-                                        self.profesional.persona.nombre)
+        return "{} - {} {} ({})".format(nombre, self.dia, self.hora, str(self.profesional))
 
     class Meta:
         verbose_name = "turno"

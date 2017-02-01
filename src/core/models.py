@@ -132,8 +132,8 @@ class Profesional(BaseModel):
 
     def __str__(self):
         if self.titulo:
-            return "{} {}".format(self.titulo, self.persona.nombre)
-        return "{}".format(self.persona.nombre)
+            return "{} {}".format(self.titulo, self.persona)
+        return "{}".format(self.persona)
 
     class Meta:
         verbose_name = "profesional"

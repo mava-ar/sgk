@@ -30,7 +30,8 @@ class Paciente(BaseModel):
     def tratamiento_activo(self):
         from tratamientos.models import Planificacion, MotivoConsulta
         try:
-            return self.motivos_de_consulta.filter(planificaciones__estado__in=Planificacion.estados_activos()).get()
+            return self.motivos_de_consulta.filter(
+                planificaciones__estado__in=Planificacion.estados_activos()).latest('creado_el')
         except MotivoConsulta.DoesNotExist:
             return None
 

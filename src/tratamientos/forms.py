@@ -70,3 +70,15 @@ class SesionUpdateForm(forms.ModelForm):
         model = Sesion
         fields = ('estado_paciente', 'actividad', 'comentarios', )
 
+
+class SesionPerdidaForm(forms.ModelForm):
+
+    class Meta:
+        model = Sesion
+        fields = ('comentarios', )
+
+    def __init__(self, **kwargs):
+        super(SesionPerdidaForm, self).__init__(**kwargs)
+        self.initial["comentarios"] = "Paciente ausente, sesión perdida"
+
+

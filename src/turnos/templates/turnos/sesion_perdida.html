@@ -1,0 +1,23 @@
+{% load bootstrap3 %}
+<p class="alert alert-success">Turno guardado correctamente.</p>
+<div>
+<h2 class="text-danger">¿Desea establecer la sesión como perdida?</h2>
+<form method="POST" action="{% url 'sesion_perdida_create' turno.paciente_id turno.pk %}" id="sesion_perdida_form">
+{% csrf_token %}{% bootstrap_form form %}
+<div class="pull-right">
+    <input type="button" class="btn btn-raised btn-default" data-dismiss="modal" value="No, cerrar"/>
+    <input type="submit" class="btn btn-raised btn-danger" value="Si, establecerla como perdida"/>
+</div>
+<div class="clearfix"></div>
+</form>
+</div>
+<script type="text/javascript">
+    (function ($) {
+        $.material.init();
+        var form_perdida_options = {
+            target: "#turno_result",
+            success: close_dialog
+        };
+        $('#sesion_perdida_form').ajaxForm(form_perdida_options);
+    })(jQuery);
+</script>

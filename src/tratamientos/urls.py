@@ -9,6 +9,8 @@ urlpatterns = [
         name="tratamiento_update"),
     url(r'^(?P<pk>\d+)/tratamientos/(?P<pk_motivo>\d+)/nueva_sesion/$', views.sesion_create,
         name="sesion_create"),
+    url(r'^(?P<pk>\d+)/tratamientos/(?P<pk_turno>\d+)/sesion_perdida/$', views.sesion_perdida_create,
+        name="sesion_perdida_create"),
     url(r'^(?P<pk>\d+)/tratamientos/(?P<pk_motivo>\d+)/terminar_sesion/$', views.sesion_save_close,
         name="sesion_save_close"),
     # sesiones

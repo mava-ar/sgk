@@ -19,10 +19,10 @@
             {% bootstrap_field form.motivo %}
         </div>
        <div class="col-sm-6">
-            {% bootstrap_field form.paciente %}
+           {% bootstrap_field form.nombre_paciente %}
        </div>
        <div class="col-sm-6">
-           {% bootstrap_field form.nombre_paciente %}
+            {% bootstrap_field form.paciente %}
        </div>
         {% if object.id %}
             <div class="col-sm-3">
@@ -56,9 +56,15 @@
             <div class="pull-left">
             {% if object.paciente %}
                 {% if object.paciente.tratamiento_activo %}
+                    {% if object.sesion %}
+                    <a class="btn btn-raised btn-success"
+                       href="{% url 'sesion_update' object.paciente.pk object.sesion_id %}">
+                        <i class="material-icons">description</i> Ver sesión</a>
+                    {% else %}
                     <a class="btn btn-raised btn-warning"
                        href="{% url 'sesion_create' object.paciente.pk object.paciente.tratamiento_activo.pk %}?turno={{ object.pk }}">
                         <i class="material-icons">transfer_within_a_station</i> Entrar en sesión</a>
+                    {% endif %}
                 {% endif %}
                 <a class="btn btn-raised btn-info" href="{% url 'ficha_kinesica' object.paciente.pk %}">
                     <i class="material-icons">assignment</i> Ficha
@@ -88,6 +94,15 @@
 </div>
 <script type="text/javascript">
     (function ($) {
+        close_dialog = function (ev) {
+            // determino si fue todo bien si 'success-and-close' está en el html (si, lo sé, horrible!!!!)
+            if(ev.indexOf('success-and-close') > 0) {
+                $('#calendar').fullCalendar('refetchEvents');
+                setTimeout(function () {
+                    turno_dialog.close();  // turno_dialog es global en turno_list
+                }, 800);
+            }
+        };
         $(document).ready(function(){
             $.material.init();
 
@@ -101,15 +116,9 @@
             };
             $('#update_turno_form').ajaxForm(form_options);
             $("#turno-delete").ajaxForm(form_options);
+
+            setTimeout(function(){ $("#id_paciente").chosen();}, 200);
         });
-        function close_dialog(ev) {
-            // determino si fue todod bien por como empieza el string (horrible!!)
-            if(ev.startsWith('<p class=')) {
-                $('#calendar').fullCalendar('refetchEvents');
-                setTimeout(function () {
-                    turno_dialog.close();  // turno_dialog es global en turno_list
-                }, 800);
-            }
-        }
+
     })(jQuery);
 </script>

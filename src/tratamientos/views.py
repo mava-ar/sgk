@@ -4,12 +4,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.db.transaction import atomic
-from django.http import HttpResponse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render, get_object_or_404
 from django.template import RequestContext
 from django.template.loader import render_to_string
-from django.utils import html
-from django.utils import timezone
+from django.utils import html, timezone
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
@@ -17,7 +16,7 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from dj_utils.mixins import FichaKinesicaMixin
 from tratamientos.forms import (ObjetivoForm, MotivoConsultaForm, ObjetivoInlineFormset,
                                 PlanificacionCreateForm, NuevaSesionForm, ObjetivoCumplidoUpdateForm,
-                                SesionUpdateForm)
+                                SesionUpdateForm, SesionPerdidaForm)
 from tratamientos.models import MotivoConsulta, Objetivo, Planificacion, Sesion
 from turnos.models import Turno
 
@@ -182,17 +181,22 @@ class SesionCreateView(LoginRequiredMixin, FichaKinesicaMixin, UpdateView):
     form_class = NuevaSesionForm
     template_name = "frontend/sesion_form.html"
 
-    # def dispatch(self, request, *args, **kwargs):
-    #     super(SesionCreateView, self).dispatch(request, *args, **kwargs)
-    #     # marcar el turno como asistido.
-    #
     def check_turno(self):
+        """
+        Este método intenta asociar un turno con la sesión. Si se inicia sesión desde turnos, esto se
+        hará mediante el parametro en la url. Sino, se intenta buscando turnos del paciente para hoy,
+        que no tengan una sesión asociada.
+        """
         try:
             self.object.turno_dado
         except Turno.DoesNotExist:
             turno_pk = self.request.GET.get('turno', None)
             if turno_pk:
                 turno = Turno.objects.get(pk=turno_pk)
+            else:
+                turno = Turno.objects.filter(
+                    paciente=self.paciente, dia=timezone.now(), sesion__isnull=True).first()
+            if turno:
                 turno.asistio = True
                 turno.sesion = self.object
                 turno.save()
@@ -287,12 +291,31 @@ class SesionUpdateView(LoginRequiredMixin, FichaKinesicaMixin, UpdateView):
         return reverse('tratamiento_list', kwargs={'pk': self.paciente.pk })
 
 
+class SesionPerdidaCreateView(LoginRequiredMixin, FichaKinesicaMixin, CreateView):
+    model = Sesion
+    http_method_names = ["post", ]
+
+    def post(self, request, *args, **kwargs):
+        turno = get_object_or_404(Turno, pk=kwargs.get('pk_turno'))
+        self.object = Sesion(paciente=self.paciente)
+        form = SesionPerdidaForm(data=request.POST, instance=self.object)
+        self.object = form.save(commit=False)
+        self.object.motivo_consulta = self.object.paciente.tratamiento_activo()
+        self.object.fecha = timezone.now().today()
+        self.object.fin_el = timezone.now()
+        self.object.save()
+        turno.sesion = self.object
+        turno.save()
+        return render(self.request, 'mensajes/sesion_perdida_ok.html')
+
+
 tratamiento_list = TratamientoListView.as_view()
 tratamiento_create = TratamientoAddView.as_view()
 tratamiento_update = TratamientoEditView.as_view()
 objetivo_update = ObjetivoEditView.as_view()
 objetivo_cumplido_toggle = ObjetivoToggleCheckView.as_view()
 sesion_create = SesionCreateView.as_view()
+sesion_perdida_create = SesionPerdidaCreateView.as_view()
 sesion_save_close = SesionSaveAndCloseView.as_view()
 sesion_delete = SesionDeleteView.as_view()
 sesion_update = SesionUpdateView.as_view()

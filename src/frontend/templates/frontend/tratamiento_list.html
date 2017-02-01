@@ -60,9 +60,9 @@
                     {% for sesion in motivo.historial_sesiones|slice:":10" %}
                         <tr>
                             <td>{{ sesion.fecha|date:"d/m/Y" }}</td>
-                            <td>{{ sesion.estado_paciente }}</td>
-                            <td>{{ sesion.actividad }}</td>
-                            <td>{{ sesion.comentarios }}</td>
+                            <td>{{ sesion.estado_paciente|default_if_none:'' }}</td>
+                            <td>{{ sesion.actividad|default_if_none:'' }}</td>
+                            <td>{{ sesion.comentarios|default_if_none:'' }}</td>
                             <td>({{ sesion.duracion }} min) {{ sesion.comienzo_el|date:"d/m/y h:i:s"}} - {{ sesion.fin_el|date:"h:i:s" }}</td>
                             <td><a href="{% url 'sesion_update' paciente.pk sesion.pk %}"><i class="material-icons">edit</i></a></td>
                         </tr>
