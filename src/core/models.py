@@ -105,7 +105,7 @@ class Persona(BaseModel):
     def avatar_lg(self):
         return self._avatar("250x250")
 
-    def _avatar(self, size, alias):
+    def _avatar(self, size):
         """
         Al modificar esto, revisar los settings THUMBNAIL_ALIASES
         :param size:
