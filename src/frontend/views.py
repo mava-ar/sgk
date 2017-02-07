@@ -58,22 +58,11 @@ class TurnoCreateView(LoginRequiredMixin, CreateView):
             ctx["form"].initial["dia"] = dateutil.parser.parse(self.request.GET.get("time"))
         return ctx
 
-    def then_save(self, turno):
-        try:
-            self.request.user.profesional
-            if turno.paciente.tratamiento_activo() and all(
-                (turno.sesion is None, turno.no_asistio, turno.no_aviso)):
-                return render(self.request, 'turnos/sesion_perdida.html', {
-                    'turno': turno, 'form': SesionPerdidaForm()})
-        except ObjectDoesNotExist:
-            pass
-        return render(self.request, 'mensajes/turno_saved.html')
-
     def form_valid(self, form):
         turno = form.save(commit=False)
         turno.profesional = self.request.user.profesional
         turno.save()
-        return self.then_save(turno)
+        return render(self.request, 'mensajes/turno_saved.html')
 
 
 class TurnoEditView(TurnoCreateView, UpdateView):
@@ -90,6 +79,17 @@ class TurnoEditView(TurnoCreateView, UpdateView):
         turno = form.save(commit=False)
         turno.save()
         return self.then_save(turno)
+
+    def then_save(self, turno):
+        try:
+            self.request.user.profesional
+            if (turno.paciente and turno.paciente.tratamiento_activo()) and all(
+                    (turno.sesion is None, turno.no_asistio, turno.no_aviso)):
+                return render(self.request, 'turnos/sesion_perdida.html', {
+                    'turno': turno, 'form': SesionPerdidaForm()})
+        except ObjectDoesNotExist:
+            pass
+        return render(self.request, 'mensajes/turno_saved.html')
 
 
 class TurnoDeleteView(LoginRequiredMixin, UpdateView):
