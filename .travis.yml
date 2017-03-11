@@ -12,7 +12,7 @@ env:
 install:
   - pip install -r requirements/dev.txt
   - cd src
-  - cp sgk/settings/local{_example,}.py
+  - cp example.env sgk/settings/.env
   - python manage.py migrate --settings=sgk.settings.test
  
 # database creation
