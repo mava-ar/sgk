@@ -176,3 +176,4 @@ docker-compose.yml
 collected_static
 bkp-dbs
 .secret
+.env

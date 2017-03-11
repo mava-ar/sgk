@@ -1,7 +1,6 @@
-from .local import *
+from .dev import *
 
-DEBUG = True
-DEBUG_PROPAGATE_EXCEPTIONS = DEBUG
+DEBUG_PROPAGATE_EXCEPTIONS = env.bool('DEBUG', True)
 
 DATABASES = {
     'default': {
