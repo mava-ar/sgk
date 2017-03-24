@@ -12,7 +12,8 @@
                 <p>
                 <a class="btn btn-raised btn-danger" href="{% url 'ficha_kinesica' paciente.pk %}">
                     <i class="material-icons">assignment</i> Ficha kinésica</a>
-                <a class="btn btn-raised btn-info" href="{% url 'tratamiento_list' paciente.pk %}">Tratamientos</a>
+                <a class="btn btn-raised btn-info" href="{% url 'tratamiento_list' paciente.pk %}">
+                    <i class="material-icons">event_available</i> Tratamientos</a>
                     {% block extra_button %}{% endblock %}
                 </p>
             </div>

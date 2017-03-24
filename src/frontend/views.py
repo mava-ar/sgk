@@ -1,6 +1,7 @@
 import dateutil.parser
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.transaction import atomic
@@ -83,13 +84,19 @@ class TurnoEditView(TurnoCreateView, UpdateView):
     def then_save(self, turno):
         try:
             self.request.user.profesional
-            if (turno.paciente and turno.paciente.tratamiento_activo()) and all(
+            if settings.PLAN_KINES > 1 and (
+                turno.paciente and turno.paciente.tratamiento_activo()) and all(
                     (turno.sesion is None, turno.no_asistio, turno.no_aviso)):
                 return render(self.request, 'turnos/sesion_perdida.html', {
                     'turno': turno, 'form': SesionPerdidaForm()})
         except ObjectDoesNotExist:
             pass
         return render(self.request, 'mensajes/turno_saved.html')
+
+    def get_template_names(self):
+        if settings.PLAN_KINES == 2:
+            return ["turnos/turno_form_plan2.html"]
+        return ["turnos/turno_form.html"]
 
 
 class TurnoDeleteView(LoginRequiredMixin, UpdateView):
@@ -160,8 +167,8 @@ class PacienteCreateView(LoginRequiredMixin, CreateView):
 
     def get_success_url(self):
         messages.add_message(self.request, messages.SUCCESS,
-                u"Paciente creado correctamente.")
-        return reverse('ficha_kinesica', kwargs={'pk': self.object.pk})
+                             "Paciente creado correctamente.")
+        return reverse('paciente_list')
 
 
 class PacienteEditView(LoginRequiredMixin, UpdateView):
@@ -218,8 +225,8 @@ class PacienteEditView(LoginRequiredMixin, UpdateView):
 
     def get_success_url(self):
         messages.add_message(self.request, messages.SUCCESS,
-                u"Paciente editado correctamente.")
-        return reverse('ficha_kinesica', kwargs={'pk': self.object.pk})
+                             "Paciente editado correctamente.")
+        return reverse('paciente_list')
 
 
 class PersonaListView(TableFilterListView):

@@ -47,37 +47,26 @@
     <div class="col-sm-12">
         <div class="pull-right">
             {% if object.id %}
-                <a class="btn btn-raised btn-danger" href="#" id="btn-eliminar"><i class="fa fa-trash"></i></a>
+                <button class="btn btn-raised btn-danger" href="#" id="btn-eliminar" type="button"><i class="material-icons">delete</i></button>
             {% endif %}
-            <input type="button" class="btn btn-raised btn-default" data-dismiss="modal" value="Cancelar"/>
-            <input type="submit" class="btn btn-raised btn-primary" value="Guardar"/>
+            <button type="button" class="btn btn-raised btn-default" data-dismiss="modal"><i class="material-icons">cancel</i></button>
+            <button type="submit" class="btn btn-raised btn-primary"><i class="material-icons">save</i></button>
         </div>
+        {% block action_buttons %}
         {% if object.id %}
             <div class="pull-left">
             {% if object.paciente %}
-                {% if object.paciente.tratamiento_activo %}
-                    {% if object.sesion %}
-                    <a class="btn btn-raised btn-success"
-                       href="{% url 'sesion_update' object.paciente.pk object.sesion_id %}">
-                        <i class="material-icons">description</i> Ver sesión</a>
-                    {% elif object.profesional == user.profesional %}
-                    <a class="btn btn-raised btn-warning"
-                       href="{% url 'sesion_create' object.paciente.pk object.paciente.tratamiento_activo.pk %}?turno={{ object.pk }}">
-                        <i class="material-icons">transfer_within_a_station</i> Entrar en sesión</a>
-                    {% endif %}
-                {% else %}
-                    <span class="btn-default btn-raised btn">Sin tratamiento activo</span>
-                {% endif %}
-                <a class="btn btn-raised btn-info" href="{% url 'ficha_kinesica' object.paciente.pk %}">
-                    <i class="material-icons">assignment</i> Ficha
+                <a class="btn btn-raised btn-info" href="{% url 'paciente_update' object.paciente.pk %}">
+                    <i class="material-icons">mode_edit</i> Modificar {{ object.paciente }}
                 </a>
             {% else %}
                 <a class="btn btn-raised btn-primary" href="{% url 'paciente_create' %}">
-                    <i class="fa fa-plus"></i> Paciente
+                    <i class="material-icons">add</i> Paciente
                 </a>
             {% endif %}
             </div>
         {% endif %}
+        {% endblock %}
     </div>
     </div>
 </form>

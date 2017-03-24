@@ -31,7 +31,7 @@
             ga('create','UA-XXXXX-X','auto');ga('send','pageview');
         </script>
 
-        <title>{% block title %}Sistema de gestión kinesiológico{% endblock %}{% block subtitle %}{% endblock %}</title>
+        <title>{% block title %}:: KINES :: {% endblock %}{% block subtitle %}{% endblock %}</title>
     </head>
     <body class="{% block body_class %}{% endblock %}" data-bg="{% block bg %}{% endblock %}">
         <!--[if lt IE 8]>
@@ -42,11 +42,13 @@
 
         {% block main_content %}{% endblock %}
         <div class="modal fade" id="modal"></div>
+        {% if PLAN_KINES > 1 %}
         {% block floating_footer %}
             {% if sesiones_activas %}
                 {% include 'includes/sesiones_activas.html' %}
             {% endif %}
         {% endblock %}
+        {% endif %}
         {% block footer %}
             {% include 'includes/footer.html' %}
         {% endblock %}

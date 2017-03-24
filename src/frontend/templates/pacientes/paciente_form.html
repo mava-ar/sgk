@@ -67,6 +67,12 @@
                 }
             };
             $(document).ready(function(){
+                {# bootstrap añade algunos atributos y campos que hacen que el widget del cumpleaños no se vea bien. Lo corrijo con js #}
+                $("#id_fecha_nacimiento_day").parents(".label-floating").removeClass("is-empty");
+                $("select[id^='id_fecha_nacimiento_']").each(function() {
+                    $(this).next("input.form-control").first().remove();
+                });
+
                 cobertura_change();
                 show_nueva_cobertura();
                 $("#id_particular").change(cobertura_change);
@@ -77,4 +83,3 @@
     </script>
 
 {% endblock %}
-

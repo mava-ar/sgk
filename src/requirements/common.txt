@@ -27,4 +27,5 @@ djangorestframework-jwt==1.8.0
 python-dateutil==2.5.3
 django-material
 django-cors-headers
-raven
+
+psycopg2

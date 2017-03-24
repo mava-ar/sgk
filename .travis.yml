@@ -10,7 +10,7 @@ env:
 
 # command to install dependencies
 install:
-  - pip install -r requirements/dev.txt
+  - pip install -r src/requirements/dev.txt
   - cd src
   - cp example.env sgk/settings/.env
   - python manage.py migrate --settings=sgk.settings.test

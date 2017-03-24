@@ -1,0 +1,20 @@
+[
+{
+    "model": "auth.user",
+    "pk": 1,
+    "fields": {
+        "password": "pbkdf2_sha256$24000$pYu9JSXG4P8R$6EyxGt3N9AyBVlVQN43WRQ95dB03SO96n8ZL9H+C6/8=",
+        "last_login": null,
+        "is_superuser": true,
+        "username": "admin",
+        "first_name": "",
+        "last_name": "",
+        "email": "admin@kines.com.ar",
+        "is_staff": true,
+        "is_active": true,
+        "date_joined": "2017-03-12T16:18:57.313Z",
+        "groups": [],
+        "user_permissions": []
+    }
+}
+]

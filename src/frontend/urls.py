@@ -1,6 +1,8 @@
 from django.conf.urls import url, include
+from django.conf import settings
 
 from frontend import views
+
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
@@ -14,13 +16,16 @@ urlpatterns = [
     url(r'^pacientes/$', views.paciente_list, name='paciente_list'),
     url(r'^pacientes/nuevo$', views.paciente_create, name='paciente_create'),
     url(r'^pacientes/editar/(?P<pk>\d+)/$', views.paciente_update, name="paciente_update"),
-    url(r'^pacientes/(?P<pk>\d+)/$', views.ficha_kinesica, name="ficha_kinesica"),
-    url(r'^pacientes/(?P<pk>\d+)/historia-clinica$', views.historia_clinica_list, name="historia_clinica_list"),
-    url(r'^pacientes/(?P<pk>\d+)/antecedentes/$', views.ficha_kinesica_update, name="ficha_kinesica_update"),
-    url(r'^pacientes/(?P<pk>\d+)/hc_comentario/$', views.comentario_hc_create, name="comentario_hc_create"),
-    url(r'^pacientes/(?P<pk>\d+)/hc_comentario/(?P<pk_comentario>\d+)/$', views.comentario_hc_update, name="comentario_hc_update"),
-    url(r'^pacientes/(?P<pk>\d+)/hc_imagen/$', views.imagen_hc_create, name="imagen_hc_create"),
-    url(r'^pacientes/(?P<pk>\d+)/hc_imagen/(?P<pk_imagen>\d+)/$', views.imagen_hc_update, name="imagen_hc_update"),
-    url(r'^fichakinesica/', include('tratamientos.urls')),
     url(r'^coberturas/', include('coberturas_medicas.urls'))
 ]
+if settings.PLAN_KINES > 1:
+    urlpatterns += [
+        url(r'^pacientes/(?P<pk>\d+)/$', views.ficha_kinesica, name="ficha_kinesica"),
+        url(r'^pacientes/(?P<pk>\d+)/historia-clinica$', views.historia_clinica_list, name="historia_clinica_list"),
+        url(r'^pacientes/(?P<pk>\d+)/antecedentes/$', views.ficha_kinesica_update, name="ficha_kinesica_update"),
+        url(r'^pacientes/(?P<pk>\d+)/hc_comentario/$', views.comentario_hc_create, name="comentario_hc_create"),
+        url(r'^pacientes/(?P<pk>\d+)/hc_comentario/(?P<pk_comentario>\d+)/$', views.comentario_hc_update, name="comentario_hc_update"),
+        url(r'^pacientes/(?P<pk>\d+)/hc_imagen/$', views.imagen_hc_create, name="imagen_hc_create"),
+        url(r'^pacientes/(?P<pk>\d+)/hc_imagen/(?P<pk_imagen>\d+)/$', views.imagen_hc_update, name="imagen_hc_update"),
+        url(r'^fichakinesica/', include('tratamientos.urls')),
+    ]

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Django settings for kines project.
 
@@ -9,7 +10,6 @@ https://docs.djangoproject.com/en/1.8/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.8/ref/settings/
 """
-
 from sys import path
 from datetime import timedelta
 import environ
@@ -34,11 +34,11 @@ env = environ.Env(
     DATABASE_URL=str,
 )
 
-environ.Env.read_env()  # reading .env file
+environ.Env.read_env(root.path('.env').root)  # reading .env file
 
-DEBUG = env.bool('DEBUG')
-ALLOWED_HOSTS = env('ALLOWED_HOSTS')
-SECRET_KEY = env('SECRET_KEY')
+DEBUG = env.bool('DEBUG', False)
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['127.0.0.1:8000'])
+SECRET_KEY = env.str('SECRET_KEY', '1234568901234567890')
 SITE_ID = 1
 ADMINS = [
     (env.str("ADMIN_NAME", 'Matias Varela'),
@@ -115,7 +115,8 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 "django.template.context_processors.media",
                 "django.template.context_processors.static",
-                "tratamientos.context_processors.sesiones_activas"
+                "tratamientos.context_processors.sesiones_activas",
+                "frontend.context_processors.branding"
             ],
         },
     },
@@ -142,7 +143,7 @@ CRISPY_TEMPLATE_PACK = 'bootstrap3'
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 
 DATABASES = {
-  'default': env.db(),
+    'default': env.db(default='sqlite:///my-local-sqlite.db'),
 }
 
 # Password validation
@@ -170,7 +171,7 @@ AUTH_PASSWORD_VALIDATORS = [
 LANGUAGE_CODE = 'es'
 
 LANGUAGES = [
-  ('es', 'Español'),
+    ('es', 'Español'),
 ]
 
 TIME_ZONE = 'America/Argentina/Mendoza'
@@ -203,13 +204,13 @@ STATICFILES_FINDERS = (
 )
 
 STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
-MEDIA_ROOT = root.path('../media').root
-STATIC_ROOT = root.path('../collected_static').root
+MEDIA_ROOT = root.path(env.str('MEDIA_ROOT', '../media')).root
+STATIC_ROOT = root.path(env.str('STATIC_ROOT', '../collected_static')).root
 
-bower_root = root.path('../components')
+BOWER_ROOT = root.path('../components')
 PIPELINE_SASS_ARGUMENTS = "-p 8 -I '%s' -I '%s'" % (
-         bower_root.path('bower_components/bootstrap-sass/assets/stylesheets/').root,
-         bower_root.path('bower_components/bootstrap-sass/assets/fonts/').root
+    BOWER_ROOT.path('bower_components/bootstrap-sass/assets/stylesheets/').root,
+    BOWER_ROOT.path('bower_components/bootstrap-sass/assets/fonts/').root
 )
 
 PIPELINE = {
@@ -295,7 +296,7 @@ PIPELINE = {
     'SASS_BINARY': 'sassc',
     'CSS_COMPRESSOR': None,
     'JS_COMPRESSOR': None,
-    #'SASS_ARGUMENTS': PIPELINE_SASS_ARGUMENTS,
+    # 'SASS_ARGUMENTS': PIPELINE_SASS_ARGUMENTS,
     'DISABLE_WRAPPER': True
 }
 
@@ -351,46 +352,6 @@ EMAIL_CONFIG = env.email_url(
 
 vars().update(EMAIL_CONFIG)
 
-LOGGING_ROOT = env.str('LOGGING_ROOT', '')
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'root': {
-        'level': 'WARNING',
-        'handlers': ['sentry'],
-    },
-    'handlers': {
-        'file': {
-            'level': 'DEBUG',
-            'class': 'logging.FileHandler',
-            'filename': root.path(LOGGING_ROOT, 'django-debug.log').root,
-        },
-        'mail_admins': {
-            'level': 'ERROR',
-            'class': 'django.utils.log.AdminEmailHandler',
-            'include_html': True,
-        },
-        'sentry': {
-            'level': 'ERROR',
-            'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
-            'tags': {'custom-tag': 'x'},
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['file'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
-        'django_mail': {
-            'handlers': ['mail_admins'],
-            'propagate': True,
-            'level': 'ERROR',
-        },
-    },
-}
-
-
 # CELERY SETTINGS
 BROKER_URL = 'redis://localhost:6379/0'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379'
@@ -414,3 +375,4 @@ SMSC_ALIAS = env.str('SMSC_ALIAS', '')
 SMSC_APIKEY = env.str('SMSC_APIKEY', '')
 
 NOMBRE_CONSULTORIO = env.str('NOMBRE_CONSULTORIO', 'KINES')
+PLAN_KINES = env.int("PLAN_KINES", 1)
