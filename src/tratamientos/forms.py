@@ -56,6 +56,23 @@ class PlanificacionCreateForm(forms.ModelForm):
         fields = ('cantidad_sesiones', 'frecuencia', 'comentarios', )
 
 
+class PlanificacionFinishForm(forms.ModelForm):
+    motivo_finalizacion = forms.CharField(
+        label='Motivo de finalización', required=True,
+        help_text='Comente un motivo por el cual finaliza el tratamiento de forma anticipada.')
+
+    class Meta:
+        model = Planificacion
+        fields = ('motivo_finalizacion', )
+
+    def save(self, commit=True):
+        instance = super(PlanificacionFinishForm, self).save(commit=False)
+        instance.estado = Planificacion.FINALIZADO
+        if commit:
+            instance.save()
+        return instance
+
+
 class NuevaSesionForm(forms.ModelForm):
     fecha = FechaField(label="fecha de la sesión", initial=timezone.now())
 
@@ -80,5 +97,3 @@ class SesionPerdidaForm(forms.ModelForm):
     def __init__(self, **kwargs):
         super(SesionPerdidaForm, self).__init__(**kwargs)
         self.initial["comentarios"] = "Paciente ausente, sesión perdida"
-
-

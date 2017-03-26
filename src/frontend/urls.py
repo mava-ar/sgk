@@ -11,6 +11,7 @@ urlpatterns = [
     url(r'^personas/editar/(?P<pk>\d+)/$', views.persona_update, name="persona_update"),
     url(r'^turnos/$', views.turno_list, name='turno_list'),
     url(r'^turnos/nuevo$', views.turno_create, name='turno_create'),
+    url(r'^turnos/reporte/$', views.turno_report, name='turno_report'),
     url(r'^turnos/editar/(?P<pk>\d+)/$', views.turno_update, name="turno_update"),
     url(r'^turnos/eliminar/(?P<pk>\d+)/$', views.turno_delete, name="turno_delete"),
     url(r'^pacientes/$', views.paciente_list, name='paciente_list'),

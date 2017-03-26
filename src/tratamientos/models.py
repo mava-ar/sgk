@@ -55,8 +55,12 @@ class MotivoConsulta(BaseModel, ShowInfoMixin):
         return self.sesiones.count()
 
     @property
+    def sesiones_planificadas(self):
+        return self.planificaciones.aggregate(suma=Sum('cantidad_sesiones'))["suma"]
+
+    @property
     def sesiones_restantes(self):
-        return self.planificaciones.annotate(suma=Sum('cantidad_sesiones')).values('suma').get()["suma"] - self.sesiones.count()
+        return self.sesiones_planificadas - self.sesiones.count()
 
     @property
     def planificacion_actual(self):
@@ -64,6 +68,9 @@ class MotivoConsulta(BaseModel, ShowInfoMixin):
             return self.planificaciones.filter(estado__in=Planificacion.estados_activos()).get()
         except:
             return None
+
+    def sesiones_realizadas_al(self, fecha):
+        return self.sesiones.filter(fin_el__lt=fecha).count()
 
 
 class Objetivo(BaseModel, ShowInfoMixin):
@@ -125,6 +132,8 @@ class Planificacion(BaseModel):
     estado = models.IntegerField("estado", choices=PLANIFICACION_ESTADO, default=1)
     comentarios = models.TextField("comentarios", blank=True, null=True)
     conclusion = models.TextField("conclusión", blank=True, null=True)
+
+    motivo_finalizacion = models.TextField("motivo de finalización", blank=True, null=True)
 
     def __str__(self):
         return "Planificación de {} - {} sesiones - {}".format(

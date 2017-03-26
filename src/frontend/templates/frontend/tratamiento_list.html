@@ -18,12 +18,25 @@
             <div class="panel-body">
                 {% show_info motivo %}
                 <div class="row">
+                    <div class="col-sm-12"><h3>Tratamiento</h3></div>
                     {% for trata in motivo.planificaciones.all %}
-                        <div class="col-sm-12">
-                            <h3>Tratamiento</h3>
+                        <div class="col-sm-4">
+                            <h4>Planificación #{{ forloop.counter }}</h4>
                             <p><span>Cantidad de sesiones: </span>{{ trata.cantidad_sesiones }}</p>
                             <p><span>Frecuencia semanal: </span>{{ trata.frecuencia }}</p>
-                            <p><span>Estado: </span>{{ trata.get_estado_display }}</p>
+                            <p><span>Estado: </span>{{ trata.get_estado_display|upper }}
+                            {% if trata.estado in trata.estados_activos %}
+                                <br /><a class="btn btn-raised btn-danger" data-toggle="modal" href="{% url 'tratamiento_finish' paciente.pk motivo.pk %}"
+                                data-target="#modal" data-tooltip ><i class="material-icons">done</i> Finalizar</a>
+                            {% else %}
+                            <strong>
+                                {% if trata.motivo_finalizacion %}
+                                    {{ trata.motivo_finalizacion }}
+                                {% elif trata.sesiones_restantes < 1 %}
+                                    Tratamiento cumplido
+                                {% endif %}
+                            </strong></p>
+                            {% endif %}
                         </div>
                     {% endfor %}
                 </div>
@@ -39,6 +52,7 @@
                     {% endfor %}
                     </div>
                 </div>
+                {% if motivo.planificacion_actual %}
                 <p class="session-info">
                     {% if user.profesional %}
                     <a class="btn btn-raised btn-warning" href="{% url 'sesion_create' paciente.pk motivo.pk %}">
@@ -52,6 +66,13 @@
                     <span><i class="material-icons green icon-with-text md-36">check_circle</i> Sesiones tomadas: <strong>{{ motivo.sesiones_realizadas }}</strong></span>
                     <span><i class="material-icons red icon-with-text md-36">schedule</i> Sesiones restantes: <strong>{{ motivo.sesiones_restantes }}</strong></span>
                 </p>
+                {% else %}
+                <h3>El tratamiento se encuentra finalizado. Para continuarlo, planifique
+                        <a class="btn btn-raised btn-success" data-toggle="modal"
+                            href="{% url 'planificacion_add' paciente.pk motivo.pk %}" data-target="#modal" data-tooltip >
+                            <i class="material-icons">add</i> sesiones</a>.
+                </h3>
+                {% endif %}
                 {% if motivo.historial_sesiones %}
                     <h3>Sesiones previas</h3>
                 <table class="table">
@@ -82,4 +103,13 @@
     {% empty %}
         <p class="alert alert-warning">Aún no ha ingresado motivos de consulta para este paciente.</p>
     {% endfor %}
+{% endblock %}
+{% block extra_js %}
+    <script type="text/javascript">
+        (function($){
+            $('#modal').on('hidden.bs.modal', function (e) {
+                window.location = "{% url 'tratamiento_list' paciente.pk %}";
+            });
+        })(jQuery);
+    </script>
 {% endblock %}

@@ -94,7 +94,9 @@
             $("#id_duracion").change(function(){
                 $clock.countdown(getTimeFromNow());
             });
-
+ 
+            {% url 'sesion_save_close' paciente.pk paciente.tratamiento_activo.pk as sesion_save_close %}
+            {% if sesion_save_close %}
             $("#sesion_save_close").click(function(e){
                 e.preventDefault();
                 var form = $("#form_nueva_sesion");
@@ -107,6 +109,7 @@
                         }
                 );
             });
+            {% endif %}
 
             $("#sesion_delete").click(function(e){
                 e.preventDefault();

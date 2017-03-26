@@ -12,12 +12,16 @@ from .models import Paciente
 class AccionesPacienteColumn(URLColumn):
     def render(self, value, bound_column):
         url_edit = reverse('paciente_update', args=(value, ))
-        html = (u'<a href="{}" class="btn btn-fab btn-primary">'
-                u'<i class="material-icons">edit</i></a>').format(url_edit)
+        html = ('<a href="{}" class="btn btn-fab btn-primary" title="Editar paciente">'
+                '<i class="material-icons">edit</i></a>').format(url_edit)
         if settings.PLAN_KINES > 1:
             url_ficha = reverse('ficha_kinesica', args=(value, ))
-            html += (u'<a href="{}" class="btn btn-fab btn-info">'
-                     u'<i class="material-icons">assignment</i></a>').format(url_ficha)
+            url_tratamiento = reverse('tratamiento_list', args=(value, ))
+            html += ('<a href="{}" class="btn btn-fab btn-info" title="Ver ficha kinésica">'
+                     '<i class="material-icons">assignment</i></a>'
+                     '<a href="{}" class="btn btn-fab btn-danger" title="Ver tratamientos" >'
+                     '<i class="material-icons">event_available</i></a>'
+                     ).format(url_ficha, url_tratamiento)
         return mark_safe(html)
 
 

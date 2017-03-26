@@ -46,9 +46,23 @@ class Turno(BaseModel):
         verbose_name = "turno"
         verbose_name_plural = "turnos"
 
+    # Estos properties se utilizan en la API para mostrar los turnos en el
+    # calendario: title, datetime_start, datetime_end
+    # TODO: sería bueno cachear title.
     @property
     def title(self):
-        return self.paciente.persona.__str__() if self.paciente else self.nombre_paciente
+        if self.paciente:
+            sesiones = ""
+            if self.sesion:
+                motivo = self.sesion.motivo_consulta
+            else:
+                motivo = self.paciente.tratamiento_activo()
+            if motivo:
+                sesiones = "({}/{})".format(
+                    motivo.sesiones_realizadas_al(datetime.combine(self.dia, self.hora)),
+                    motivo.sesiones_planificadas)
+            return "{} {}".format(self.paciente.persona, sesiones)
+        return self.nombre_paciente
 
     @property
     def datetime_start(self):

@@ -2,9 +2,9 @@ import json
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.transaction import atomic
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import render, get_object_or_404
 from django.template.loader import render_to_string
 from django.utils import timezone
@@ -12,10 +12,10 @@ from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
-from dj_utils.mixins import FichaKinesicaMixin
+from dj_utils.mixins import FichaKinesicaMixin, FichaKinesicaModalView
 from tratamientos.forms import (ObjetivoForm, MotivoConsultaForm, ObjetivoInlineFormset,
                                 PlanificacionCreateForm, NuevaSesionForm, ObjetivoCumplidoUpdateForm,
-                                SesionUpdateForm, SesionPerdidaForm)
+                                SesionUpdateForm, SesionPerdidaForm, PlanificacionFinishForm)
 from tratamientos.models import MotivoConsulta, Objetivo, Planificacion, Sesion
 from turnos.models import Turno
 
@@ -89,8 +89,7 @@ class TratamientoEditView(LoginRequiredMixin, FichaKinesicaMixin, UpdateView):
     form_class = MotivoConsultaForm
 
     def get_object(self, queryset=None):
-        pk = self.kwargs.get('pk_motivo', None)
-        self.object = MotivoConsulta.objects.get(paciente_id=self.paciente.pk, id=pk)
+        self.object = get_object_or_404(MotivoConsulta, pk=self.kwargs.get('pk_motivo'))
         return self.object
 
     def get_context_data(self, *args, **kwargs):
@@ -127,6 +126,45 @@ class TratamientoEditView(LoginRequiredMixin, FichaKinesicaMixin, UpdateView):
         messages.add_message(self.request, messages.SUCCESS,
                              "Tratamiento actualizado correctamente.")
         return reverse('tratamiento_list', kwargs={'pk': self.paciente.pk})
+
+
+class TratamientoFinishView(LoginRequiredMixin, FichaKinesicaMixin, UpdateView):
+    model = Planificacion
+    form_class = PlanificacionFinishForm
+    template_name = 'tratamientos/tratamiento_finish.html'
+
+    def get_object(self, queryset=None):
+        motivo = get_object_or_404(MotivoConsulta, pk=self.kwargs.get('pk_motivo'))
+        self.object = motivo.planificacion_actual
+        if self.object is None:
+            raise Http404("No hay tratamientos activos.")
+        return self.object
+
+    def form_valid(self, form):
+        form.save()
+        return HttpResponse(render_to_string(
+            'mensajes/tratamiento_saved.html', {'paciente': self.paciente, 'result': 'finalizado'}))
+
+
+class PlanificacionAddView(LoginRequiredMixin, FichaKinesicaModalView, CreateView):
+    model = Planificacion
+    form_class = PlanificacionCreateForm
+    template_name = "tratamientos/planificacion_form.html"
+
+    def get_url_post_form(self):
+        return reverse_lazy('planificacion_add', kwargs={
+            'pk': self.paciente.pk, 'pk_motivo': self.motivo.pk})
+
+    def dispatch(self, request, *args, **kwargs):
+        self.motivo = get_object_or_404(MotivoConsulta, pk=self.kwargs.get('pk_motivo'))
+        return super(PlanificacionAddView, self).dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        planificacion = form.save(commit=False)
+        planificacion.motivo_consulta = self.motivo
+        planificacion.save()
+        return HttpResponse(render_to_string(
+            'mensajes/tratamiento_saved.html', {'paciente': self.paciente, 'result': 'ampliado'}))
 
 
 class ObjetivoEditView(LoginRequiredMixin, FichaKinesicaMixin, UpdateView):
@@ -217,6 +255,9 @@ class SesionCreateView(LoginRequiredMixin, FichaKinesicaMixin, UpdateView):
         if plan.estado == Planificacion.PLANIFICADO:
             plan.estado = Planificacion.EN_CURSO
             plan.save()
+        if sesion.motivo_consulta.sesiones_restantes < 1:
+            plan.estado = Planificacion.FINALIZADO
+            plan.save()
         sesion.save()
 
     def get_motivo(self):
@@ -235,7 +276,7 @@ class SesionCreateView(LoginRequiredMixin, FichaKinesicaMixin, UpdateView):
         messages.add_message(self.request, messages.SUCCESS,
                              "La sesión fue guardada correctamente.")
         return reverse('sesion_create',
-                       kwargs={'pk': self.paciente.pk, 'pk_motivo': self.paciente.tratamiento_activo().pk })
+                       kwargs={'pk': self.paciente.pk, 'pk_motivo': self.paciente.tratamiento_activo().pk})
 
     def get_context_data(self, *args, **kwargs):
         context = super(SesionCreateView, self).get_context_data(*args, **kwargs)
@@ -268,7 +309,7 @@ class SesionDeleteView(LoginRequiredMixin, FichaKinesicaMixin, DeleteView):
 
     def get_success_url(self):
         messages.add_message(self.request, messages.SUCCESS,
-                             "La sesión fue eliminada correctamente.")
+                             "La sesión fue eliminada correctamente. Por favor revise el estado del tratamiento.")
         return reverse('tratamiento_list', kwargs={'pk': self.paciente.pk})
 
     def delete(self, request, *args, **kwargs):
@@ -297,7 +338,7 @@ class SesionUpdateView(LoginRequiredMixin, FichaKinesicaMixin, UpdateView):
     def get_success_url(self):
         messages.add_message(self.request, messages.SUCCESS,
                              "La sesión fue actualizada correctamente.")
-        return reverse('tratamiento_list', kwargs={'pk': self.paciente.pk })
+        return reverse('tratamiento_list', kwargs={'pk': self.paciente.pk})
 
 
 class SesionPerdidaCreateView(LoginRequiredMixin, FichaKinesicaMixin, CreateView):
@@ -322,6 +363,8 @@ class SesionPerdidaCreateView(LoginRequiredMixin, FichaKinesicaMixin, CreateView
 tratamiento_list = TratamientoListView.as_view()
 tratamiento_create = TratamientoAddView.as_view()
 tratamiento_update = TratamientoEditView.as_view()
+tratamiento_finish = TratamientoFinishView.as_view()
+planificacion_add = PlanificacionAddView.as_view()
 objetivo_update = ObjetivoEditView.as_view()
 objetivo_cumplido_toggle = ObjetivoToggleCheckView.as_view()
 sesion_create = SesionCreateView.as_view()

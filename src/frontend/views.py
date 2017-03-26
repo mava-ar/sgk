@@ -24,6 +24,8 @@ from pacientes.models import Paciente, Antecedente, ComentariosHistoriaClinica, 
 from pacientes.tables import PacienteTable
 from turnos.forms import TurnoForm, TurnoDeleteForm
 from turnos.models import Turno
+from turnos.tables import TurnosReporteTable
+from turnos.filters import TurnosReportFilter
 from tratamientos.forms import SesionPerdidaForm
 
 
@@ -108,6 +110,13 @@ class TurnoDeleteView(LoginRequiredMixin, UpdateView):
         if form.is_valid():
             form.instance.delete()
         return render(self.request, 'mensajes/turno_delete.html', {'success': form.is_valid()})
+
+
+class TurnosInformesView(TableFilterListView):
+    table_class = TurnosReporteTable
+    filterset_class = TurnosReportFilter
+    template_name = "turnos/turno_report.html"
+    queryset = Turno.objects.all().order_by('-dia', 'hora')
 
 
 class PacienteListView(TableFilterListView):
@@ -427,6 +436,7 @@ turno_list = TurnosListView.as_view()
 turno_create = TurnoCreateView.as_view()
 turno_update = TurnoEditView.as_view()
 turno_delete = TurnoDeleteView.as_view()
+turno_report = TurnosInformesView.as_view()
 paciente_list = PacienteListView.as_view()
 paciente_create = PacienteCreateView.as_view()
 paciente_update = PacienteEditView.as_view()
