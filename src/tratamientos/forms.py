@@ -53,7 +53,7 @@ class ObjetivoCumplidoUpdateForm(forms.ModelForm):
 class PlanificacionCreateForm(forms.ModelForm):
     class Meta:
         model = Planificacion
-        fields = ('cantidad_sesiones', 'frecuencia', 'comentarios', )
+        fields = ('por_sesion', 'cantidad_sesiones', 'frecuencia', 'comentarios', )
 
 
 class PlanificacionFinishForm(forms.ModelForm):

@@ -1,4 +1,5 @@
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Sum
 
@@ -123,10 +124,15 @@ class Planificacion(BaseModel):
     fecha_ingreso = models.DateField(
         'fecha de ingreso', null=True,
         help_text="Fecha de inicio de tratamiento, normalmente la fecha de la primer sesión.")
-    fecha_alta = models.DateField('fecha de alta', null=True, blank=True,
-            help_text='fecha de alta tentativa.')
-    cantidad_sesiones = models.IntegerField('cantidad de sesiones',
-            help_text='Cantidad de sesiones necesarias recetadas por el médico.', default=10)
+    fecha_alta = models.DateField(
+        'fecha de alta', null=True, blank=True, help_text='fecha de alta tentativa.')
+    por_sesion = models.BooleanField(
+        'por sesión', default=False,
+        help_text=('Seleccione esta opción si el tratamiento '
+                   'no depende de una cantidad determinada de sesiones.'))
+    cantidad_sesiones = models.IntegerField(
+        'cantidad de sesiones',  null=True, blank=True,
+        help_text='Cantidad de sesiones necesarias recetadas por el médico.')
     frecuencia = models.PositiveIntegerField(
         'frecuencia semanal', default=1, validators=[MinValueValidator(1), MaxValueValidator(7)])
     estado = models.IntegerField("estado", choices=PLANIFICACION_ESTADO, default=1)
@@ -143,6 +149,10 @@ class Planificacion(BaseModel):
     class Meta:
         verbose_name_plural = 'planificaciones'
         verbose_name = 'planificación'
+
+    def clean(self):
+        if self.por_sesion and self.cantidad_sesiones:
+            raise ValidationError("Debe seleccionar la opción 'Por sesión' o especificar 'Cantidad de sesiones', no ambos.")
 
     @classmethod
     def estados_activos(self):

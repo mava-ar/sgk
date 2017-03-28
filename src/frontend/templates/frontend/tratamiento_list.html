@@ -22,14 +22,14 @@
                     {% for trata in motivo.planificaciones.all %}
                         <div class="col-sm-4">
                             <h4>Planificación #{{ forloop.counter }}</h4>
-                            <p><span>Cantidad de sesiones: </span>{{ trata.cantidad_sesiones }}</p>
+                            {% if not trata.por_sesion %}<p><span>Cantidad de sesiones: </span>{{ trata.cantidad_sesiones }}</p>{% endif %}
                             <p><span>Frecuencia semanal: </span>{{ trata.frecuencia }}</p>
                             <p><span>Estado: </span>{{ trata.get_estado_display|upper }}
                             {% if trata.estado in trata.estados_activos %}
                                 <br /><a class="btn btn-raised btn-danger" data-toggle="modal" href="{% url 'tratamiento_finish' paciente.pk motivo.pk %}"
                                 data-target="#modal" data-tooltip ><i class="material-icons">done</i> Finalizar</a>
                             {% else %}
-                            <strong>
+                            | <strong>
                                 {% if trata.motivo_finalizacion %}
                                     {{ trata.motivo_finalizacion }}
                                 {% elif trata.sesiones_restantes < 1 %}
@@ -64,13 +64,18 @@
                     </a>
                     {% endif %}
                     <span><i class="material-icons green icon-with-text md-36">check_circle</i> Sesiones tomadas: <strong>{{ motivo.sesiones_realizadas }}</strong></span>
-                    <span><i class="material-icons red icon-with-text md-36">schedule</i> Sesiones restantes: <strong>{{ motivo.sesiones_restantes }}</strong></span>
+                    {% if motivo.planificaciones.last.cantidad_sesiones %}<span><i class="material-icons red icon-with-text md-36">schedule</i> Sesiones restantes: <strong>{{ motivo.sesiones_restantes }}</strong></span>{% endif %}
                 </p>
                 {% else %}
-                <h3>El tratamiento se encuentra finalizado. Para continuarlo, planifique
+                <h3>El tratamiento se encuentra finalizado. 
+                    {% with plan=motivo.planificaciones.last %}
+                    {% if not plan.por_sesion and paciente.ultimo_motivo_consulta == motivo %}
+                        Para continuarlo, planifique
                         <a class="btn btn-raised btn-success" data-toggle="modal"
                             href="{% url 'planificacion_add' paciente.pk motivo.pk %}" data-target="#modal" data-tooltip >
                             <i class="material-icons">add</i> sesiones</a>.
+                    {% endif %}
+                    {% endwith %}
                 </h3>
                 {% endif %}
                 {% if motivo.historial_sesiones %}

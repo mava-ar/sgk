@@ -51,6 +51,7 @@ class TratamientoAddView(LoginRequiredMixin, FichaKinesicaMixin, CreateView):
         return context
 
     def post(self, request, *args, **kwargs):
+        self.object = None
         form_class = self.get_form_class()
         form = self.get_form(form_class)
         objectivo_formset = ObjetivoInlineFormset(self.request.POST)
@@ -62,7 +63,6 @@ class TratamientoAddView(LoginRequiredMixin, FichaKinesicaMixin, CreateView):
 
     @atomic
     def form_valid(self, form, objetivo_formset, tratamiento_form):
-        self.object = None
         motivo = form.save(commit=False)
         motivo.paciente = self.paciente
         motivo.save()
@@ -255,7 +255,7 @@ class SesionCreateView(LoginRequiredMixin, FichaKinesicaMixin, UpdateView):
         if plan.estado == Planificacion.PLANIFICADO:
             plan.estado = Planificacion.EN_CURSO
             plan.save()
-        if sesion.motivo_consulta.sesiones_restantes < 1:
+        if not plan.por_sesion and sesion.motivo_consulta.sesiones_restantes < 1:
             plan.estado = Planificacion.FINALIZADO
             plan.save()
         sesion.save()

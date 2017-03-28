@@ -35,6 +35,13 @@ class Paciente(BaseModel):
         except MotivoConsulta.DoesNotExist:
             return None
 
+    def ultimo_motivo_consulta(self):
+        from tratamientos.models import MotivoConsulta
+        try:
+            return self.motivos_de_consulta.latest('creado_el')
+        except MotivoConsulta.DoesNotExist:
+            return None
+
 
 class RegistroBiometrico(BaseModel, ShowInfoMixin):
     """
