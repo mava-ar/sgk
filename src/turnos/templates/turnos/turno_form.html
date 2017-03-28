@@ -47,10 +47,10 @@
     <div class="col-sm-12">
         <div class="pull-right">
             {% if object.id %}
-                <button class="btn btn-raised btn-danger" href="#" id="btn-eliminar" type="button"><i class="material-icons">delete</i></button>
+                <button class="btn btn-raised btn-danger" href="#" id="btn-eliminar" type="button" title="Eliminar el turno"><i class="material-icons">delete</i></button>
             {% endif %}
-            <button type="button" class="btn btn-raised btn-default" data-dismiss="modal"><i class="material-icons">cancel</i></button>
-            <button type="submit" class="btn btn-raised btn-primary"><i class="material-icons">save</i></button>
+            <button type="button" class="btn btn-raised btn-default" data-dismiss="modal" title="Cancelar"><i class="material-icons">cancel</i></button>
+            <button type="submit" class="btn btn-raised btn-primary"i title="Guardar"><i class="material-icons">save</i></button>
         </div>
         {% block action_buttons %}
         {% if object.id %}

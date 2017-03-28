@@ -78,6 +78,9 @@
                         } else if (calEvent.start.format("X") > moment().format("X")) {
                             jsEvent.css("background-color", "#03A9F4");
                         }
+                        if (calEvent.sesiones_info) {
+                            jsEvent.find('.fc-title').append("<span class='pull-right'>" + calEvent.sesiones_info + "</div>");
+                        }
                         jsEvent.bind('click', function() {
                             turno_dialog = BootstrapDialog.show({
                                 message: $('<div></div>').load("/turnos/editar/" + calEvent.id + "/"),

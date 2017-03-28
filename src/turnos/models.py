@@ -52,17 +52,21 @@ class Turno(BaseModel):
     @property
     def title(self):
         if self.paciente:
-            sesiones = ""
-            if self.sesion:
-                motivo = self.sesion.motivo_consulta
-            else:
-                motivo = self.paciente.tratamiento_activo()
-            if motivo:
-                sesiones = "({}/{})".format(
-                    motivo.sesiones_realizadas_al(datetime.combine(self.dia, self.hora)),
-                    motivo.sesiones_planificadas)
-            return "{} {}".format(self.paciente.persona, sesiones)
+            return "{}".format(self.paciente.persona)
         return self.nombre_paciente
+
+    @property
+    def sessions_count_and_total(self):
+        motivo = None
+        if self.sesion:
+            motivo = self.sesion.motivo_consulta
+        elif self.paciente:
+            motivo = self.paciente.tratamiento_activo()
+        if motivo:
+            return "#{} ({})".format(
+                motivo.sesiones_realizadas_al(datetime.combine(self.dia, self.hora)) + 1,
+                motivo.sesiones_planificadas)
+        return ""
 
     @property
     def datetime_start(self):
