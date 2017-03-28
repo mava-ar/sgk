@@ -57,12 +57,19 @@ class Turno(BaseModel):
 
     @property
     def sessions_count_and_total(self):
+        """
+        Muestrar el número de sesión del turno dado (por eso el +1 - sesiones tomadas más la del turno).
+        Mostrar el numero de sesiones planificadas si corresponde (si la planificación tiene
+        un numero de sesiones planificadas).
+        """
         motivo = None
         if self.sesion:
             motivo = self.sesion.motivo_consulta
         elif self.paciente:
             motivo = self.paciente.tratamiento_activo()
         if motivo:
+            if motivo.planificacion_actual and motivo.planificacion_actual.por_sesion:
+                return "#{}".format(motivo.sesiones_realizadas_al(datetime.combine(self.dia, self.hora)) + 1)
             return "#{} ({})".format(
                 motivo.sesiones_realizadas_al(datetime.combine(self.dia, self.hora)) + 1,
                 motivo.sesiones_planificadas)
