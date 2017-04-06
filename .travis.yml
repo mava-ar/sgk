@@ -1,25 +1,15 @@
 language: python
 python:
-  - "3.5"
+  - "3.6"
 
 env:
   - CFLAGS="-O0"
 
-# before_install:
-#   - sudo apt-get install -qq libxml2-dev libxslt-dev postgresql-contrib
-
 # command to install dependencies
 install:
-  - pip install -r src/requirements/dev.txt
+  - pip install -r src/requirements/test.txt
   - cd src
-  - cp example.env sgk/settings/.env
   - python manage.py migrate --settings=sgk.settings.test
- 
-# database creation
-#before_script:
-#  - psql -c 'create database preciosa;' -U postgres
-#  - psql -c 'CREATE EXTENSION postgis;' -U postgres -d preciosa
-#  - psql -c 'CREATE EXTENSION postgis_topology;' -U postgres -d preciosa
 
 # command to run tests
 script:

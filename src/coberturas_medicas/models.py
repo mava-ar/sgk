@@ -62,7 +62,7 @@ class RegistroValorPrestacion(BaseModel):
     class Meta:
         verbose_name_plural = 'valores de prestación'
         verbose_name = 'valor de prestación'
-        
+
     def save(self, **kwargs):
         """
         Al guardar, verificar si existe otro valor de la misma cobertura vigente, e invalidarlo.

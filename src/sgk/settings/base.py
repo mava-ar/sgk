@@ -65,7 +65,6 @@ INSTALLED_APPS = [
     'djangobower',
     'pipeline',
     'bootstrap3',
-    'compressor',
     'easy_thumbnails',
     'datetimewidget',
     'djangoformsetjs',
@@ -200,7 +199,6 @@ STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'djangobower.finders.BowerFinder',
     'pipeline.finders.PipelineFinder',
-    'compressor.finders.CompressorFinder',
 )
 
 STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
@@ -300,12 +298,6 @@ PIPELINE = {
     'DISABLE_WRAPPER': True
 }
 
-# django-compressor settings
-COMPRESS_PRECOMPILERS = (
-    ('text/x-scss', 'django_libsass.SassCompiler'),
-)
-
-COMPRESS_ENABLED = env.bool('COMPRESS_ENABLED', True)
 
 BOWER_INSTALLED_APPS = (
     'jquery#2.1.4',
@@ -321,10 +313,11 @@ BOWER_INSTALLED_APPS = (
     'fullcalendar#2.9.1',
     'jquery.are-you-sure#^1.9.0',
     'bootstrap-material-design#0.5.9',
+    'animate.css#^3.5.2',
+    # duda
     'd3-ease',
     'letteringjs',
     'mojs',
-    'animate.css#^3.5.2',
     'typed.js'
 )
 

@@ -136,7 +136,7 @@ class ImagenesHistoriaClinica(EntradaHistoriaClinica):
     Representa una imagen ingresada en la historia clinica
     """
     imagen = models.ImageField(verbose_name="imágen", upload_to="historia_imagenes")
-    comentarios = models.TextField(verbose_name="comentarios" ,null=True, blank=True)
+    comentarios = models.TextField(verbose_name="comentarios", null=True, blank=True)
 
     class Meta:
         verbose_name_plural = "imágenes de historia clínica"

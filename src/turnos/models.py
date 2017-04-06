@@ -48,7 +48,7 @@ class Turno(BaseModel):
 
     # Estos properties se utilizan en la API para mostrar los turnos en el
     # calendario: title, datetime_start, datetime_end
-    # TODO: sería bueno cachear title.
+    # TODO: sería bueno cachear sessions_count_and_total y title.
     @property
     def title(self):
         if self.paciente:

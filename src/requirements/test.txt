@@ -1,2 +1,4 @@
 -r common.txt
 coverage
+django-test-plus==1.0.17
+factory-boy==2.8.1
