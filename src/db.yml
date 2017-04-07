@@ -1,0 +1,6 @@
+postgres-sgk:
+  image: matuu/postgresql:latest
+  volumes:
+    - /var/lib/postgresql
+  ports:
+    - "5432:5432"

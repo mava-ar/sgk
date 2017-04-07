@@ -8,7 +8,7 @@
     Inicio
 {% endblock %}
 {% block content %}
-    <h1>Turnos 
+    <h1>Turnos
         <a class="btn btn-raised btn-info pull-right" href="{% url 'turno_report' %}">Reporte</a>
     </h1>
     {% if user.profesional %}
@@ -104,7 +104,7 @@
                                     beforeSend: function(xhr, settings) {
                                         xhr.setRequestHeader("X-CSRFToken", '{{ csrf_token }}');
                                     },
-                                    data: {'start': event.start.toJSON(), 'end': event.end.toJSON(), 'title': event.title },
+                                    data: {'start': event.start.toJSON(), 'end': event.end.toJSON(), 'title': event.title},
                                     success: function() {},
                                     error: revertFunc
                                 });
