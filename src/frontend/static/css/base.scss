@@ -63,7 +63,7 @@ body {
 }
 
 .objetivo-content {
-    border-bottom: 1px solid #eeeeee; 
+    border-bottom: 1px solid #eeeeee;
     .fechas {
         float: right;
         background-color: #eee;
@@ -118,11 +118,17 @@ textarea.form-control {
 /* Main classes */
 .main-footer {
     background-color: #92cf94;
-    padding: 10px;
+    padding: 3px;
     height: 60px;
     span {
         font-size: 20px;
         line-height: 20px;
+        &.legend {
+            display: block;
+            margin-top: 10px;
+            color: #FFF;
+            font-size: 1rem;
+        }
     }
 }
 

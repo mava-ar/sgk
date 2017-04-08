@@ -57,13 +57,20 @@ class PlanificacionCreateForm(forms.ModelForm):
 
 
 class PlanificacionFinishForm(forms.ModelForm):
+    por_sesion = forms.BooleanField(widget=forms.HiddenInput(), required=False)
     motivo_finalizacion = forms.CharField(
-        label='Motivo de finalización', required=True,
+        label='Motivo de finalización', required=False,
         help_text='Comente un motivo por el cual finaliza el tratamiento de forma anticipada.')
 
     class Meta:
         model = Planificacion
-        fields = ('motivo_finalizacion', )
+        fields = ('motivo_finalizacion', 'por_sesion')
+
+    def clean(self):
+        cleaned_data = super(PlanificacionFinishForm, self).clean()
+        if not cleaned_data.get("por_sesion", False) and not cleaned_data.get("motivo_finalizacion", ''):
+            self.add_error('motivo_finalizacion', 'Debe especificar el motivo de la finalización anticipada.')
+        return cleaned_data
 
     def save(self, commit=True):
         instance = super(PlanificacionFinishForm, self).save(commit=False)

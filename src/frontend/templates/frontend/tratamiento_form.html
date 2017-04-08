@@ -89,6 +89,16 @@
                 }).on('formAdded', function(event) {
                     $.material.init();
                 });
+
+                $("#id_por_sesion").change(function(e){
+                    if($(this).is(':checked')){
+                        $("#id_cantidad_sesiones").closest(".form-group").slideUp();
+                        $("#id_cantidad_sesiones").val('');
+                    } else{
+                        $("#id_cantidad_sesiones").closest(".form-group").slideDown();
+                    }
+                });
+                $("#id_por_sesion").change();
             });
         })(jQuery);
 

@@ -153,6 +153,8 @@ class Planificacion(BaseModel):
     def clean(self):
         if self.por_sesion and self.cantidad_sesiones:
             raise ValidationError("Debe seleccionar la opción 'Por sesión' o especificar 'Cantidad de sesiones', no ambos.")
+        elif not any([self.por_sesion, self.cantidad_sesiones is not None and self.cantidad_sesiones > 0]):
+            raise ValidationError("Debe seleccionar la opción 'Por sesión' o especificar 'Cantidad de sesiones'.")
 
     @classmethod
     def estados_activos(self):

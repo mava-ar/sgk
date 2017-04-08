@@ -29,11 +29,11 @@
                                 <br /><a class="btn btn-raised btn-danger" data-toggle="modal" href="{% url 'tratamiento_finish' paciente.pk motivo.pk %}"
                                 data-target="#modal" data-tooltip ><i class="material-icons">done</i> Finalizar</a>
                             {% else %}
-                            | <strong>
+                            <strong>
                                 {% if trata.motivo_finalizacion %}
-                                    {{ trata.motivo_finalizacion }}
+                                    | {{ trata.motivo_finalizacion }}
                                 {% elif trata.sesiones_restantes < 1 %}
-                                    Tratamiento cumplido
+                                    | Tratamiento cumplido
                                 {% endif %}
                             </strong></p>
                             {% endif %}
@@ -67,7 +67,7 @@
                     {% if motivo.planificaciones.last.cantidad_sesiones %}<span><i class="material-icons red icon-with-text md-36">schedule</i> Sesiones restantes: <strong>{{ motivo.sesiones_restantes }}</strong></span>{% endif %}
                 </p>
                 {% else %}
-                <h3>El tratamiento se encuentra finalizado. 
+                <h3>El tratamiento se encuentra finalizado.
                     {% with plan=motivo.planificaciones.last %}
                     {% if not plan.por_sesion and paciente.ultimo_motivo_consulta == motivo %}
                         Para continuarlo, planifique
@@ -108,13 +108,4 @@
     {% empty %}
         <p class="alert alert-warning">Aún no ha ingresado motivos de consulta para este paciente.</p>
     {% endfor %}
-{% endblock %}
-{% block extra_js %}
-    <script type="text/javascript">
-        (function($){
-            $('#modal').on('hidden.bs.modal', function (e) {
-                window.location = "{% url 'tratamiento_list' paciente.pk %}";
-            });
-        })(jQuery);
-    </script>
 {% endblock %}

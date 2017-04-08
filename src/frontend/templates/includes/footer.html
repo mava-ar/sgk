@@ -1,13 +1,20 @@
+{% load static %}
 <div id="section-footer" class="footer-wrap main-footer">
 <div class="container footer center">
     <div class="row">
-        <div class="col-md-6">
-            <h4 class="footer-title"><!-- Footer Title -->
-                K I N E S
-                <small class="copyright"><a href="http://mava.com.ar"></a>MAVA &copy; {% now "Y" %}</small>
-            </h4>
+        <div class="col-md-4 col-xs-6">
+            <a href="https://www.kines.com.ar" alt="kines website">
+                <img src="{% static 'img/kines-footer.svg' %}" class="img-responsive" />
+            </a>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-offset-5 col-md-3 col-xs-6">
+            <span class="legend">Este producto es desarrollado y comercializado por
+                <a href="http://mava.com.ar" class="visible-xs">MAVA &copy; {% now "Y" %}</a>
+            </span>
+            <div class="hidden-xs">
+            <a href="http://mava.com.ar">MAVA</a> &copy; {% now "Y" %}
+            </div>
+
         </div>
     </div>
 </div>

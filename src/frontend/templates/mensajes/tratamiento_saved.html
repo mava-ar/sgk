@@ -8,6 +8,14 @@
         </div>
         <div class="modal-body">
             <p class="alert alert-success" data="success-and-close">Tratamiento {{ result }} correctamente.</p>
-        </div> 
+        </div>
     </div>
 </div>
+<script type="text/javascript">
+    (function($){
+        setTimeout(function() {
+            $('#modal').modal('hide');
+            window.location = "{% url 'tratamiento_list' paciente.pk %}";
+        }, 1500);
+    })(jQuery);
+</script>

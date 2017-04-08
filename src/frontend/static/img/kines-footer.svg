@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   id="svg8"
+   version="1.1"
+   viewBox="0 0 62.303295 14.095239"
+   height="14.09524mm"
+   width="62.303291mm">
+  <defs
+     id="defs2" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     transform="translate(-3.7110938,-0.34701375)"
+     id="layer1">
+    <g
+       transform="matrix(0.5714286,0,0,0.5714286,2.0190401,0.57729152)"
+       id="g3761">
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:19.48744774px;line-height:125%;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#f9f9f9;fill-opacity:1;stroke:none;stroke-width:0.48718622px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         x="3.3678207"
+         y="17.989794"
+         id="text3692"
+         transform="scale(0.92688509,1.0788824)"><tspan
+           id="tspan3690"
+           x="3.3678207"
+           y="17.989794"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:19.48744774px;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#f9f9f9;stroke-width:0.48718622px">KINES</tspan></text>
+      <text
+         transform="scale(0.886066,1.1285841)"
+         id="text3696"
+         y="9.1519127"
+         x="65.732887"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.82275486px;line-height:125%;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#f9f9f9;fill-opacity:1;stroke:none;stroke-width:0.17056885px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.82275486px;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#f9f9f9;stroke-width:0.17056885px"
+           y="9.1519127"
+           x="65.732887"
+           id="tspan3698">Sistema de gestión</tspan></text>
+      <rect
+         id="rect3700"
+         width="0.45347598"
+         height="21.166668"
+         x="54.725227"
+         y="1.3470138"
+         style="fill:#f9f9f9;stroke-width:0.11103351" />
+      <text
+         xml:space="preserve"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.12441063px;line-height:125%;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#f9f9f9;fill-opacity:1;stroke:none;stroke-width:0.22811024px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         x="60.227825"
+         y="18.820631"
+         id="text3710"
+         transform="scale(0.96407044,1.0372686)"><tspan
+           id="tspan3708"
+           x="60.227825"
+           y="18.820631"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:9.12441063px;font-family:Ubuntu;-inkscape-font-specification:'Ubuntu, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#f9f9f9;stroke-width:0.22811024px">kinesiológico</tspan></text>
+    </g>
+  </g>
+</svg>
