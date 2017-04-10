@@ -2,5 +2,5 @@
 django-debug-toolbar==1.7
 django-extensions==1.7.8
 django-template-repl==0.3.0
-Werkzeug
+Werkzeug==0.12.1
 
