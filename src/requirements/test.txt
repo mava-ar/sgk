@@ -1,2 +1,2 @@
 -r common.txt
-coverage
+coverage==4.3.4
