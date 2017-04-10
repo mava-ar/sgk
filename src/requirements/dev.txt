@@ -1,6 +1,6 @@
 -r common.txt
-django-debug-toolbar
-django-extensions
-django-template-repl
-Werkzeug
+django-debug-toolbar==1.7
+django-extensions==1.7.8
+django-template-repl==0.3.0
+Werkzeug==0.12.1
 

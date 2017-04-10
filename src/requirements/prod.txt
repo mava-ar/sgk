@@ -1,4 +1,4 @@
 -r common.txt
-gunicorn
-raven
+gunicorn==19.7.1
+raven==6.0.0
 
