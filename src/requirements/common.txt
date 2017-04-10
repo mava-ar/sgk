@@ -1,5 +1,5 @@
 Django==1.11
-pillow==3.2.0
+pillow==4.1.0
 django-libsass==0.7
 libsass>=0.9.3
 -e git://github.com/rasca/django-enhanced-cbv.git#egg=django-enhanced-cbv
