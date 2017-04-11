@@ -2,6 +2,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Sum
+from django.utils.safestring import mark_safe
 
 from core.models import Profesional
 from pacientes.models import Paciente
@@ -198,3 +199,16 @@ class Sesion(BaseModel):
     class Meta:
         verbose_name = "sesión"
         verbose_name_plural = "sesiones"
+
+    @property
+    def long_description(self):
+        txt = ''
+        if self.estado_paciente:
+            txt += "<strong>Estado del paciente:</strong> {}".format(self.estado_paciente)
+        if self.actividad:
+            txt += "&nbsp;&nbsp;<strong>Actividad:</strong> {}".format(self.actividad)
+        if self.comentarios:
+            txt += "&nbsp;&nbsp;<strong>Comentarios:</strong> {}".format(self.comentarios)
+        if not txt:
+            txt = 'Sin comentarios.'
+        return mark_safe(txt)

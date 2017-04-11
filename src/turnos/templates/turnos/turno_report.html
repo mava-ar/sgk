@@ -5,6 +5,9 @@
 {% endblock %}
 {% block content %}
     <h2>Reporte de turnos</h2>
+    <a href="{% querystring 'export'=1 %}" class="btn btn-raised btn-success pull-right">
+        <i class="material-icons">file_download</i> Exportar a Excel
+    </a>
     <div class="col-sm-9">
     {% crispy filter.form %}
     </div>

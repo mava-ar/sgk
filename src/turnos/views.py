@@ -1,4 +1,5 @@
 import dateutil.parser
+import django_excel as excel
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.conf import settings
@@ -92,6 +93,15 @@ class TurnosInformesView(TableFilterListView):
     filterset_class = TurnosReportFilter
     template_name = "turnos/turno_report.html"
     queryset = Turno.objects.all().order_by('-dia', 'hora')
+
+    def get(self, request, *args, **kwargs):
+        response = super(TurnosInformesView, self).get(request, *args, **kwargs)
+        if "export" in request.GET:
+            turnos = self.object_list.to_export().values(
+                'dia', 'hora', 'duracion', 'motivo', 'NoAsistio', 'NoAviso',
+                'Paciente', 'Cobertura', 'Profesional')
+            return excel.make_response_from_records(turnos, 'xls', file_name="turnos_export")
+        return response
 
 
 turno_list = TurnosListView.as_view()

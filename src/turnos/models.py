@@ -7,6 +7,7 @@ from core.models import Profesional
 from pacientes.models import Paciente
 from coberturas_medicas.models import Cobertura
 from tratamientos.models import Sesion
+from turnos.managers import TurnoQuerySet
 
 
 class Turno(BaseModel):
@@ -31,6 +32,8 @@ class Turno(BaseModel):
 
     sesion = models.OneToOneField(Sesion, on_delete=models.SET_NULL, verbose_name="sesión realizada", null=True,
                                   related_name='turno_dado')
+
+    objects = TurnoQuerySet.as_manager()
 
     def __str__(self):
         nombre = ''

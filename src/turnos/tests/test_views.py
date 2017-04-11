@@ -117,3 +117,14 @@ class TestTurnoViews(BaseTurnoTestCase):
             reverse('turno_report'),
             (today + timedelta(days=2)).strftime("%d/%m/%Y")))
         self.assertEqual(response.context["filter"].qs.count(), 2)
+
+    def test_report_export(self):
+        today = now()
+        turno1 = TurnoFactory(profesional=self.profesional,
+                              dia=today + timedelta(days=1))
+        turno1.save()
+
+        response = self.client.get("{}?export".format(
+            reverse('turno_report')))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.get('Content-Type'), 'application/vnd.ms-excel')
