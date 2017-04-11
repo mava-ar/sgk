@@ -1,7 +1,5 @@
-import dateutil.parser
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.db.transaction import atomic
@@ -9,24 +7,20 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.template.loader import render_to_string
 from django.utils import timezone
 from django.views.generic import TemplateView, CreateView, UpdateView, DetailView
-from django.shortcuts import render
 from enhanced_cbv.views.edit import InlineFormSetsView
 
 from core.filters import PersonaListFilter
 from core.forms import PersonaForm, ContactoForm
 from core.models import Persona
 from core.tables import PersonaTable
-from dj_utils.mixins import FichaKinesicaMixin, FichaKinesicaModalView, TableFilterListView
+from dj_utils.mixins import (
+    FichaKinesicaMixin, FichaKinesicaConHistoriaMixin, FichaKinesicaModalView,
+    TableFilterListView)
 from pacientes.filters import PacienteListFilter
 from pacientes.forms import PacienteForm, AntecedenteForm
 from pacientes.models import Paciente, Antecedente, ComentariosHistoriaClinica, ImagenesHistoriaClinica, \
     EntradaHistoriaClinica
 from pacientes.tables import PacienteTable
-from turnos.forms import TurnoForm, TurnoDeleteForm
-from turnos.models import Turno
-from turnos.tables import TurnosReporteTable
-from turnos.filters import TurnosReportFilter
-from tratamientos.forms import SesionPerdidaForm
 
 
 class IndexView(LoginRequiredMixin, TemplateView):
@@ -37,86 +31,6 @@ class IndexView(LoginRequiredMixin, TemplateView):
         Hasta construir el dashboard, redireccionamos a turnos
         """
         return HttpResponseRedirect(reverse('turno_list'))
-
-
-class TurnosListView(LoginRequiredMixin, TemplateView):
-    template_name = "turnos/turno_list.html"
-
-
-class TurnoCreateView(LoginRequiredMixin, CreateView):
-    model = Turno
-    form_class = TurnoForm
-
-    def dispatch(self, *args, **kwargs):
-        try:
-            self.request.user.profesional
-        except ObjectDoesNotExist:
-            return render(self.request, 'mensajes/turno_no_profesional.html')
-        return super(TurnoCreateView, self).dispatch(*args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-        ctx = super(TurnoCreateView, self).get_context_data(**kwargs)
-        if self.request.GET.get("time", False):
-            ctx["form"].initial["hora"] = dateutil.parser.parse(self.request.GET.get("time"))
-            ctx["form"].initial["dia"] = dateutil.parser.parse(self.request.GET.get("time"))
-        return ctx
-
-    def form_valid(self, form):
-        turno = form.save(commit=False)
-        turno.profesional = self.request.user.profesional
-        turno.save()
-        return render(self.request, 'mensajes/turno_saved.html')
-
-
-class TurnoEditView(TurnoCreateView, UpdateView):
-
-    def dispatch(self, *args, **kwargs):
-        return super(UpdateView, self).dispatch(*args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-        ctx = super(TurnoEditView, self).get_context_data(**kwargs)
-        ctx["delete_form"] = TurnoDeleteForm(instance=ctx["object"])
-        return ctx
-
-    def form_valid(self, form):
-        turno = form.save(commit=False)
-        turno.save()
-        return self.then_save(turno)
-
-    def then_save(self, turno):
-        try:
-            self.request.user.profesional
-            if settings.PLAN_KINES > 1 and (
-                turno.paciente and turno.paciente.tratamiento_activo()) and all(
-                    (turno.sesion is None, turno.no_asistio, turno.no_aviso)):
-                return render(self.request, 'turnos/sesion_perdida.html', {
-                    'turno': turno, 'form': SesionPerdidaForm()})
-        except ObjectDoesNotExist:
-            pass
-        return render(self.request, 'mensajes/turno_saved.html')
-
-    def get_template_names(self):
-        if settings.PLAN_KINES == 2:
-            return ["turnos/turno_form_plan2.html"]
-        return ["turnos/turno_form.html"]
-
-
-class TurnoDeleteView(LoginRequiredMixin, UpdateView):
-    model = Turno
-    http_method_names = ["post", ]
-
-    def post(self, request, *args, **kwargs):
-        form = TurnoDeleteForm(request.POST, instance=self.get_object())
-        if form.is_valid():
-            form.instance.delete()
-        return render(self.request, 'mensajes/turno_delete.html', {'success': form.is_valid()})
-
-
-class TurnosInformesView(TableFilterListView):
-    table_class = TurnosReporteTable
-    filterset_class = TurnosReportFilter
-    template_name = "turnos/turno_report.html"
-    queryset = Turno.objects.all().order_by('-dia', 'hora')
 
 
 class PacienteListView(TableFilterListView):
@@ -263,7 +177,7 @@ class PersonaUpdateView(LoginRequiredMixin, UpdateView):
         return reverse('persona_list')
 
 
-class FichaKinesicaIndex(LoginRequiredMixin, FichaKinesicaMixin, TemplateView):
+class FichaKinesicaIndex(LoginRequiredMixin, FichaKinesicaConHistoriaMixin, TemplateView):
     template_name = "frontend/ficha_kinesica.html"
 
     def get_object(self, queryset=None):
@@ -277,11 +191,6 @@ class FichaKinesicaIndex(LoginRequiredMixin, FichaKinesicaMixin, TemplateView):
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         return super(FichaKinesicaIndex, self).get(request, *args, **kwargs)
-
-    # def get_context_data(self, *args, **kwargs):
-    #     context = super(FichaKinesicaIndex, self).get_context_data(*args, **kwargs)
-    #     context["paciente"] = self.paciente
-    #     return context
 
 
 class FichaKinesicaEditView(LoginRequiredMixin, FichaKinesicaMixin, InlineFormSetsView):
@@ -424,7 +333,7 @@ class HistoriaClinicaListView(LoginRequiredMixin, DetailView):
         context = self.get_context_data(
             object=self.object,
             entradas=EntradaHistoriaClinica.objects.select_subclasses().filter(
-        paciente=self.object).order_by('-creado_el'))
+                paciente=self.object).order_by('-creado_el'))
         return self.render_to_response(context)
 
 
@@ -432,11 +341,6 @@ index = IndexView.as_view()
 persona_list = PersonaListView.as_view()
 persona_create = PersonaCreateView.as_view()
 persona_update = PersonaUpdateView.as_view()
-turno_list = TurnosListView.as_view()
-turno_create = TurnoCreateView.as_view()
-turno_update = TurnoEditView.as_view()
-turno_delete = TurnoDeleteView.as_view()
-turno_report = TurnosInformesView.as_view()
 paciente_list = PacienteListView.as_view()
 paciente_create = PacienteCreateView.as_view()
 paciente_update = PacienteEditView.as_view()

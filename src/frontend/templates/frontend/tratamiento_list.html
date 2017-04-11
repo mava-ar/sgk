@@ -64,7 +64,9 @@
                     </a>
                     {% endif %}
                     <span><i class="material-icons green icon-with-text md-36">check_circle</i> Sesiones tomadas: <strong>{{ motivo.sesiones_realizadas }}</strong></span>
-                    {% if motivo.planificaciones.last.cantidad_sesiones %}<span><i class="material-icons red icon-with-text md-36">schedule</i> Sesiones restantes: <strong>{{ motivo.sesiones_restantes }}</strong></span>{% endif %}
+                    {% with restantes=motivo.sesiones_restantes %}{% if restantes %}
+                    <span><i class="material-icons red icon-with-text md-36">schedule</i> Sesiones restantes: <strong>{{ motivo.sesiones_restantes }}</strong></span>
+                    {% endif %}{% endwith %}
                 </p>
                 {% else %}
                 <h3>El tratamiento se encuentra finalizado.

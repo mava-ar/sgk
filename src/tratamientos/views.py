@@ -241,21 +241,21 @@ class SesionCreateView(LoginRequiredMixin, FichaKinesicaMixin, UpdateView):
         try:
             self.object = Sesion.objects.get(
                 paciente=self.paciente, profesional=self.request.user.profesional,
-                motivo_consulta=self.get_motivo(), fin_el__isnull=True)
+                planificacion__motivo_consulta=self.get_motivo(), fin_el__isnull=True)
         except ObjectDoesNotExist:
             # la sesión es nueva
             self.object = Sesion(paciente=self.paciente, profesional=self.request.user.profesional,
-                                 motivo_consulta=self.motivo, fecha=timezone.now())
+                                 planificacion=self.motivo.planificacion_actual, fecha=timezone.now())
             self.object.save()
         self.check_turno()
         return self.object
 
     def save_and_post_actions(self, sesion):
-        plan = sesion.motivo_consulta.planificacion_actual
+        plan = sesion.planificacion
         if plan.estado == Planificacion.PLANIFICADO:
             plan.estado = Planificacion.EN_CURSO
             plan.save()
-        if not plan.por_sesion and sesion.motivo_consulta.sesiones_restantes < 1:
+        if not plan.por_sesion and plan.motivo_consulta.sesiones_restantes < 1:
             plan.estado = Planificacion.FINALIZADO
             plan.save()
         sesion.save()
@@ -351,7 +351,9 @@ class SesionPerdidaCreateView(LoginRequiredMixin, FichaKinesicaMixin, CreateView
         form = SesionPerdidaForm(data=request.POST, instance=self.object)
         self.object = form.save(commit=False)
         self.object.profesional = self.request.user.profesional
-        self.object.motivo_consulta = self.object.paciente.tratamiento_activo()
+        motivo = self.object.paciente.tratamiento_activo()
+        if motivo:
+            self.object.planificacion = motivo.planificacion_actual
         self.object.fecha = timezone.now().today()
         self.object.fin_el = timezone.now()
         self.object.save()

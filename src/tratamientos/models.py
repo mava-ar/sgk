@@ -18,15 +18,15 @@ class MotivoConsulta(BaseModel, ShowInfoMixin):
     paciente = models.ForeignKey(Paciente, verbose_name='paciente',
                                  related_name='motivos_de_consulta')
     motivo_consulta_paciente = models.TextField(
-            'motivo según el paciente', blank=True, default="",
-            help_text="Signos y síntomas explicados por el paciente.")
-    diagnostico_medico = models.TextField('diagnóstico médico',
-            help_text='Diagnóstico que elaboró el médico especialista.')
-    evaluacion_kinesica = models.TextField('evaluación kinésica',
-            help_text='Evaluación elaborada por el kinesiólogo/a.')
-    tratamientos_previos = models.TextField('tratamientos previos', blank=True,
-            help_text='Descripción de tratamientos previos '
-                      'por el mismo motivo de consulta')
+        'motivo según el paciente', blank=True, default="",
+        help_text="Signos y síntomas explicados por el paciente.")
+    diagnostico_medico = models.TextField(
+        'diagnóstico médico', help_text='Diagnóstico que elaboró el médico especialista.')
+    evaluacion_kinesica = models.TextField(
+        'evaluación kinésica', help_text='Evaluación elaborada por el kinesiólogo/a.')
+    tratamientos_previos = models.TextField(
+        'tratamientos previos', blank=True,
+        help_text='Descripción de tratamientos previos por el mismo motivo de consulta')
     observaciones = models.TextField('observaciones', blank=True)
 
     field_info = ('motivo_consulta_paciente', 'diagnostico_medico',
@@ -47,13 +47,18 @@ class MotivoConsulta(BaseModel, ShowInfoMixin):
         verbose_name = "motivo de consulta"
         verbose_name_plural = "motivos de consulta"
 
+    def _sesiones(self, planificaciones=None):
+        if not planificaciones:
+            planificaciones = self.planificaciones.all()
+        return Sesion.objects.filter(planificacion__in=planificaciones, fin_el__isnull=False)
+
     @property
     def historial_sesiones(self):
-        return self.sesiones.filter(fin_el__isnull=False).order_by("-comienzo_el")
+        return self._sesiones().order_by("-comienzo_el")
 
     @property
     def sesiones_realizadas(self):
-        return self.sesiones.count()
+        return self.historial_sesiones.count()
 
     @property
     def sesiones_planificadas(self):
@@ -61,7 +66,10 @@ class MotivoConsulta(BaseModel, ShowInfoMixin):
 
     @property
     def sesiones_restantes(self):
-        return self.sesiones_planificadas - self.sesiones.count()
+        plan = self.planificacion_actual
+        if plan and plan.cantidad_sesiones:
+            return plan.cantidad_sesiones - self._sesiones(planificaciones=[plan]).count()
+        return 0
 
     @property
     def planificacion_actual(self):
@@ -71,7 +79,10 @@ class MotivoConsulta(BaseModel, ShowInfoMixin):
             return None
 
     def sesiones_realizadas_al(self, fecha):
-        return self.sesiones.filter(fin_el__lt=fecha).count()
+        return self._sesiones().filter(fin_el__lt=fecha).count()
+
+    def planificacion_del(self, fecha):
+        return self.planificaciones.filter(creado_el__lte=fecha).latest('creado_el')
 
 
 class Objetivo(BaseModel, ShowInfoMixin):
@@ -81,8 +92,8 @@ class Objetivo(BaseModel, ShowInfoMixin):
     con el paso de las sesiones.
 
     """
-    motivo_consulta = models.ForeignKey(MotivoConsulta,
-            verbose_name='motivo de consulta', related_name='objetivos')
+    motivo_consulta = models.ForeignKey(
+        MotivoConsulta, verbose_name='motivo de consulta', related_name='objetivos')
     descripcion = models.CharField('descripción', max_length=255)
     fecha_inicio = models.DateField('fecha de inicio', null=True, auto_now_add=True)
     fecha_cumplido = models.DateField('fecha de éxito', null=True)
@@ -131,7 +142,7 @@ class Planificacion(BaseModel):
         help_text=('Seleccione esta opción si el tratamiento '
                    'no depende de una cantidad determinada de sesiones.'))
     cantidad_sesiones = models.IntegerField(
-        'cantidad de sesiones',  null=True, blank=True,
+        'cantidad de sesiones', null=True, blank=True,
         help_text='Cantidad de sesiones necesarias recetadas por el médico.')
     frecuencia = models.PositiveIntegerField(
         'frecuencia semanal', default=1, validators=[MinValueValidator(1), MaxValueValidator(7)])
@@ -169,7 +180,7 @@ class Sesion(BaseModel):
     """
     paciente = models.ForeignKey(Paciente, related_name='sesiones_paciente')
     profesional = models.ForeignKey(Profesional, related_name="sesiones")
-    motivo_consulta = models.ForeignKey(MotivoConsulta, related_name='sesiones', null=True)
+    planificacion = models.ForeignKey(Planificacion, related_name='sesiones', null=True)
     fecha = models.DateField("fecha")
     duracion = models.PositiveSmallIntegerField("duración de la sesión", default=60,
                                                 help_text="Duración de la sesión en minutos")

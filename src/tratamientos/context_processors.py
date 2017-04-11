@@ -7,7 +7,7 @@ def sesiones_activas(request):
         try:
             sesiones = Sesion.objects.filter(
                 profesional=request.user.profesional,
-                fin_el__isnull=True).select_related('motivo_consulta', 'paciente__persona')
+                fin_el__isnull=True).select_related('planificacion__motivo_consulta', 'paciente__persona')
             data = []
             for sesion in sesiones:
                 data.append({
@@ -16,7 +16,7 @@ def sesiones_activas(request):
                     'duracion': sesion.duracion,
                     'persona': sesion.paciente.persona,
                     'paciente_pk': sesion.paciente_id,
-                    'motivo_pk': sesion.motivo_consulta_id
+                    'motivo_pk': sesion.planificacion.motivo_consulta_id
                 })
             return {'sesiones_activas': data}
         except Profesional.DoesNotExist:

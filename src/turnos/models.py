@@ -46,6 +46,10 @@ class Turno(BaseModel):
         verbose_name = "turno"
         verbose_name_plural = "turnos"
 
+    @property
+    def dia_hora(self):
+        return datetime.combine(self.dia, self.hora)
+
     # Estos properties se utilizan en la API para mostrar los turnos en el
     # calendario: title, datetime_start, datetime_end
     # TODO: sería bueno cachear sessions_count_and_total y title.
@@ -63,15 +67,18 @@ class Turno(BaseModel):
         un numero de sesiones planificadas).
         """
         motivo = None
+        plan = None
         if self.sesion:
-            motivo = self.sesion.motivo_consulta
+            plan = self.sesion.planificacion
+            motivo = self.sesion.planificacion.motivo_consulta
         elif self.paciente:
-            motivo = self.paciente.tratamiento_activo()
-        if motivo:
-            if motivo.planificacion_actual and motivo.planificacion_actual.por_sesion:
-                return "#{}".format(motivo.sesiones_realizadas_al(datetime.combine(self.dia, self.hora)) + 1)
+            motivo = self.paciente.tratamiento_activo(el_dia=self.dia_hora)
+            plan = motivo.planificacion_del(self.dia_hora)
+        if motivo and plan:
+            if plan.por_sesion:
+                return "#{}".format(motivo.sesiones_realizadas_al(self.dia_hora) + 1)
             return "#{} ({})".format(
-                motivo.sesiones_realizadas_al(datetime.combine(self.dia, self.hora)) + 1,
+                motivo.sesiones_realizadas_al(self.dia_hora) + 1,
                 motivo.sesiones_planificadas)
         return ""
 

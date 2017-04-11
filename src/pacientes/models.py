@@ -27,9 +27,11 @@ class Paciente(BaseModel):
         verbose_name = "paciente"
         verbose_name_plural = "pacientes"
 
-    def tratamiento_activo(self):
+    def tratamiento_activo(self, el_dia=None):
         from tratamientos.models import Planificacion, MotivoConsulta
         try:
+            if el_dia:
+                return self.motivos_de_consulta.filter(creado_el__lte=el_dia).latest('creado_el')
             return self.motivos_de_consulta.filter(
                 planificaciones__estado__in=Planificacion.estados_activos()).latest('creado_el')
         except MotivoConsulta.DoesNotExist:

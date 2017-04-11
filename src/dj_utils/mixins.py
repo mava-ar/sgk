@@ -47,15 +47,25 @@ class FichaKinesicaMixin(object):
         if not self.paciente:
             self.get_paciente()
         context["paciente"] = self.paciente
-        from pacientes.models import EntradaHistoriaClinica
-        context["entradas"] = EntradaHistoriaClinica.objects.select_subclasses().filter(
-            paciente=self.paciente).order_by('-creado_el')
         return context
 
     def dispatch(self, request, *args, **kwargs):
         # siempre busco el paciente
         self.get_paciente()
         return super(FichaKinesicaMixin, self).dispatch(request, *args, **kwargs)
+
+
+class FichaKinesicaConHistoriaMixin(FichaKinesicaMixin):
+    """
+    Mixin utilizado para las vistas de ficha kinesica que requiera el historial médico.
+
+    """
+    def get_context_data(self, *args, **kwargs):
+        context = super(FichaKinesicaConHistoriaMixin, self).get_context_data(*args, **kwargs)
+        from pacientes.models import EntradaHistoriaClinica
+        context["entradas"] = EntradaHistoriaClinica.objects.select_subclasses().filter(
+            paciente=context["paciente"]).order_by('-creado_el')
+        return context
 
 
 class ModelViewMixin(object):

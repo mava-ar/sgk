@@ -9,11 +9,8 @@ urlpatterns = [
     url(r'^personas/$', views.persona_list, name='persona_list'),
     url(r'^personas/nueva/$', views.persona_create, name='persona_create'),
     url(r'^personas/editar/(?P<pk>\d+)/$', views.persona_update, name="persona_update"),
-    url(r'^turnos/$', views.turno_list, name='turno_list'),
-    url(r'^turnos/nuevo/$', views.turno_create, name='turno_create'),
-    url(r'^turnos/reporte/$', views.turno_report, name='turno_report'),
-    url(r'^turnos/editar/(?P<pk>\d+)/$', views.turno_update, name="turno_update"),
-    url(r'^turnos/eliminar/(?P<pk>\d+)/$', views.turno_delete, name="turno_delete"),
+    url(r'^turnos/', include('turnos.urls')),
+
     url(r'^pacientes/$', views.paciente_list, name='paciente_list'),
     url(r'^pacientes/nuevo/$', views.paciente_create, name='paciente_create'),
     url(r'^pacientes/editar/(?P<pk>\d+)/$', views.paciente_update, name="paciente_update"),
