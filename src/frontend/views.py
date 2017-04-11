@@ -14,7 +14,7 @@ from enhanced_cbv.views.edit import InlineFormSetsView
 
 from core.filters import PersonaListFilter
 from core.forms import PersonaForm, ContactoForm
-from core.models import Persona, Profesional
+from core.models import Persona
 from core.tables import PersonaTable
 from dj_utils.mixins import FichaKinesicaMixin, FichaKinesicaModalView, TableFilterListView
 from pacientes.filters import PacienteListFilter

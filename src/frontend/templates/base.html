@@ -1,4 +1,4 @@
-{% load static pipeline compress bootstrap3 %}
+{% load static pipeline bootstrap3 %}
 <!doctype html>
 <html class="no-js" lang="">
     <head>
@@ -11,14 +11,10 @@
         <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/icon?family=Material+Icons">
         <link rel="apple-touch-icon" href="{% static 'apple-touch-icon.png' %}">
         <!-- Place favicon.ico in the root directory -->
-        {% compress css %}
-            {% stylesheet 'base' %}
-            {% block extra_css %}{% endblock %}
-        {%  endcompress %}
+        {% stylesheet 'base' %}
+        {% block extra_css %}{% endblock %}
 
-        {% compress js %}
-            {% javascript 'head_js' %}
-        {% endcompress %}
+        {% javascript 'head_js' %}
         {{ form.media }}
         {% block extra_head %}{% endblock %}
         <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
@@ -54,12 +50,8 @@
         {% endblock %}
 
 
-        {% compress js %}
-            {% javascript 'base_js' %}
-        {% endcompress %}
-        {% compress js %}
-            {% block js %}{% endblock %}
-            {% block extra_js %}{% endblock %}
-        {% endcompress %}
+        {% javascript 'base_js' %}
+        {% block js %}{% endblock %}
+        {% block extra_js %}{% endblock %}
     </body>
 </html>

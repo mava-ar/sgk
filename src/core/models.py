@@ -1,3 +1,4 @@
+# coding:utf-8
 from datetime import date
 
 from django.core.files.storage import get_storage_class

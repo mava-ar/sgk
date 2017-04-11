@@ -1,4 +1,4 @@
-from .dev import *
+from .base import *
 import environ
 
 
@@ -23,3 +23,5 @@ MEDIA_ROOT = environ.Path(SITE_ROOT, '../../test_media').root
 
 PRIVATE_STORAGE_CONTAINER = None
 
+PIPELINE['PIPELINE_ENABLED'] = False  # noqa
+PIPELINE['PIPELINE_COLLECTOR_ENABLED'] = True

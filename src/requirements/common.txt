@@ -7,7 +7,6 @@ libsass>=0.9.3
 django-bower>=5.1.0
 django-pipeline>=1.6.4
 django-bootstrap3>=7.0.1
-django-compressor>=2.0
 easy-thumbnails==2.3
 django-model-utils==2.5
 django-formset-js>=0.5.0
