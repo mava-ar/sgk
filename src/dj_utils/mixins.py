@@ -14,7 +14,6 @@ class ShowInfoMixin(object):
         """
         Retorna una diccionario con información. Si no se especifica field_info,
         se utilizará todos los campos.
-        :return:
         """
         if not self.field_info:
             self.field_info = [f.name for f in self._meta.get_fields()]
@@ -22,11 +21,20 @@ class ShowInfoMixin(object):
         for f in self.field_info:
             if hasattr(self, f):
                 item = self._meta.get_field(f)
-                data.append({'title': item.verbose_name.title(),
+                if hasattr(self, "get_{}_display".format(f)):
+                    value = getattr(self, "get_{}_display".format(f))()
+                else:
+                    value = getattr(self, f)
+                data.append({'title': item.verbose_name.capitalize(),
                              'field': item,
                              'typo': item.__class__.__name__,
-                             'value': getattr(self, f)})
-        return data
+                             'value': value})
+        return {
+            'self': self,
+            'information': data,
+            'class_name': self.__class__._meta.verbose_name.capitalize(),
+            'order': self.creado_el
+        }
 
 
 class FichaKinesicaMixin(object):
@@ -60,11 +68,22 @@ class FichaKinesicaConHistoriaMixin(FichaKinesicaMixin):
     Mixin utilizado para las vistas de ficha kinesica que requiera el historial médico.
 
     """
+    HISTORIA_CLINICA_COMPLETE = False
+
     def get_context_data(self, *args, **kwargs):
         context = super(FichaKinesicaConHistoriaMixin, self).get_context_data(*args, **kwargs)
-        from pacientes.models import EntradaHistoriaClinica
-        context["entradas"] = EntradaHistoriaClinica.objects.select_subclasses().filter(
-            paciente=context["paciente"]).order_by('-creado_el')
+        return self.get_historia_clinica(context)
+
+    def get_historia_clinica(self, context):
+        entradas = [entradas.show_info for entradas in self.paciente.entradas_historiaclinica.select_subclasses().all()]
+        if self.HISTORIA_CLINICA_COMPLETE:
+            entradas.extend([sesion.show_info for sesion in self.paciente.sesiones_paciente.all()])
+            entradas.extend([reg_bio.show_info for reg_bio in self.paciente.registros_biometricos.all()])
+            entradas.extend([motivo.show_info for motivo in self.paciente.motivos_de_consulta.all()])
+            for motivo in self.paciente.motivos_de_consulta.all():
+                entradas.extend([plan.show_info for plan in motivo.planificaciones.all()])
+                entradas.extend([objetivo.show_info for objetivo in motivo.objetivos.all()])
+        context["entradas"] = sorted(entradas, key=lambda k: k['order'])
         return context
 
 

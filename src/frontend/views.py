@@ -324,16 +324,13 @@ class ImagenesHCViewUpdate(AbstractEntradaHistoriaClinicaUpdate):
         return reverse_lazy('imagen_hc_update', kwargs={'pk': self.paciente.pk, 'pk_imagen': self.object.pk})
 
 
-class HistoriaClinicaListView(LoginRequiredMixin, DetailView):
+class HistoriaClinicaListView(LoginRequiredMixin, FichaKinesicaConHistoriaMixin, DetailView):
     model = Paciente
 
     def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
+        self.object = self.paciente
         self.template_name = "includes/historia_clinica_entradas_list.html"
-        context = self.get_context_data(
-            object=self.object,
-            entradas=EntradaHistoriaClinica.objects.select_subclasses().filter(
-                paciente=self.object).order_by('-creado_el'))
+        context = self.get_context_data()
         return self.render_to_response(context)
 
 

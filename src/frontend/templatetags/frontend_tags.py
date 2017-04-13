@@ -16,7 +16,7 @@ def split(str, splitter):
 @register.inclusion_tag("tags/show_info.html")
 def show_info(data):
     return {
-        'data': data.show_info
+        'data': data.show_info["information"]
     }
 
 
@@ -24,8 +24,8 @@ def show_info(data):
 def show_entry(context, data, panel_class='info'):
     return {
         'user': context.request.user,
-        'entrada': data,
-        'data': data.show_info,
+        'entrada': data["self"],
+        'data': data["information"],
         'panel_class': panel_class
     }
 
@@ -45,11 +45,12 @@ def are_same_date(date1, date2):
     diff = (date1 - date2).total_seconds()
     return diff > 60 or diff < -60
 
+
 @register.simple_tag
 def get_edit_url_entry(entry):
     # debo determinar
     if isinstance(entry, ComentariosHistoriaClinica):
-        return reverse('comentario_hc_update', kwargs={'pk': entry.paciente.pk, 'pk_comentario': entry.pk })
+        return reverse('comentario_hc_update', kwargs={'pk': entry.paciente.pk, 'pk_comentario': entry.pk})
     if isinstance(entry, ImagenesHistoriaClinica):
         return reverse('imagen_hc_update', kwargs={'pk': entry.paciente.pk, 'pk_imagen': entry.pk})
     return ""

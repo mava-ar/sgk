@@ -26,6 +26,9 @@
                         <a href="{% url 'paciente_update' paciente.pk %}" class="btn btn-fab btn-danger float-circle">
                             <i class="material-icons">edit</i>
                         </a>
+                        <a href="{% url 'historia_clinica_report_pdf' paciente.pk %}" class="btn btn-fab btn-success pull-right" title="Exportar Historia Clínica a PDF">
+                            <i class="material-icons">cloud_download</i>
+                        </a>
                         <div style="width:100%">
                             <img class="img-responsive img-circle"
                                  src="{{ paciente.persona.avatar_lg }}" />

@@ -2,6 +2,7 @@ from django.conf.urls import url, include
 from django.conf import settings
 
 from frontend import views
+from pacientes.views import historia_clinica_report_pdf
 
 
 urlpatterns = [
@@ -20,6 +21,7 @@ if settings.PLAN_KINES > 1:
     urlpatterns += [
         url(r'^pacientes/(?P<pk>\d+)/$', views.ficha_kinesica, name="ficha_kinesica"),
         url(r'^pacientes/(?P<pk>\d+)/historia-clinica/$', views.historia_clinica_list, name="historia_clinica_list"),
+        url(r'^pacientes/(?P<pk>\d+)/historia-clinica/report-pdf/$', historia_clinica_report_pdf, name="historia_clinica_report_pdf"),
         url(r'^pacientes/(?P<pk>\d+)/antecedentes/$', views.ficha_kinesica_update, name="ficha_kinesica_update"),
         url(r'^pacientes/(?P<pk>\d+)/hc_comentario/$', views.comentario_hc_create, name="comentario_hc_create"),
         url(r'^pacientes/(?P<pk>\d+)/hc_comentario/(?P<pk_comentario>\d+)/$', views.comentario_hc_update, name="comentario_hc_update"),

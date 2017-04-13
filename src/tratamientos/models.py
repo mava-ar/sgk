@@ -5,7 +5,7 @@ from django.db.models import Sum
 from django.utils.safestring import mark_safe
 
 from core.models import Profesional
-from pacientes.models import Paciente
+from pacientes.models import Paciente, EntradaHistoriaClinica
 from dj_utils.models import BaseModel
 from dj_utils.mixins import ShowInfoMixin
 
@@ -114,8 +114,11 @@ class Objetivo(BaseModel, ShowInfoMixin):
     def cumplido(self):
         return self.fecha_cumplido is not None
 
+    field_info = ('descripcion', 'fecha_inicio',
+                  'fecha_cumplido', 'observaciones')
 
-class Planificacion(BaseModel):
+
+class Planificacion(BaseModel, ShowInfoMixin):
     """
     La planificación puede ser diseñada por el profesional, o por el médico especialista
     que indicó sesiones de kinesiología. Contiene la información sobre el tratamiento pensado
@@ -158,6 +161,10 @@ class Planificacion(BaseModel):
             self.motivo_consulta.paciente, self.cantidad_sesiones, self.estado
         )
 
+    field_info = ('fecha_ingreso', 'fecha_alta',
+                  'por_sesion', 'cantidad_sesiones',
+                  'frecuencia', 'estado', 'comentarios', 'conclusion')
+
     class Meta:
         verbose_name_plural = 'planificaciones'
         verbose_name = 'planificación'
@@ -173,7 +180,7 @@ class Planificacion(BaseModel):
         return [self.PLANIFICADO, self.EN_CURSO, ]
 
 
-class Sesion(BaseModel):
+class Sesion(BaseModel, ShowInfoMixin):
     """
     Representa una sesión tomada por el paciente. En ella, se indica
     como se encuentra el paciente previamente, que actividades se realizan,
@@ -212,3 +219,6 @@ class Sesion(BaseModel):
         if not txt:
             txt = 'Sin comentarios.'
         return mark_safe(txt)
+
+    field_info = ('fecha', 'duracion', 'estado_paciente', 'actividad',
+                  'comentarios')

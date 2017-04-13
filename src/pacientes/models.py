@@ -47,14 +47,14 @@ class Paciente(BaseModel):
 
 class RegistroBiometrico(BaseModel, ShowInfoMixin):
     """
-    Registro de datos biométricos. Como avarían en el tiempo, se deja constancia de la
-    fecha
+    Registro de datos biométricos. Como varían en el tiempo, se deja constancia de la
+    fecha.
     """
     paciente = models.ForeignKey(Paciente, related_name='registros_biometricos')
     peso = models.DecimalField('peso (kg)', max_digits=5, decimal_places=2, null=True)
     altura = models.DecimalField('altura (mts)', max_digits=5, decimal_places=2, null=True)
     # demás datos biomédicos.
-    #
+
     profesional = models.ForeignKey(Profesional)
     # archivos
 

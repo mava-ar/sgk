@@ -1,0 +1,139 @@
+{% load static i18n frontend_tags %}
+<html>
+<head>
+    <style>
+        @page {
+            size: A4;
+            margin: 3cm 2cm 3cm 2cm;
+            width: 100%;
+            height: 100%;
+            font-size: 9pt;
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        @page {
+            @top-right {
+                width: 100%;
+                background: transparent url({% static 'img/hc_header_default.png' %}) no-repeat bottom center;
+                height: 3cm;
+                content: "";
+                padding: 1.2cm 0;
+                margin-bottom: 0.1cm;
+                color: #035c5c;
+                font-size: 10pt;
+            }
+
+            @bottom-left {
+                margin: 30pt 0 50pt 0;
+                border-top: .5pt solid #404040;
+                content: "Página " counter(page) " de " counter(pages);
+                font-size: 9pt;
+                padding: 0.5cm 0;
+                font-family: 'Open Sans', sans-serif;
+                width: 15%;
+            }   
+
+            @bottom-right {
+                margin: 30pt 0 50pt 0;
+                border-top: .5pt solid #404040;
+                content: "Documento generado por Kines (Sistema de gestión kinesiológico). www.kines.com.ar";
+                font-size: 9pt;
+                padding: 0.5cm 0;
+                width: 85%;
+                font-family: 'Open Sans', sans-serif;
+            }
+
+        }
+
+        h1, h2, h3, h4, h5 {
+            font-weight: bold;
+            page-break-after: avoid;
+            page-break-inside: avoid;
+            margin: 0 0 .25cm 0;
+        }
+
+        h1 + p, h2 + p, h3 + p {
+            page-break-before: avoid;
+        }
+        p {
+            page-break-inside: avoid;
+            margin-bottom: .15cm;
+            margin-top: 0;
+            color: #58595B;
+            font-size: 9pt;
+        }
+
+        table, figure {
+            page-break-inside: avoid;
+        }
+        .content {
+            position: relative;
+        }
+
+        .titulo {
+            text-transform: uppercase;
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: .5cm;
+            color: #009;
+        }
+
+        .entrada {
+            margin: .25cm 0;
+            padding-top: 0.25cm;
+            border-top: solid 1px #999;
+        }
+        .img-wrapper {
+            margin: 0 auto;
+            width: 100%;
+            position: relative;
+            margin-bottom: 0.5cm
+        }
+        .img-wrapper > img{
+            max-width: 100%;
+        }
+    </style>
+</head>
+<body>
+<div class="content">
+    <div class="header">
+        {% block header %}
+            <p class="fecha" style="float:right">{% now "d/m/Y" %}</p>
+            <h2>{{ NOMBRE_CONSULTORIO }}</h2>
+            
+            <div class="titulo">Historia Clínica de {{ paciente }}</div>
+        {% endblock header %}
+    </div>
+    <div class="entrada">
+        {# datos del paciente #}
+        <p><b>Paciente: </b>{{ paciente.persona }}</p>
+        <p><b>Fecha de ingreso: </b>{{ paciente.fecha_ingreso }}</p>
+        <p><b>Cobertura médica: </b>{{ paciente.cobertura.nombre|default_if_none:'Sin especificar.' }}</p>
+        <p><b>Observaciones: </b>{{ paciente.observaciones|default:'-' }}</p>
+
+        <p><b>Peso: </b>{{ paciente.registros_biometricos.last.peso|default:'-' }} Kg.</p>
+        <p><b>Altura: </b>{{ paciente.registros_biometricos.last.altura|default:'-' }} Mts.</p>
+        
+
+    </div>
+    {% for entrada in entradas %}
+    <div class="entrada">
+        <h5> {{ entrada.class_name }}</h5>
+        {% for item in entrada.information %}
+            {% if item.value %}
+                {% if item.typo == 'ImageField' %}
+                    <p><b>{{item.title}}</b></p>
+                    <div class="img-wrapper">
+                        <img src={{ MEDIA_URL }}/{{ item.value }} />
+                    </div>
+                {% else %}
+                    <p><b>{{ item.title }}:</b> {{ item.value|default_if_none:'-' }}</p>
+                {% endif %}
+            {% endif %}
+        {% endfor %}        
+    </div>
+    {% endfor %}
+</div>
+</body>
+</html>
