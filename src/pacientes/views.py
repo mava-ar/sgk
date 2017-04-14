@@ -1,3 +1,4 @@
+# coding=utf-8
 from django.views.generic import TemplateView
 from django.utils.timezone import now
 
@@ -15,7 +16,7 @@ class HistoriaClinicaReportPDFView(FichaKinesicaConHistoriaMixin, PDFTemplateRes
     template_name = 'pacientes/historia_clinica_report.html'
 
     def get_filename(self):
-        return u'Historia Clínica de %s (%s).pdf' % (self.paciente, now().strftime("%Y-%m-%d"))
+        return u'Historia Clinica de %s (%s).pdf' % (self.paciente, now().strftime("%Y-%m-%d"))
 
     def get_context_data(self, **kwargs):
         context = super(HistoriaClinicaReportPDFView, self).get_context_data(**kwargs)
