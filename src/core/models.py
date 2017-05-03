@@ -84,8 +84,7 @@ class Persona(BaseModel):
     profesion = models.CharField(verbose_name='profesión', null=True, blank=True, max_length=255)
 
     def __str__(self):
-        return "{} {}".format(
-                self.nombre, self.apellido)
+        return "{} {}".format(self.nombre, self.apellido)
 
     class Meta:
         ordering = ('nombre', 'apellido', )
