@@ -31,5 +31,6 @@ class PacienteTable(DefaultTable):
 
     class Meta(DefaultTable.Meta):
         model = Paciente
-        fields = ('avatar', 'persona.nombre', 'persona.apellido', 'fecha_ingreso', 'cobertura_medica',
+        fields = ('avatar', 'persona.nombre', 'persona.apellido', 'fecha_ingreso', 'modificado_el', 'cobertura_medica',
                   'observaciones', 'acciones')
+        order_by = ['-modificado_el']

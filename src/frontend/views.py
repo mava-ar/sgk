@@ -181,12 +181,7 @@ class FichaKinesicaIndex(LoginRequiredMixin, FichaKinesicaConHistoriaMixin, Temp
     template_name = "frontend/ficha_kinesica.html"
 
     def get_object(self, queryset=None):
-        try:
-            return self.paciente.antecedente
-        except ObjectDoesNotExist:
-            self.paciente.antecedente = Antecedente()
-            self.paciente.antecedente.save()
-            return self.paciente.antecedente
+        return self.get_antecedente()
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -201,74 +196,19 @@ class FichaKinesicaEditView(LoginRequiredMixin, FichaKinesicaMixin, InlineFormSe
     model = Antecedente
     form_class = AntecedenteForm
 
-    # class ObjetivoInline(EnhancedInlineFormSet):
-    #     formset_class = ObjetivoInlineForm
-    #     model = Objetivo
-    #     extra = 0
-    #     can_delete = True
-    #
-    # formsets = [ObjetivoInline, ]
-
-    # def get_factory_kwargs(self):
-    #     return {
-    #         'parent_model': MotivoConsulta
-    #     }
-
     def get_object(self, queryset=None):
-        try:
-            return self.paciente.antecedente
-        except ObjectDoesNotExist:
-            self.paciente.antecedente = Antecedente()
-            self.paciente.antecedente.save()
-            return self.paciente.antecedente
-
-
-    # def get_motivo_instance(self):
-    #     if self.kwargs.get('motivo_pk', None):
-    #         return self.object.paciente.motivos_de_consulta.get(
-    #             pk=self.kwargs.get('motivo_pk', None))
-    #     else:
-    #         return self.object.paciente.motivos_de_consulta.latest('fecha_ingreso')
-    #
-    # def post(self, request, *args, **kwargs):
-    #     return super(FichaKinesicaEditView, self).post(request, *args, **kwargs)
-
-    # def form_valid(self, form):
-    #     motivo_form = self.get_motivo_form()
-    #     motivo_form.save()
-    #     return super(FichaKinesicaEditView, self).form_valid(form)
-
-    # def get_formsets_kwargs(self, enhanced_formset):
-    #     kwargs = super(FichaKinesicaEditView, self).get_formsets_kwargs(enhanced_formset)
-    #     kwargs.update({
-    #         'instance': self.get_motivo_instance()
-    #     })
-    #     return kwargs
-    #
-    # def get_motivo_form(self):
-    #     if self.request.method == "POST":
-    #         return MotivoConsultaForm(self.request.POST,
-    #                                   instance=self.get_motivo_instance())
-    #     else:
-    #         return MotivoConsultaForm(instance=self.get_motivo_instance())
+        return self.get_antecedente()
 
     def get_context_data(self, *args, **kwargs):
         context = super(FichaKinesicaEditView, self).get_context_data(*args, **kwargs)
-        #context["form"] = self.get_form(self.get_form_class())
-        # context["paciente"] = self.object.paciente
-        # context["motivo_form"] = self.get_motivo_form()
         context["motivos"] = self.object.paciente.motivos_de_consulta.all()
         return context
 
     def get_success_url(self, *args, **kwargs):
-        messages.add_message(self.request, messages.SUCCESS,
-            u"Ficha editada correctamente.")
+        messages.add_message(
+            self.request, messages.SUCCESS,
+            "Ficha editada correctamente.")
         return reverse('ficha_kinesica', kwargs={'pk': self.paciente.pk})
-        # if self.kwargs.get('motivo_pk', None):
-        #     motivo_pk = self.kwargs.get('motivo_pk', None)
-        #     return reverse('ficha_kinesica', kwargs={'pk': pk, 'motivo_pk': motivo_pk})
-        # else:
-        #     return reverse('ficha_kinesica', kwargs={'pk': pk})
 
 
 class AbstractEntradaHistoriaClinicaCreate(LoginRequiredMixin, FichaKinesicaModalView, CreateView):

@@ -1,7 +1,9 @@
 # coding=utf-8
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.urlresolvers import reverse
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect
+
 from django_filters.views import FilterView
 from django_tables2 import SingleTableMixin
 
@@ -42,12 +44,25 @@ class FichaKinesicaMixin(object):
     mixin utilizado en todos los métodos relativos a la ficha kinesica.
     Busca el paciente y lo incluye en el contexto.
     """
+    def get_antecedente(self):
+        """
+        Retorna el antecedente, si este no existe, lo crea.
+        """
+        try:
+            self.paciente.antecedente
+        except ObjectDoesNotExist:
+            from pacientes.models import Antecedente
+            self.paciente.antecedente = Antecedente()
+            self.paciente.antecedente.save()
+        return self.paciente.antecedente
+
     def get_paciente(self):
         pk = self.kwargs.get('pk', None)
         if not pk:
             return HttpResponseRedirect(reverse('paciente_list'))
         from pacientes.models import Paciente
         self.paciente = Paciente.objects.get(pk=pk)
+        self.get_antecedente()
         return self.paciente
 
     def get_context_data(self, *args, **kwargs):
