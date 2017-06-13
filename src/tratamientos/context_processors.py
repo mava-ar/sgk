@@ -6,7 +6,7 @@ def sesiones_activas(request):
     if request.user.is_authenticated():
         try:
             sesiones = Sesion.objects.filter(
-                profesional=request.user.profesional,
+                profesional=request.user.profesional, planificacion__isnull=False,
                 fin_el__isnull=True).select_related('planificacion__motivo_consulta', 'paciente__persona')
             data = []
             for sesion in sesiones:
