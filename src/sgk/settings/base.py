@@ -49,9 +49,54 @@ LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = '/accounts/login/'
 LOGOUT_URL = '/'
 
+# Application definition
+SHARED_APPS = [
+    'tenant_schemas',
+    'consultorio',
+
+    'material',
+    # 'material.frontend',
+    'material.admin',
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.contenttypes',
+    'django.contrib.staticfiles',
+
+    'djangobower',
+    'pipeline',
+    'bootstrap3',
+    'easy_thumbnails',
+    'datetimewidget',
+    'djangoformsetjs',
+    'corsheaders',
+    'django_tables2',
+    'django_filters',
+    'crispy_forms',
+
+]
+
+TENANT_APPS = [
+    'django.contrib.auth',
+    # 'django.contrib.sessions',
+
+    'frontend',
+    'dj_utils',
+    'dj_auth',
+    'core',
+    'coberturas_medicas',
+    'pacientes',
+    'tratamientos',
+    'turnos',
+    'notifications',
+
+    'rest_framework',
+]
 
 # Application definition
 INSTALLED_APPS = [
+    'tenant_schemas',
     'material',
     # 'material.frontend',
     'material.admin',
@@ -73,6 +118,7 @@ INSTALLED_APPS = [
     'django_filters',
     'crispy_forms',
 
+    'consultorio',
     'frontend',
     'dj_utils',
     'dj_auth',
@@ -86,6 +132,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE_CLASSES = [
+    'tenant_schemas.middleware.TenantMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
@@ -141,9 +188,22 @@ CRISPY_TEMPLATE_PACK = 'bootstrap3'
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 
+
+TENANT_MODEL = "consultorio.Consultorio" #  app.Model
+
+DEFAULT_FILE_STORAGE = 'tenant_schemas.storage.TenantFileSystemStorage'
+
 DATABASES = {
-    'default': env.db(default='sqlite:///my-local-sqlite.db'),
+    'default': env.db(),
 }
+
+DATABASES["default"].update({
+    'ENGINE': 'tenant_schemas.postgresql_backend'
+})
+
+DATABASE_ROUTERS = (
+    'tenant_schemas.routers.TenantSyncRouter',
+)
 
 # Password validation
 # https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators

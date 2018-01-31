@@ -178,3 +178,5 @@ bkp-dbs
 .secret
 .env
 .vscode/
+
+bower_components/
