@@ -3,6 +3,8 @@ from django import template
 from django.core.urlresolvers import reverse
 from django.utils import timezone
 
+from tenant_schemas.utils import get_tenant_model
+
 from pacientes.models import ComentariosHistoriaClinica, ImagenesHistoriaClinica
 
 register = template.Library()
@@ -26,7 +28,8 @@ def show_entry(context, data, panel_class='info'):
         'user': context.request.user,
         'entrada': data["self"],
         'data': data["information"],
-        'panel_class': panel_class
+        'panel_class': panel_class,
+        'tenant': get_tenant_model()
     }
 
 

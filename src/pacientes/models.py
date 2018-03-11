@@ -1,3 +1,5 @@
+from functools import partial
+
 from django.db import models
 
 from model_utils.managers import InheritanceManager
@@ -5,7 +7,7 @@ from model_utils.managers import InheritanceManager
 from coberturas_medicas.models import Cobertura
 from core.models import Persona, Profesional
 from dj_utils.mixins import ShowInfoMixin
-from dj_utils.models import BaseModel
+from dj_utils.models import BaseModel, uploadTenantFilename
 
 
 class Paciente(BaseModel):
@@ -137,7 +139,8 @@ class ImagenesHistoriaClinica(EntradaHistoriaClinica):
     """
     Representa una imagen ingresada en la historia clinica
     """
-    imagen = models.ImageField(verbose_name="imágen", upload_to="historia_imagenes")
+    imagen = models.ImageField(
+        verbose_name="imágen", upload_to=partial(uploadTenantFilename, "historia_imagenes"))
     comentarios = models.TextField(verbose_name="comentarios", null=True, blank=True)
 
     class Meta:

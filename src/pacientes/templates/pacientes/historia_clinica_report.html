@@ -125,7 +125,7 @@
                 {% if item.typo == 'ImageField' %}
                     <p><b>{{item.title}}</b></p>
                     <div class="img-wrapper">
-                        <img src={{ MEDIA_URL }}/{{ item.value }} />
+                        <img src={{ item.value.url }} />
                     </div>
                 {% else %}
                     <p><b>{{ item.title }}:</b> {{ item.value|default_if_none:'-' }}</p>

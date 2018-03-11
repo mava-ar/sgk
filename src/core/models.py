@@ -1,5 +1,6 @@
 # coding:utf-8
 from datetime import date
+from functools import partial
 
 from django.core.files.storage import get_storage_class
 from django.conf import settings
@@ -8,7 +9,7 @@ from django.db import models
 
 from easy_thumbnails.fields import ThumbnailerImageField
 
-from dj_utils.models import BaseModel
+from dj_utils.models import BaseModel, uploadTenantFilename
 
 
 class Contacto(BaseModel):
@@ -77,7 +78,9 @@ class Persona(BaseModel):
     estado_civil = models.CharField('estado civíl', max_length=3, choices=ESTADO_CIVIL, default='S')
     dni = models.IntegerField('DNI', null=True, blank=True)
     domicilio = models.CharField('domicilio', max_length=255, blank=True)
-    imagen_perfil = ThumbnailerImageField(upload_to='imagen_perfil', blank=True, null=True)
+    imagen_perfil = ThumbnailerImageField(
+        upload_to=partial(uploadTenantFilename, 'imagen_perfil'),
+        blank=True, null=True)
     observaciones = models.TextField('observaciones', blank=True)
     # relaciones
     info_contacto = models.OneToOneField(Contacto, verbose_name='contacto', null=True, blank=True)

@@ -3,7 +3,8 @@
     <div class="panel-heading">
         Entrada por {{ entrada.profesional }} el {{ entrada.creado_el|date:"d/m/Y H:i" }}
         {% if entrada.profesional == user.profesional %}
-        <a class="btn btn-fab btn-info float-circle to-right" href="{% get_edit_url_entry entrada %}" data-toggle="modal" data-target="#modal"  data-tooltip >
+        <a class="btn btn-fab btn-info float-circle to-right" href="{% get_edit_url_entry entrada %}" 
+            data-toggle="modal" data-target="#modal"  data-tooltip title="Editar">
             <i class="material-icons">launch</i>
         </a>
         {% endif %}

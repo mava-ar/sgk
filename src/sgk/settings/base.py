@@ -147,6 +147,7 @@ MIDDLEWARE_CLASSES = [
 ]
 
 ROOT_URLCONF = 'sgk.urls'
+PUBLIC_SCHEMA_URLCONF = 'sgk.urls_public'
 
 TEMPLATES = [
     {
@@ -191,7 +192,8 @@ CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 TENANT_MODEL = "consultorio.Consultorio" #  app.Model
 
-DEFAULT_FILE_STORAGE = 'tenant_schemas.storage.TenantFileSystemStorage'
+# En vez de esto, uso un upload_to especifico que pone el domain en el path de los files.
+# DEFAULT_FILE_STORAGE = 'tenant_schemas.storage.TenantFileSystemStorage'
 
 DATABASES = {
     'default': env.db(),
