@@ -74,7 +74,7 @@ SHARED_APPS = [
     'django_tables2',
     'django_filters',
     'crispy_forms',
-
+    'rest_framework',
 ]
 
 TENANT_APPS = [
@@ -91,7 +91,6 @@ TENANT_APPS = [
     'turnos',
     'notifications',
 
-    'rest_framework',
 ]
 
 # Application definition
