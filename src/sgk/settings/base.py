@@ -57,12 +57,6 @@ SHARED_APPS = [
     'material',
     # 'material.frontend',
     'material.admin',
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.contenttypes',
-    'django.contrib.staticfiles',
 
     'djangobower',
     'pipeline',
@@ -78,8 +72,12 @@ SHARED_APPS = [
 ]
 
 TENANT_APPS = [
+    'django.contrib.admin',
     'django.contrib.auth',
-    # 'django.contrib.sessions',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.contenttypes',
+    'django.contrib.staticfiles',
 
     'frontend',
     'dj_utils',

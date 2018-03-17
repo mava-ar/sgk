@@ -31,7 +31,7 @@
                 padding: 0.5cm 0;
                 font-family: 'Open Sans', sans-serif;
                 width: 15%;
-            }   
+            }
 
             @bottom-right {
                 margin: 30pt 0 50pt 0;
@@ -101,7 +101,7 @@
         {% block header %}
             <p class="fecha" style="float:right">{% now "d/m/Y" %}</p>
             <h2>{{ NOMBRE_CONSULTORIO }}</h2>
-            
+
             <div class="titulo">Historia Clínica de {{ paciente }}</div>
         {% endblock header %}
     </div>
@@ -114,7 +114,7 @@
 
         <p><b>Peso: </b>{{ paciente.registros_biometricos.last.peso|default:'-' }} Kg.</p>
         <p><b>Altura: </b>{{ paciente.registros_biometricos.last.altura|default:'-' }} Mts.</p>
-        
+
 
     </div>
     {% for entrada in entradas %}
@@ -131,7 +131,7 @@
                     <p><b>{{ item.title }}:</b> {{ item.value|default_if_none:'-' }}</p>
                 {% endif %}
             {% endif %}
-        {% endfor %}        
+        {% endfor %}
     </div>
     {% endfor %}
 </div>
