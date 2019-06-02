@@ -1,6 +1,6 @@
 # Updated
 Django==2.0.8
-easy-thumbnails>=2.3
+easy-thumbnails>=2.6
 djangorestframework>=3.9.3
 django-tenants==2.2.3
 django-bootstrap3>=11.0.0
