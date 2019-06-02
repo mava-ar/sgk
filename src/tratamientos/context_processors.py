@@ -1,9 +1,13 @@
 from core.models import Profesional
 from tratamientos.models import Sesion
+from django_tenants.utils import get_tenant_model, get_public_schema_name
 
 
 def sesiones_activas(request):
-    if request.user.is_authenticated():
+    tenant_model = get_tenant_model()
+    if tenant_model.get_current().schema_name == get_public_schema_name():
+        return {}
+    if request.user.is_authenticated:
         try:
             sesiones = Sesion.objects.filter(
                 profesional=request.user.profesional, planificacion__isnull=False,

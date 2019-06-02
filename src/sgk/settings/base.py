@@ -51,58 +51,31 @@ LOGOUT_URL = '/'
 
 # Application definition
 SHARED_APPS = [
-    'tenant_schemas',
+    'django_tenants',  # mandatory
     'consultorio',
 
-    'material',
-    # 'material.frontend',
-    'material.admin',
+    'django.contrib.contenttypes',
 
-    'djangobower',
-    'pipeline',
-    'bootstrap3',
-    'easy_thumbnails',
-    'datetimewidget',
-    'djangoformsetjs',
-    'corsheaders',
-    'django_tables2',
-    'django_filters',
-    'crispy_forms',
-    'rest_framework',
+    # everything below here is optional
+    'django.contrib.auth',
+    'django.contrib.sessions',
+    'django.contrib.sites',
+    'django.contrib.messages',
+    'django.contrib.admin',
 ]
 
 TENANT_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.contenttypes',
-    'django.contrib.staticfiles',
-
-    'frontend',
-    'dj_utils',
-    'dj_auth',
-    'core',
-    'coberturas_medicas',
-    'pacientes',
-    'tratamientos',
-    'turnos',
-    'notifications',
-
-]
-
-# Application definition
-INSTALLED_APPS = [
-    'tenant_schemas',
     'material',
     # 'material.frontend',
-    'material.admin',
-    'django.contrib.admin',
-    'django.contrib.auth',
+    # 'material.admin',
+
+    # The following Django contrib apps must be in TENANT_APPS
     'django.contrib.contenttypes',
+    'django.contrib.auth',
     'django.contrib.sessions',
+    'django.contrib.sites',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
+    'django.contrib.admin',
 
     'djangobower',
     'pipeline',
@@ -114,8 +87,9 @@ INSTALLED_APPS = [
     'django_tables2',
     'django_filters',
     'crispy_forms',
+    'rest_framework',
 
-    'consultorio',
+    # own
     'frontend',
     'dj_utils',
     'dj_auth',
@@ -125,11 +99,12 @@ INSTALLED_APPS = [
     'tratamientos',
     'turnos',
     'notifications',
-    'rest_framework',
 ]
 
-MIDDLEWARE_CLASSES = [
-    'tenant_schemas.middleware.TenantMiddleware',
+INSTALLED_APPS = list(SHARED_APPS) + [app for app in TENANT_APPS if app not in SHARED_APPS]
+
+MIDDLEWARE = [
+    'django_tenants.middleware.main.TenantMainMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
@@ -137,7 +112,6 @@ MIDDLEWARE_CLASSES = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'pipeline.middleware.MinifyHTMLMiddleware'
@@ -153,8 +127,8 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
-                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
+                'django.template.context_processors.debug',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 "django.template.context_processors.media",
@@ -188,20 +162,18 @@ CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 
 TENANT_MODEL = "consultorio.Consultorio" #  app.Model
-
-# En vez de esto, uso un upload_to especifico que pone el domain en el path de los files.
-# DEFAULT_FILE_STORAGE = 'tenant_schemas.storage.TenantFileSystemStorage'
+TENANT_DOMAIN_MODEL = "consultorio.Dominio"  # app.Model
 
 DATABASES = {
     'default': env.db(),
 }
 
 DATABASES["default"].update({
-    'ENGINE': 'tenant_schemas.postgresql_backend'
+    'ENGINE': 'django_tenants.postgresql_backend'
 })
 
 DATABASE_ROUTERS = (
-    'tenant_schemas.routers.TenantSyncRouter',
+    'django_tenants.routers.TenantSyncRouter',
 )
 
 # Password validation
@@ -425,6 +397,3 @@ DJAUTH_BASE_TEMPLATE = 'base.html'
 # smsc service
 SMSC_ALIAS = env.str('SMSC_ALIAS', '')
 SMSC_APIKEY = env.str('SMSC_APIKEY', '')
-
-NOMBRE_CONSULTORIO = env.str('NOMBRE_CONSULTORIO', 'KINES')
-PLAN_KINES = env.int("PLAN_KINES", 1)

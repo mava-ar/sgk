@@ -7,6 +7,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.views.generic import TemplateView, CreateView, UpdateView
 from django.shortcuts import render
 
+from consultorio.models import Consultorio
 from dj_utils.mixins import TableFilterListView
 from turnos.forms import TurnoForm, TurnoDeleteForm
 from turnos.models import Turno
@@ -47,6 +48,7 @@ class TurnoCreateView(LoginRequiredMixin, CreateView):
 class TurnoEditView(TurnoCreateView, UpdateView):
 
     def dispatch(self, *args, **kwargs):
+        self.consultorio = Consultorio.get_current()
         return super(UpdateView, self).dispatch(*args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -62,7 +64,7 @@ class TurnoEditView(TurnoCreateView, UpdateView):
     def then_save(self, turno):
         try:
             self.request.user.profesional
-            if settings.PLAN_KINES > 1 and (
+            if self.consultorio.plan > 1 and (
                 turno.paciente and turno.paciente.tratamiento_activo()) and all(
                     (turno.sesion is None, turno.no_asistio, turno.no_aviso)):
                 return render(self.request, 'turnos/sesion_perdida.html', {
@@ -72,7 +74,7 @@ class TurnoEditView(TurnoCreateView, UpdateView):
         return render(self.request, 'mensajes/turno_saved.html')
 
     def get_template_names(self):
-        if settings.PLAN_KINES == 2:
+        if self.consultorio.plan == 2:
             return ["turnos/turno_form_plan2.html"]
         return ["turnos/turno_form.html"]
 

@@ -18,15 +18,18 @@ from django.conf.urls import url, include
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.views.static import serve
 
+from consultorio.admin import public_admin_site
+
 
 urlpatterns = [
+    url(r'^admin/', public_admin_site.urls),
     url(r'^', include('frontend.urls_public')),
 ]
 
-# if settings.DEBUG:
-#     urlpatterns += staticfiles_urlpatterns()
-#     urlpatterns += [
-#         url(r'^%s/(?P<path>.*)$' % settings.MEDIA_URL.strip('/'),
-#             serve,
-#             {'document_root': settings.MEDIA_ROOT, }),
-#     ]
+if settings.DEBUG:
+    urlpatterns += staticfiles_urlpatterns()
+    urlpatterns += [
+        url(r'^%s/(?P<path>.*)$' % settings.MEDIA_URL.strip('/'),
+            serve,
+            {'document_root': settings.MEDIA_ROOT, }),
+    ]

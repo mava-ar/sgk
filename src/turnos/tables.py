@@ -1,6 +1,6 @@
 # coding=utf-8
 from django.utils.safestring import mark_safe
-from django.core.urlresolvers import reverse_lazy
+from django.urls import reverse_lazy
 
 from django_tables2 import A, URLColumn, BooleanColumn, Column
 

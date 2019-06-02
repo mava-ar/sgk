@@ -17,7 +17,8 @@ class MotivoConsulta(BaseModel, ShowInfoMixin):
 
     """
     paciente = models.ForeignKey(Paciente, verbose_name='paciente',
-                                 related_name='motivos_de_consulta')
+                                 related_name='motivos_de_consulta',
+                                 on_delete=models.CASCADE)
     motivo_consulta_paciente = models.TextField(
         'motivo según el paciente', blank=True, default="",
         help_text="Signos y síntomas explicados por el paciente.")
@@ -94,7 +95,8 @@ class Objetivo(BaseModel, ShowInfoMixin):
 
     """
     motivo_consulta = models.ForeignKey(
-        MotivoConsulta, verbose_name='motivo de consulta', related_name='objetivos')
+        MotivoConsulta, verbose_name='motivo de consulta', related_name='objetivos',
+        on_delete=models.CASCADE)
     descripcion = models.CharField('descripción', max_length=255)
     fecha_inicio = models.DateField('fecha de inicio', null=True, auto_now_add=True)
     fecha_cumplido = models.DateField('fecha de éxito', null=True)
@@ -135,7 +137,7 @@ class Planificacion(BaseModel, ShowInfoMixin):
         (FINALIZADO, 'Finalizado'),
         (CANCELADO, 'Cancelado')
     )
-    motivo_consulta = models.ForeignKey(MotivoConsulta, related_name='planificaciones')
+    motivo_consulta = models.ForeignKey(MotivoConsulta, related_name='planificaciones', on_delete=models.CASCADE)
     fecha_ingreso = models.DateField(
         'fecha de ingreso', null=True,
         help_text="Fecha de inicio de tratamiento, normalmente la fecha de la primer sesión.")
@@ -186,9 +188,9 @@ class Sesion(BaseModel, ShowInfoMixin):
     como se encuentra el paciente previamente, que actividades se realizan,
     y la duración.
     """
-    paciente = models.ForeignKey(Paciente, related_name='sesiones_paciente')
-    profesional = models.ForeignKey(Profesional, related_name="sesiones")
-    planificacion = models.ForeignKey(Planificacion, related_name='sesiones', null=True)
+    paciente = models.ForeignKey(Paciente, related_name='sesiones_paciente', on_delete=models.CASCADE)
+    profesional = models.ForeignKey(Profesional, related_name="sesiones", on_delete=models.CASCADE)
+    planificacion = models.ForeignKey(Planificacion, related_name='sesiones', null=True, on_delete=models.SET_NULL)
     fecha = models.DateField("fecha")
     duracion = models.PositiveSmallIntegerField("duración de la sesión", default=60,
                                                 help_text="Duración de la sesión en minutos")

@@ -1,9 +1,9 @@
 import time
 from django import template
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.utils import timezone
 
-from tenant_schemas.utils import get_tenant_model
+from django_tenants.utils import get_tenant_model
 
 from pacientes.models import ComentariosHistoriaClinica, ImagenesHistoriaClinica
 

@@ -14,12 +14,12 @@ class Paciente(BaseModel):
     """
     Persona que se atiende en el lugar.
     """
-    persona = models.OneToOneField(Persona, verbose_name='persona')
+    persona = models.OneToOneField(Persona, verbose_name='persona', on_delete=models.CASCADE)
 
     fecha_ingreso = models.DateField('fecha de ingreso')
     observaciones = models.TextField('observaciones', blank=True)
     # relaciones
-    cobertura_medica = models.ForeignKey(Cobertura, verbose_name='cobertura', null=True)
+    cobertura_medica = models.ForeignKey(Cobertura, verbose_name='cobertura', null=True, on_delete=models.SET_NULL)
 
     def __str__(self):
         return "{}".format(self.persona)
@@ -52,12 +52,12 @@ class RegistroBiometrico(BaseModel, ShowInfoMixin):
     Registro de datos biométricos. Como varían en el tiempo, se deja constancia de la
     fecha.
     """
-    paciente = models.ForeignKey(Paciente, related_name='registros_biometricos')
+    paciente = models.ForeignKey(Paciente, related_name='registros_biometricos', on_delete=models.CASCADE)
     peso = models.DecimalField('peso (kg)', max_digits=5, decimal_places=2, null=True)
     altura = models.DecimalField('altura (mts)', max_digits=5, decimal_places=2, null=True)
     # demás datos biomédicos.
 
-    profesional = models.ForeignKey(Profesional)
+    profesional = models.ForeignKey(Profesional, on_delete=models.CASCADE)
     # archivos
 
     def __str__(self):
@@ -76,7 +76,7 @@ class Antecedente(BaseModel, ShowInfoMixin):
     Contiene datos médicos y relevantes sobre el paciente.
 
     """
-    paciente = models.OneToOneField(Paciente)
+    paciente = models.OneToOneField(Paciente, on_delete=models.CASCADE)
     patologicos = models.TextField('patológicos', blank=True)
     quirurgicos = models.TextField('quirúrgicos', blank=True)
     traumaticos = models.TextField('traumáticos', blank=True)
@@ -106,8 +106,8 @@ class Antecedente(BaseModel, ShowInfoMixin):
 
 
 class EntradaHistoriaClinica(BaseModel, ShowInfoMixin):
-    paciente = models.ForeignKey(Paciente, related_name="entradas_historiaclinica")
-    profesional = models.ForeignKey(Profesional)
+    paciente = models.ForeignKey(Paciente, related_name="entradas_historiaclinica", on_delete=models.CASCADE)
+    profesional = models.ForeignKey(Profesional, on_delete=models.CASCADE)
 
     objects = InheritanceManager()
 

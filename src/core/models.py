@@ -83,7 +83,7 @@ class Persona(BaseModel):
         blank=True, null=True)
     observaciones = models.TextField('observaciones', blank=True)
     # relaciones
-    info_contacto = models.OneToOneField(Contacto, verbose_name='contacto', null=True, blank=True)
+    info_contacto = models.OneToOneField(Contacto, verbose_name='contacto', null=True, blank=True, on_delete=models.SET_NULL)
     profesion = models.CharField(verbose_name='profesión', null=True, blank=True, max_length=255)
 
     def __str__(self):
@@ -135,8 +135,8 @@ class Profesional(BaseModel):
 
     """
     titulo = models.CharField("título", max_length=64, blank=True, help_text="Ej: Lic.")
-    persona = models.OneToOneField(Persona, verbose_name='persona')
-    usuario = models.OneToOneField(User, verbose_name='usuario', null=True)
+    persona = models.OneToOneField(Persona, verbose_name='persona', on_delete=models.CASCADE)
+    usuario = models.OneToOneField(User, verbose_name='usuario', null=True, on_delete=models.CASCADE)
     observaciones = models.TextField('observaciones', blank=True)
 
     def __str__(self):

@@ -1,4 +1,13 @@
-Django==1.9.6
+# Updated
+Django==2.0.8
+easy-thumbnails>=2.3
+djangorestframework>=3.9.3
+django-tenants==2.2.3
+django-bootstrap3>=11.0.0
+django-datetime-widget>=0.9.3
+django-extensions
+
+# Outdated
 pillow==3.2.0
 django-libsass==0.7
 libsass>=0.9.3
@@ -6,14 +15,12 @@ libsass>=0.9.3
 
 django-bower>=5.1.0
 django-pipeline>=1.6.4
-django-bootstrap3>=7.0.1
-easy-thumbnails==2.3
+
 django-model-utils==2.5
 django-formset-js>=0.5.0
-django-crispy-forms==1.6.1
-django-filter==1.0.1
+django-crispy-forms>=1.7.2
+django-filter>=2.0.1
 django-tables2>=1.2.0,<1.16.0
-django-datetime-widget>=0.9.3
 pynliner==0.7.1
 
 celery==4.0.2
@@ -21,7 +28,6 @@ redis==2.10.5
 requests==2.13.0
 django-environ==0.4.1
 
-djangorestframework==3.3.3
 djangorestframework-jwt==1.8.0
 python-dateutil==2.5.3
 django-material>=0.13.1,<1.2
@@ -37,6 +43,4 @@ pyexcel-xls==0.3.1
 pyexcel-xlsx==0.3.0
 django_weasyprint==0.1
 
-django-tenant-schemas==1.9.0
-
-django-extensions
+tenant-schemas-celery==0.1.7

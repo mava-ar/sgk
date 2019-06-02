@@ -26,9 +26,9 @@ class Turno(BaseModel):
             help_text='Dejar en blanco si el paciente se encuentra en el sistema.')
 
     # relaciones
-    profesional = models.ForeignKey(Profesional, verbose_name='profesional')
-    paciente = models.ForeignKey(Paciente, verbose_name='paciente', null=True)
-    cobertura = models. ForeignKey(Cobertura, verbose_name='cobertura', null=True)
+    profesional = models.ForeignKey(Profesional, verbose_name='profesional', on_delete=models.CASCADE)
+    paciente = models.ForeignKey(Paciente, verbose_name='paciente', null=True, on_delete=models.CASCADE)
+    cobertura = models. ForeignKey(Cobertura, verbose_name='cobertura', null=True, on_delete=models.CASCADE)
 
     sesion = models.OneToOneField(Sesion, on_delete=models.SET_NULL, verbose_name="sesión realizada", null=True,
                                   related_name='turno_dado')

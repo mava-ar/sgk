@@ -1,6 +1,6 @@
 # coding=utf-8
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseRedirect
 
@@ -27,10 +27,12 @@ class ShowInfoMixin(object):
                     value = getattr(self, "get_{}_display".format(f))()
                 else:
                     value = getattr(self, f)
-                data.append({'title': item.verbose_name.capitalize(),
-                             'field': item,
-                             'typo': item.__class__.__name__,
-                             'value': value})
+                data.append({
+                    'title': item.verbose_name.capitalize(),
+                    'field': item,
+                    'typo': item.__class__.__name__,
+                    'value': value
+                })
         return {
             'self': self,
             'information': data,

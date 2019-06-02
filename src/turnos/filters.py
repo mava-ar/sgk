@@ -32,12 +32,12 @@ class TurnosReportFilter(CrispyFilters):
             Q(paciente__persona__apellido__icontains=value))
 
     dia_start = django_filters.DateFilter(
-        label='Desde el', name='dia', lookup_expr='gte', widget=FechaWidget)
+        label='Desde el', field_name='dia', lookup_expr='gte', widget=FechaWidget)
     dia_end = django_filters.DateFilter(
-        label='Hasta el', name='dia', lookup_expr='lte', widget=FechaWidget)
+        label='Hasta el', field_name='dia', lookup_expr='lte', widget=FechaWidget)
     nombre = django_filters.CharFilter(label='Nombre de paciente', method='nombre_paciente')
-    no_asistio = django_filters.BooleanFilter(label='¿Faltó?', name='no_asistio')
-    no_aviso = django_filters.BooleanFilter(label='¿Faltó y no avisó?', name='no_aviso')
+    no_asistio = django_filters.BooleanFilter(label='¿Faltó?', field_name='no_asistio')
+    no_aviso = django_filters.BooleanFilter(label='¿Faltó y no avisó?', field_name='no_aviso')
 
     class Meta:
         model = Turno

@@ -9,9 +9,15 @@
                 </h4>
             </div>
             <div class="modal-body">
+                <div class="progress hidden" style="height: 20px;">
+                    <div class=" progress-bar progress-bar-striped active" role="progressbar" id="progressbar"
+                        aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">
+                    </div>
+                </div>
                 {% csrf_token %}
                 {% bootstrap_form form %}
-                <div class="row"><div class="col-sm-12">
+                <div class="row">
+                    <div class="col-xs-12">
                     <input type="submit" class="btn btn-raised btn-primary pull-right" value="Guardar"/>
                     <input type="button" class="btn btn-raised btn-default pull-right" data-dismiss="modal" value="Cancelar"/>
                 </div></div>
@@ -21,9 +27,16 @@
             (function($){
                 appendInputToFile();
                 var form_options = {
-                    target: '#modal', success: function () {}
-                    };
-                    $('#entrada_update_form').ajaxForm(form_options);
+                    target: '#modal',
+                    success: function () {},
+                    uploadProgress: function(event, position, total, percComplete) {
+                        $("#progressbar").closest(".progress").removeClass("hidden");
+                        $("#progressbar").attr('aria-valuenow', percComplete);
+                        $("#progressbar").css({'width': percComplete + '%'});
+                        $("#progressbar").html(percComplete + "%");
+                    }
+                };
+                $('#entrada_update_form').ajaxForm(form_options);
                 $.material.init();
             })(jQuery);
 

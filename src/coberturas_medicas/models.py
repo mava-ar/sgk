@@ -50,7 +50,7 @@ class RegistroValorPrestacion(BaseModel):
     """
     Valor pagado por la cobertura para una sesión de kinesionloǵia.
     """
-    cobertura = models.ForeignKey(Cobertura, related_name="valores")
+    cobertura = models.ForeignKey(Cobertura, related_name="valores", on_delete=models.CASCADE)
     monto = models.DecimalField('monto ($)', max_digits=8, decimal_places=2)
     fecha_baja = models.DateTimeField('fecha de baja', null=True, blank=True,
                                       help_text="Si la fecha está vacia, el valor es el vigente. "
