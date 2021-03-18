@@ -8,7 +8,7 @@ django-datetime-widget>=0.9.3
 django-extensions
 
 # Outdated
-pillow==3.2.0
+pillow==8.1.1
 django-libsass==0.7
 libsass>=0.9.3
 -e git://github.com/rasca/django-enhanced-cbv.git#egg=django-enhanced-cbv
