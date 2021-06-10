@@ -1,5 +1,5 @@
 # Updated
-Django==2.0.8
+Django==2.2.24
 easy-thumbnails>=2.6
 djangorestframework>=3.9.3
 django-tenants==2.2.3
