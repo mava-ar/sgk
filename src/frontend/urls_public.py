@@ -1,9 +1,8 @@
-from django.conf.urls import url, include
-from django.conf import settings
+from django.urls import path
 
 from frontend import views_public
 
 
 urlpatterns = [
-    url(r'^$', views_public.index, name='index'),
+    path('', views_public.index, name='index'),
 ]

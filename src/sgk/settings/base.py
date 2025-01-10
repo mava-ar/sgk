@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 from sys import path
 from datetime import timedelta
 import environ
+
+
 root = environ.Path(__file__) - 3  # three folder back (/src/sgk/settings/ - 3 = src/)
 
 # PATH CONFIGURATION
@@ -65,9 +67,7 @@ SHARED_APPS = [
 ]
 
 TENANT_APPS = [
-    'material',
-    # 'material.frontend',
-    # 'material.admin',
+    'viewflow',
 
     # The following Django contrib apps must be in TENANT_APPS
     'django.contrib.contenttypes',
@@ -78,17 +78,19 @@ TENANT_APPS = [
     'django.contrib.admin',
     'django.contrib.staticfiles',
 
-    'djangobower',
+    'django_yarnpkg',
     'pipeline',
     'bootstrap3',
     'easy_thumbnails',
-    'datetimewidget',
+    'bootstrap_datepicker_plus',
     'djangoformsetjs',
     'corsheaders',
     'django_tables2',
     'django_filters',
     'crispy_forms',
     'rest_framework',
+    'rest_framework.authtoken',
+    'rest_framework_simplejwt',
 
     # own
     'frontend',
@@ -115,7 +117,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'pipeline.middleware.MinifyHTMLMiddleware'
+    'django.middleware.gzip.GZipMiddleware',
+    'pipeline.middleware.MinifyHTMLMiddleware',
 ]
 
 ROOT_URLCONF = 'sgk.urls'
@@ -149,9 +152,10 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
     ],
+
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.SessionAuthentication',
-        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
 }
 JWT_EXPIRATION_DELTA = timedelta(minutes=60)
@@ -218,6 +222,8 @@ LOCALE_PATHS = (root.path("sgk/locale/").root, )
 DATE_INPUT_FORMATS = ['%d/%m/%Y', ]
 DATE_FORMAT = 'd/m/Y'
 
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
@@ -226,26 +232,25 @@ MEDIA_URL = '/media/'
 
 # List of finder classes that know how to find static files in
 # various locations.
+# STATICFILES_STORAGE = 'pipeline.storage.PipelineManifestStorage'
+# STATICFILES_STORAGE = 'pipeline.storage.PipelineStorage'
+STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
+
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'djangobower.finders.BowerFinder',
     'pipeline.finders.PipelineFinder',
+    'django_yarnpkg.finders.NodeModulesFinder',
 )
 
-STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
+
 MEDIA_ROOT = root.path(env.str('MEDIA_ROOT', '../media')).root
 STATIC_ROOT = root.path(env.str('STATIC_ROOT', '../collected_static')).root
 
-BOWER_ROOT = root.path('../components')
-PIPELINE_SASS_ARGUMENTS = "-p 8 -I '%s' -I '%s'" % (
-    BOWER_ROOT.path('bower_components/bootstrap-sass/assets/stylesheets/').root,
-    BOWER_ROOT.path('bower_components/bootstrap-sass/assets/fonts/').root
-)
+NODE_MODULES_ROOT = root.path('../components')
 
 PIPELINE = {
-    'PIPELINE_ENABLED': env.bool('PIPELINE_ENABLED', True),
-    'STORAGE': STATICFILES_STORAGE,
+    'PIPELINE_ENABLED':False,
     'STYLESHEETS': {
         'base': {
             'source_filenames': (
@@ -323,15 +328,14 @@ PIPELINE = {
     'COMPILERS': (
         'pipeline.compilers.sass.SASSCompiler',
     ),
-    'SASS_BINARY': 'sassc',
+    'SASS_BINARY': 'sass',
     'CSS_COMPRESSOR': None,
     'JS_COMPRESSOR': None,
     # 'SASS_ARGUMENTS': PIPELINE_SASS_ARGUMENTS,
     'DISABLE_WRAPPER': True
 }
 
-
-BOWER_INSTALLED_APPS = (
+YARN_INSTALLED_APPS = (
     'jquery#2.1.4',
     'bootstrap#3.3.7',
     'fontawesome#4.3.0',
@@ -346,6 +350,7 @@ BOWER_INSTALLED_APPS = (
     'jquery.are-you-sure#^1.9.0',
     'bootstrap-material-design#0.5.9',
     'animate.css#^3.5.2',
+    'yuglify',
     # duda
     'd3-ease',
     'letteringjs',

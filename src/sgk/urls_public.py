@@ -14,22 +14,25 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf import settings
-from django.conf.urls import url, include
+from django.conf.urls import include
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.urls import path
 from django.views.static import serve
 
 from consultorio.admin import public_admin_site
 
 
 urlpatterns = [
-    url(r'^admin/', public_admin_site.urls),
-    url(r'^', include('frontend.urls_public')),
+    path('admin/', public_admin_site.urls),
+    path('', include('frontend.urls_public')),
 ]
 
 if settings.DEBUG:
     urlpatterns += staticfiles_urlpatterns()
     urlpatterns += [
-        url(r'^%s/(?P<path>.*)$' % settings.MEDIA_URL.strip('/'),
+        path(
+            '%s/<str:path>' % settings.MEDIA_URL.strip('/'),
             serve,
-            {'document_root': settings.MEDIA_ROOT, }),
+            {'document_root': settings.MEDIA_ROOT, }
+        ),
     ]

@@ -2,7 +2,7 @@
 from datetime import date
 from functools import partial
 
-from django.core.files.storage import get_storage_class
+from django.core.files.storage import storages
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
@@ -118,7 +118,8 @@ class Persona(BaseModel):
             alias = "avatar" if size == "50x50" else "perfil"
             img = self.imagen_perfil[alias].url
         else:
-            static_storage = get_storage_class(settings.STATICFILES_STORAGE)()
+            static_storage = storages.static.StaticStorage()
+            # static_storage = storages.backends(settings.STATICFILES_STORAGE)()
             if self.genero == 'F':
                 img = static_storage.url("img/icons/{}/mujer.png".format(size))
             elif self.genero == 'M':

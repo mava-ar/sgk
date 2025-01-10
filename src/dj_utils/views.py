@@ -2,20 +2,20 @@ import unicodedata
 
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
-from django_weasyprint import PDFTemplateResponseMixin
-from django_weasyprint.views import PDFTemplateResponse
+from django_weasyprint import WeasyTemplateResponseMixin
+from django_weasyprint.views import WeasyTemplateResponse
 
 
 class LoginAndPermissionRequiredMixin(LoginRequiredMixin, PermissionRequiredMixin):
     pass
 
 
-class PDFResponseMixin(PDFTemplateResponseMixin):
+class PDFResponseMixin(WeasyTemplateResponseMixin):
 
-    class UTF8PdfTemplateResponse(PDFTemplateResponse):
+    class UTF8PdfTemplateResponse(WeasyTemplateResponse):
         def __init__(self, filename=None, *args, **kwargs):
             kwargs['content_type'] = "application/pdf"
-            super(PDFTemplateResponse, self).__init__(*args, **kwargs)
+            super().__init__(*args, **kwargs)
             if filename:
                 try:
                     _filename = filename.encode('utf-8')

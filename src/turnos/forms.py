@@ -1,11 +1,10 @@
 from datetime import timedelta
 
 from django import forms
-from django.conf import settings
-from django.forms.models import ModelForm, BaseInlineFormSet
+from django.forms.models import ModelForm
 from django.utils import timezone
 
-from datetimewidget.widgets import TimeWidget
+from bootstrap_datepicker_plus.widgets import TimePickerInput
 
 from dj_utils.fields import FechaField
 from .models import Turno
@@ -15,8 +14,7 @@ from pacientes.models import Paciente
 class TurnoForm(ModelForm):
     paciente = forms.ModelChoiceField(Paciente.objects.all(), required=False)
     dia = FechaField(label="Día")
-    hora = forms.TimeField(widget=TimeWidget(options={"minuteStep": 15, "maxView": 0},
-                                             usel10n=True, bootstrap_version=3))
+    hora = forms.TimeField(widget=TimePickerInput(options={"minuteStep": 15, "maxView": 0}))
     duracion = forms.IntegerField(label="Duración", widget=forms.NumberInput(attrs={'step': 5}),
                                   initial=60)
 

@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 
 import datetime
 from django.db import migrations, models
-from django.utils.timezone import utc
 
 
 class Migration(migrations.Migration):
@@ -17,7 +16,8 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='sesion',
             name='comienzo_el',
-            field=models.DateTimeField(auto_now_add=True, default=datetime.datetime(2016, 5, 15, 23, 28, 35, 95147, tzinfo=utc), verbose_name='fecha y hora de comienzo de sesión'),
+            field=models.DateTimeField(auto_now_add=True, default=datetime.datetime.now,
+                                       verbose_name='fecha y hora de comienzo de sesión'),
             preserve_default=False,
         ),
         migrations.AddField(

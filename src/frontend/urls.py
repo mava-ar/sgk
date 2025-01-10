@@ -1,28 +1,29 @@
-from django.conf.urls import url, include
+from django.conf.urls import include
+from django.urls import path
 
 from frontend import views
 from pacientes.views import historia_clinica_report_pdf
 
 
 urlpatterns = [
-    url(r'^$', views.index, name='index'),
-    url(r'^personas/$', views.persona_list, name='persona_list'),
-    url(r'^personas/nueva/$', views.persona_create, name='persona_create'),
-    url(r'^personas/editar/(?P<pk>\d+)/$', views.persona_update, name="persona_update"),
-    url(r'^turnos/', include('turnos.urls')),
+    path('', views.index, name='index'),
+    path('personas/', views.persona_list, name='persona_list'),
+    path('personas/nueva/', views.persona_create, name='persona_create'),
+    path('personas/editar/<int:pk>/', views.persona_update, name="persona_update"),
+    path('turnos/', include('turnos.urls')),
 
-    url(r'^pacientes/$', views.paciente_list, name='paciente_list'),
-    url(r'^pacientes/nuevo/$', views.paciente_create, name='paciente_create'),
-    url(r'^pacientes/editar/(?P<pk>\d+)/$', views.paciente_update, name="paciente_update"),
-    url(r'^coberturas/', include('coberturas_medicas.urls')),
+    path('pacientes/', views.paciente_list, name='paciente_list'),
+    path('pacientes/nuevo/', views.paciente_create, name='paciente_create'),
+    path('pacientes/editar/<int:pk>/', views.paciente_update, name="paciente_update"),
+    path('coberturas/', include('coberturas_medicas.urls')),
     # plan nivel 2
-    url(r'^pacientes/(?P<pk>\d+)/$', views.ficha_kinesica, name="ficha_kinesica"),
-    url(r'^pacientes/(?P<pk>\d+)/historia-clinica/$', views.historia_clinica_list, name="historia_clinica_list"),
-    url(r'^pacientes/(?P<pk>\d+)/historia-clinica/report-pdf/$', historia_clinica_report_pdf, name="historia_clinica_report_pdf"),
-    url(r'^pacientes/(?P<pk>\d+)/antecedentes/$', views.ficha_kinesica_update, name="ficha_kinesica_update"),
-    url(r'^pacientes/(?P<pk>\d+)/hc_comentario/$', views.comentario_hc_create, name="comentario_hc_create"),
-    url(r'^pacientes/(?P<pk>\d+)/hc_comentario/(?P<pk_comentario>\d+)/$', views.comentario_hc_update, name="comentario_hc_update"),
-    url(r'^pacientes/(?P<pk>\d+)/hc_imagen/$', views.imagen_hc_create, name="imagen_hc_create"),
-    url(r'^pacientes/(?P<pk>\d+)/hc_imagen/(?P<pk_imagen>\d+)/$', views.imagen_hc_update, name="imagen_hc_update"),
-    url(r'^fichakinesica/', include('tratamientos.urls')),
+    path('pacientes/<int:pk>/', views.ficha_kinesica, name="ficha_kinesica"),
+    path('pacientes/<int:pk>/historia-clinica/', views.historia_clinica_list, name="historia_clinica_list"),
+    path('pacientes/<int:pk>/historia-clinica/report-pdf/', historia_clinica_report_pdf, name="historia_clinica_report_pdf"),
+    path('pacientes/<int:pk>/antecedentes/', views.ficha_kinesica_update, name="ficha_kinesica_update"),
+    path('pacientes/<int:pk>/hc_comentario/', views.comentario_hc_create, name="comentario_hc_create"),
+    path('pacientes/<int:pk>/hc_comentario/<int:pk_comentario>/', views.comentario_hc_update, name="comentario_hc_update"),
+    path('pacientes/<int:pk>/hc_imagen/', views.imagen_hc_create, name="imagen_hc_create"),
+    path('pacientes/<int:pk>/hc_imagen/<int:pk_imagen>/', views.imagen_hc_update, name="imagen_hc_update"),
+    path('fichakinesica/', include('tratamientos.urls')),
 ]

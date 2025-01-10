@@ -7,7 +7,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.template.loader import render_to_string
 from django.utils import timezone
 from django.views.generic import TemplateView, CreateView, UpdateView, DetailView
-from enhanced_cbv.views.edit import InlineFormSetsView
+# from enhanced_cbv.views.edit import InlineFormSetsView
 
 from core.filters import PersonaListFilter
 from core.forms import PersonaForm, ContactoForm
@@ -188,7 +188,7 @@ class FichaKinesicaIndex(LoginRequiredMixin, FichaKinesicaConHistoriaMixin, Temp
         return super(FichaKinesicaIndex, self).get(request, *args, **kwargs)
 
 
-class FichaKinesicaEditView(LoginRequiredMixin, FichaKinesicaMixin, InlineFormSetsView):
+class FichaKinesicaEditView(LoginRequiredMixin, FichaKinesicaMixin, UpdateView):  # , InlineFormSetsView
     """
     El ID dado será del paciente, de debe buscar el antecedente
     """

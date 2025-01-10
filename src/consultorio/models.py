@@ -12,7 +12,7 @@ class Consultorio(TenantMixin, BaseModel):
         (3, 'Premium'),
     )
     nombre = models.CharField(max_length=100)
-    pagado_hasta =  models.DateField(null=True, blank=True)
+    pagado_hasta = models.DateField(null=True, blank=True)
     on_trial = models.BooleanField(default=True)
 
     plan = models.IntegerField(choices=PLANES, default=1)

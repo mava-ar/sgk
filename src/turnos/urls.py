@@ -1,12 +1,11 @@
-from django.conf.urls import url
+from django.urls import path, re_path
 
 from turnos import views
 
-
 urlpatterns = [
-    url(r'^$', views.turno_list, name='turno_list'),
-    url(r'^nuevo/$', views.turno_create, name='turno_create'),
-    url(r'^reporte/$', views.turno_report, name='turno_report'),
-    url(r'^editar/(?P<pk>\d+)/$', views.turno_update, name="turno_update"),
-    url(r'^eliminar/(?P<pk>\d+)/$', views.turno_delete, name="turno_delete"),
+    path('', views.turno_list, name='turno_list'),
+    path('nuevo/', views.turno_create, name='turno_create'),
+    path('reporte/', views.turno_report, name='turno_report'),
+    path('editar/<int:pk>/', views.turno_update, name="turno_update"),
+    path('eliminar/<int:pk>/', views.turno_delete, name="turno_delete"),
 ]
